@@ -1,0 +1,212 @@
+.clearFull {
+    float: none !important;
+    width: 100% !important;
+    clear: both;
+    height: auto !important;
+    display: block !important;
+    background: none;
+    margin: 0;
+    padding: 0;
+}
+.padLeft0 {
+    padding-left: 0 !important;
+}
+.adminCont h3 {
+    margin-top: 0;  
+    margin-bottom: 0;
+}
+.margauto {
+    margin: 0 auto;
+    float: none;
+}
+.adminCont {
+    overflow: hidden;
+    padding: 30px 0 50px 0;
+}
+.editUserBox div.checkbox {
+    margin-top: -12px;
+}
+.usersTbl td {
+    word-break: break-word;
+}
+.titleBox {
+    overflow: hidden;
+}
+.titleBox p {
+    margin: 0;
+    color: #7a7679;
+    font-size: 16px;
+    line-height: 16px;
+    margin-top: 10px;
+}
+.adminCont hr {
+    margin-top: 10px;
+}
+.optionDelSec {
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+.optionDelSec:last-child {
+    margin-bottom: 0;
+}
+.optionDelSec input.form-control {
+    width: 93%;
+}
+.option_lst input[type="text"] {
+    margin-bottom: 15px;
+}
+.option_lst .optionDelSec input[type="text"] {
+    margin-bottom: 0;
+}
+.optionDelSec > * {
+    float: left;
+}
+.delOptionBtn {
+    display: block;
+    height: 20px;
+    width: 18px;
+    background: url('../images/del.png') no-repeat 0 0 transparent;
+    margin: 8px 0 0 10px;
+    background-size: 100% auto;
+    cursor: pointer;
+}
+.delOptionBtn:hover, .delOptionBtn:active {
+    opacity: 0.8;
+}
+.customFormItem .customLbSt {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: black;
+    text-transform: capitalize;
+}
+.controlNav {
+    margin-top: 15px;
+}
+.dd_fields li {
+    margin-bottom: 15px;
+}
+.customFormItem .customLbSt {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: black;
+    text-transform: capitalize;
+}
+.checkRadioSec {
+    margin-bottom: -15px;
+}
+.checkRadioSec label {
+    font-weight: normal;
+    float: left;
+    margin-right: 15px;
+    margin-left: 0 !important;
+    margin-bottom: 15px;
+}
+.customFormItem .checkRadioSec label input {
+    margin-left: 0;
+    margin-right: 5px;
+}
+.checkRadioSec label > * {
+    float: left;
+}
+.grey_form {
+    padding: 20px 10px;
+    margin: 0px 0 10px 0;
+    background: rgba(238, 238, 238, 0.6);
+}
+.grey_form form {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+form span.required {
+    color: red;
+}
+.optionBtn {
+    margin-bottom: 15px;
+}
+.itemSecBot {
+    margin-bottom: 15px;
+    border-top: 1px solid #ccc;
+    padding-top: 15px;
+}
+.fromTopStat {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+.topDbleMenu > div {
+    margin-top: 30px;
+}
+.topDbleMenu > div button {
+    margin-left: 10px;
+}
+.mainSecCont {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+.mainSecCont .controlNav {
+    margin-top: 0;
+}
+.mainSecCont .controlNav a:first-child {
+    margin-right: 7px;
+}
+.mainSecCont span.mainHeadSt {
+    font-size: 20px;
+    display: block;
+    font-weight: bold;
+    line-height: 100%;    
+}
+.mainSecCont span.mainHeadSt i {
+    font-size: 14px;
+    margin-right: 5px;
+}
+.subSecTop {
+    margin-bottom: 15px;
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 10px;
+}
+.subSecTop span.subHeading {
+    font-size: 15px;
+    display: block;
+    font-weight: bold;
+    line-height: 100%;
+    margin-top: 5px;
+    color: #8A8A8A;
+}
+.subHeading i {
+    font-size: 12px;
+    color: #9E9E9E;
+}
+.subSecTop .controlNav {
+    margin-top: 0;
+}
+.subSecTop .controlNav a:first-child {
+    margin-right: 7px;
+}
+ol.customFormCont {
+    list-style: none;
+    padding: 0;
+}
+ol.customFormCont li {
+    /*    border-bottom: 1px solid #ccc;
+        padding-bottom: 7px;
+        margin-bottom: 20px;*/
+    border: 1px solid #ccc;
+    padding-bottom: 0;
+    margin-bottom: 20px;
+    padding: 12px 17px 0px 17px;
+}
+ol.customFormCont li .subSecCont .form-group:last-child {
+    margin-bottom: 0;
+}
+.customFormItem .subSecCont {
+    margin-bottom: 30px;
+}
+.customFormItem .subSecCont:first-child {
+    margin-bottom: 0px;
+}
+.mBot10 {
+    margin-bottom: 10px;
+}
