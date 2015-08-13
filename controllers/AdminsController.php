@@ -88,6 +88,7 @@ class AdminsController extends \yii\web\Controller {
                 $forms_form = new FormsForm();
                 $forms_form_options = new \app\models\FormsFormOptions();
                 $i = 0;
+                $form_ids = [];
                 foreach ($form_model as $form) {
                     $forms_form->label = $form->label;
                     $forms_form->placeholder = $form->placeholder;
@@ -96,6 +97,7 @@ class AdminsController extends \yii\web\Controller {
                     $forms_form->id = $form->id;
                     $forms_form->sub_section_id = $form->sub_section_id;
                     $forms_form->options = $form->options;
+                    $form_ids[] = $form->id;
                     $options = explode(',', $form->options);
                     foreach ($options as $option) {
                         $forms_form_options->options = $option;
@@ -158,7 +160,7 @@ class AdminsController extends \yii\web\Controller {
             Model::loadMultiple($multiple_form_model, $form);
 
             $loadsData['_csrf'] = Yii::$app->request->post()['_csrf'];
-            
+
 
             for ($i = 0; $i < count($multiple_form_model); $i++) {
                 $newOptions = Yii::$app->request->post()['FormsFormOptions'];
@@ -221,14 +223,36 @@ class AdminsController extends \yii\web\Controller {
                         }
                     }
                     if ($flag) {
-                        \Yii::$app->session->destroySession('showSection');
-                        \Yii::$app->session->destroySession('showSubSection');
-                        $transaction->commit();
-                        \Yii::$app->getSession()->addFlash('sub_section_success', 'The sub section added successfully!');
-                        if ($isUpdate) {
-                            return $this->redirect('/admins/user-settings');
+                        $j = false;
+                        $delFormIds = [];
+                        foreach ($form_ids as $formId) {
+                            foreach ($multiple_form_model as $newForm) {
+                                if ($formId == $newForm->id) {
+                                    $j = true;
+                                }
+                            }
+                            if ($j !== true) {
+                                $delFormIds[] = $formId;
+                            }
+                            $j = false;
                         }
-                        return $this->refresh();
+                        if (!empty($delFormIds)) {
+                            $f = Forms::deleteAll(['id' => $delFormIds]);
+                        }else{
+                            $f = true;
+                        }
+                        if (!$f) {
+                            $transaction->rollBack();
+                        } else {
+                            \Yii::$app->session->destroySession('showSection');
+                            \Yii::$app->session->destroySession('showSubSection');
+                            $transaction->commit();
+                            \Yii::$app->getSession()->addFlash('sub_section_success', 'The sub section added successfully!');
+                            if ($isUpdate) {
+                                return $this->redirect('/admins/user-settings');
+                            }
+                            return $this->refresh();
+                        }
                     } else {
                         Yii::$app->session->writeSession('showSubSection', true);
                     }

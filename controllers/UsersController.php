@@ -65,48 +65,10 @@ class UsersController extends \yii\web\Controller {
 
     public function actionEdit($id = false) {
         if ($id === false && !\Yii::$app->user->isGuest) {
-
-//            $modelCustomer = new Customer;
-            $model_forms = [new Users()];
-//            if ($modelCustomer->load(Yii::$app->request->post())) {
-//
-//                $modelsAddress = Model::createMultiple(Address::classname());
-//                Model::loadMultiple($modelsAddress, Yii::$app->request->post());
-//
-//                // ajax validation
-//                if (Yii::$app->request->isAjax) {
-//                    Yii::$app->response->format = Response::FORMAT_JSON;
-//                    return ArrayHelper::merge(
-//                                    ActiveForm::validateMultiple($modelsAddress), ActiveForm::validate($modelCustomer)
-//                    );
-//                }
-//
-//                // validate all models
-//                $valid = $modelCustomer->validate();
-//                $valid = Model::validateMultiple($modelsAddress) && $valid;
-//
-//                if ($valid) {
-//                    $transaction = \Yii::$app->db->beginTransaction();
-//                    try {
-//                        if ($flag = $modelCustomer->save(false)) {
-//                            foreach ($modelsAddress as $modelAddress) {
-//                                $modelAddress->customer_id = $modelCustomer->id;
-//                                if (!($flag = $modelAddress->save(false))) {
-//                                    $transaction->rollBack();
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                        if ($flag) {
-//                            $transaction->commit();
-//                            return $this->redirect(['view', 'id' => $modelCustomer->id]);
-//                        }
-//                    } catch (Exception $e) {
-//                        $transaction->rollBack();
-//                    }
-//                }
-//            }
-
+            if(Yii::$app->request->post()){
+                print_r(Yii::$app->request->post());
+                die();
+            }
             $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
             $connection = Yii::$app->db;
             $sections = $connection->createCommand('SELECT sections.name as sectionName,sub_sections.name as subName,sub_sections.multiple as subMultiple,'
@@ -149,7 +111,10 @@ class UsersController extends \yii\web\Controller {
                 }
             }
             if ($user) {
-                return $this->render('/users/edit', ['user' => $user, 'sections' => $newSections,'model_forms'=>$model_forms]);
+                return $this->render('/users/edit', [
+                            'user' => $user,
+                            'sections' => $newSections
+                ]);
             }
         }
     }

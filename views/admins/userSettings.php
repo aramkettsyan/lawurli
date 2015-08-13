@@ -185,6 +185,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                     <div class="formSecRep"> 
                         <?php foreach ($multiple_form_model as $i => $modelAddress): ?>
                             <div class='item'>
+                                <div class="remove-item delSecBtn clearfix"><a class="btn btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></a></div>
                                 <?php echo $form->field($modelAddress, "[{$i}]sub_section_id")->hiddenInput()->label(false); ?>
                                 <?php echo $form->field($modelAddress, "[{$i}]id")->hiddenInput()->label(false); ?>
                                 <?=
@@ -299,6 +300,8 @@ use wbraganca\dynamicform\DynamicFormWidget;
             $(this).find('.del-load:first').css('display', 'none');
             i++;
         });
+        
+        $('.delSecBtn').first().css('display','none');
 
         $('.drop_down_list').each(function () {
             if ($(this).val() === 'select') {

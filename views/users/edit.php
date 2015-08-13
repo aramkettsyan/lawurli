@@ -14,99 +14,134 @@ use wbraganca\dynamicform\DynamicFormWidget;
         <p style="color:green;display: none" id="imageUploadSuccess">Image uploaded successfully!</p>
         <p style="color:red;display: none" id="imageUploadError"></p>
     </div>
+    <?php
+    $fm = ActiveForm::begin([
+                'id' => 'edit-form',
+                'options' => ['class' => 'form-horizontal']
+    ]);
+    ?>
     <div style="display: inline-block;width: 500px;float: left">
-        <?php
-        $form = ActiveForm::begin([
-                    'id' => 'edit-form',
-                    'options' => ['class' => 'form-horizontal']
-        ]);
-        ?>
 
-        <?= $form->field($user, 'first_name') ?>
-        <?= $form->field($user, 'last_name') ?>
-        <?= $form->field($user, 'username') ?>
-        <?= $form->field($user, 'email') ?>
-        <?= $form->field($user, 'password')->passwordInput(['value' => ''])->label('New password') ?>
-        <?= $form->field($user, 'confirm_password')->passwordInput() ?>
+        <?= $fm->field($user, 'first_name') ?>
+        <?= $fm->field($user, 'last_name') ?>
+        <?= $fm->field($user, 'username') ?>
+        <?= $fm->field($user, 'email') ?>
+        <?= $fm->field($user, 'password')->passwordInput(['value' => ''])->label('New password') ?>
+        <?= $fm->field($user, 'confirm_password')->passwordInput() ?>
 
 
 
 
 
-        <?php ActiveForm::end(); ?>
     </div>
 
     <hr style="clear: both">
     <hr>
     <hr>
-    <div style="margin-bottom: 150px">
+    <div id="sections" style="margin-bottom: 150px">
         <h2>Optional information</h2>
-        <?php
-        $custom_form = ActiveForm::begin([
-                    'id' => 'custom-form',
-                    'options' => ['class' => 'form-horizontal']
-        ]);
-        ?>
-        <?php foreach ($sections as $sectionName => $section) { ?>
-            <h3><?= $sectionName ?></h3>
-            <?php foreach ($section as $subSectionName => $subSection) { ?>
-                <h4><?= $subSectionName ?></h4>
-                <?php if ($subSection['0']['subMultiple'] === '1') { ?>
-                    <?php
-                    DynamicFormWidget::begin([
-                        'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
-                        'widgetBody' => '.formSecRep', // required: css class selector
-                        'widgetItem' => '.item', // required: css class
-                        'limit' => 100, // the maximum times, an element can be cloned (default 999)
-                        'min' => 1, // 0 or 1 (default 1)
-                        'insertButton' => '.add-item', // css class
-                        'deleteButton' => '.remove-item', // css class
-                        'element_n' => 0, // css class
-                        'model' => $model_forms[0],
-                        'formId' => 'sub-section-form',
-                        'formFields' => [
-                            '5',
-                            '6'
-                        ],
-                    ]);
-                    ?>
-                    <div class="formSecRep">
-                        <?php foreach ($model_forms as $i => $modelAddress): ?>
-                            <div class='item'>
+        <form method="POST">
+            <?php foreach ($sections as $sectionName => $section) { ?>
+                <h3><?= $sectionName ?></h3>
+                <?php foreach ($section as $subSectionName => $subSection) { ?>
+                    <div class="sub_section">
+                        <h4><?= $subSectionName ?></h4>
+                        <?php if ($subSection['0']['subMultiple'] === '1') { ?>
+                            <div class="formSecRep">
+                                <?php $i = 0; ?>
                                 <?php foreach ($subSection as $key => $form) { ?>
                                     <?php if ($key === 0) { ?>
                                         <?php continue; ?>
                                     <?php } ?>
-                                
-                                    <input name="<?php echo $form['id'] ?>" type="<?php echo $form['formType'] ?>" />
+                                    <div class = 'item'>
+                                        <?php if ($form['formLabel'] !== null) { ?>
+                                            <label><?php echo $form['formLabel'] ?></label>
+                                            <br>
+                                        <?php } ?>
+                                        <?php if ($form['formType'] === 'input') { ?>
+                                            <input class='textInput' name="Users[custom][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $form['formType'] ?>" />
+                                        <?php } ?>
+                                        <?php if ($form['formType'] === 'textarea') { ?>
+                                            <textarea class='inputTextarea' name="Users[custom][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>"></textarea>
+                                        <?php } ?>
+                                        <?php if ($form['formType'] === 'select') { ?>
+                                            <?php $options = explode(',', $form['formOptions']); ?>
+                                            <select class='inputSelect' name="Users[custom][<?= $form['formId'] ?>][]">
+                                                <option value=''><?= $form['formPlaceholder'] ?></option>
+                                                <?php foreach ($options as $option) { ?>
+                                                    <option value="<?= $option ?>"><?= $option ?></option>
+                                                <?php } ?>
+                                            </select>
 
+                                            <?php $i++; ?>
+                                        <?php } ?>
+                                        <?php if ($form['formType'] === 'checkbox') { ?>
+                                            <?php $options = explode(',', $form['formOptions']); ?>
+                                            <?php foreach ($options as $option) { ?>
+                                                <label><input  class='inputCheckbox' name="Users[custom][<?= $form['formId'] ?>][<?= $i ?>][]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
+
+                                            <?php } ?>
+                                        <?php } ?>
+                                        <?php if ($form['formType'] === 'radio') { ?>
+                                            <?php $options = explode(',', $form['formOptions']); ?>
+                                            <?php foreach ($options as $option) { ?>
+                                                <label><input class='inputRadio' name="Users[custom][<?= $form['formId'] ?>][]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
+
+                                            <?php } ?>
+                                        <?php } ?>
+                                    </div>
                                 <?php } ?>
                             </div>
-                            <div class="text-left optionBtn">
-                                <a id="add_option_link" class="add-item btn btn-primary btn-xs"><span class="glyphicon glyphicon-plus"></span> Add option</a>
+
+                            <div class="add-item text-left optionBtn">
+                                <a id="add_option_link" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-plus"></span>Add</a>
                             </div> 
-                        <?php endforeach; ?>
+                        <?php } else { ?>
+
+                        <?php } ?>
                     </div>
-                    <?php DynamicFormWidget::end(); ?>
-                <?php } else { ?>
-
                 <?php } ?>
-
             <?php } ?>
-
-        <?php } ?>
-
-
-
-
-        <?php ActiveForm::end(); ?>
+            <input type="submit" value="Save" name="submit">
+        </form>
     </div>
+
 
 
 
 </div>
 
+
+
+<?php ActiveForm::end(); ?>
+</div>
+
 <script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.add-item').on('click', function () {
+            var parent = $(this).parent();
+            var item = parent.find('.formSecRep:first').clone();
+            item.find('.textInput').val('');
+            item.find('.inputTextarea').val('');
+            item.find('.inputCheckbox').removeAttr('checked');
+            item.find('.inputRadio').removeAttr('checked');
+            item.find('.inputSelect').prop('selectedIndex', 0);
+            var name = item.find('.inputSelect').prop('name');
+//            for (var j = 0; j < 2; j++) {
+//                name.indexOf('[');
+//            }
+//            var index = name
+            item.appendTo(parent);
+            $(this).appendTo(parent);
+//            parent.find('.formSecRep:last input').val('');
+//            parent.find('.formSecRep:last input:checked').removeAttr('checked');
+            console.log(parent.html());
+        });
+    });
+</script>
+<script type="text/javascript">
+
     new qq.FileUploaderBasic({
         button: document.getElementById('uploadImage'),
         action: '/users/upload-image',

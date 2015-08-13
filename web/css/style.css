@@ -127,7 +127,7 @@ form span.required {
 }
 .itemSecBot {
     margin-bottom: 15px;
-    border-top: 1px solid #ccc;
+    /*border-top: 1px solid #ccc;*/
     padding-top: 15px;
 }
 .fromTopStat {
@@ -210,4 +210,16 @@ ol.customFormCont li .subSecCont .form-group:last-child {
 }
 .mBot10 {
     margin-bottom: 10px;
+}
+.formSecRep {
+    border-bottom: 1px solid #BBB9B9;
+    padding-bottom: 7px;
+}
+.delSecBtn {
+    border-top: 1px solid #d9534f;
+    margin: 25px 0 4px 0;
+}
+.delSecBtn > * {
+    border-radius: 0 0 5px 5px;
+    padding: 4px 12px;
 }
