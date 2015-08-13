@@ -25,6 +25,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
 
     public $confirm_password;
     public $conditions;
+    public $default_image = 'default.jpg';
 
     /**
      * @inheritdoc
@@ -41,13 +42,18 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             [['first_name', 'last_name', 'username', 'email', 'password', 'confirm_password'], 'required','on'=>'create'],
             [['conditions'], 'checkConditions','on'=>'create'],
             [['password', 'confirm_password'], 'required','on'=>'resetPassword'],
+            [['image'], 'required','on'=>'updateImage'],
             [['active'], 'integer'],
             [['email'],'email'],
             [['created', 'modified'], 'safe'],
-            [['first_name', 'last_name', 'username', 'email', 'password', 'password_reset_token', 'activation_token'], 'string', 'max' => 255],
+            [['first_name', 'last_name', 'username', 'email', 'password', 'password_reset_token', 'activation_token','image'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 64],
+            [['password','username'], 'string', 'min' => 6],
+            [['first_name','last_name'], 'string', 'min' => 2],
             [['username', 'email', 'password_reset_token', 'activation_token'], 'unique', 'targetAttribute' => ['username', 'email', 'password_reset_token', 'activation_token'], 'message' => 'The combination of Username, Email, Password Reset Token and Activation Token has already been taken.'],
             [['auth_key'], 'unique'],
+            [['username'], 'unique'],
+            [['email'], 'unique'],
             [['confirm_password'], 'validateConfirmPassword']
         ];
     }
@@ -197,6 +203,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                 $this->generateEmailActivationToken();
                 $this->created = new Expression('NOW()');
                 $this->modified = new Expression('NOW()');
+                $this->image = $this->default_image;
             } else {
                 if($this->scenario === 'resetPassword'){
                     $this->setPassword($this->password);

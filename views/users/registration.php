@@ -23,9 +23,9 @@ use yii\widgets\ActiveForm;
         <?= $form->field($model, 'conditions')->checkbox(['label'=>'I agree to <a href="/users/terms-and-conditions" >terms and conditions</a>']) ?>
     
         <div class="form-group">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+            <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Login',['users/login']) ?>
         </div>
-        <?= Html::a('Login',['users/login']) ?>
     <?php ActiveForm::end(); ?>
 
 </div><!-- users-login -->

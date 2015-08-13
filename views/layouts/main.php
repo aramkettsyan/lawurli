@@ -1,13 +1,13 @@
 <?php
 
 use yii\helpers\Html;
-use app\assets\AppAsset;
+use app\assets\UserAsset;
 use Yii;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-AppAsset::register($this);
+UserAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

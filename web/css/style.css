@@ -138,7 +138,8 @@ form span.required {
 .topDbleMenu > div {
     margin-top: 30px;
 }
-.topDbleMenu > div button {
+.topDbleMenu > div button,
+.topDbleMenu > div a {
     margin-left: 10px;
 }
 .mainSecCont {

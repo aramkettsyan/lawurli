@@ -202,7 +202,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                 <?php // $form->field($modelAddress, "[{$i}]type")->dropDownList(['select' => 'Drop down list', 'input' => 'Input', 'checkbox' => 'Checkbox', 'radio' => 'Radio', 'textarea' => 'Textarea'], ['prompt' => 'Choose']) ?>
                                 <label for="sel_sec_form" class="required">Type</label>
                                 <?= $form->field($modelAddress, "[{$i}]type")->dropDownList(['select' => 'Drop down list', 'input' => 'Input', 'checkbox' => 'Checkbox', 'radio' => 'Radio', 'textarea' => 'Textarea'], ['prompt' => 'Select Section', 'class' => 'drop_down_list form-control'])->label(false); ?>
-                                
+
                                 <?php
                                 DynamicFormWidget::begin([
                                     'widgetContainer' => 'dynamicform_inner', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
@@ -219,11 +219,11 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                 ]);
                                 ?>
 
+                                <input size="60" maxlength="255" style="display: none" name="label[]" type="text" disabled="disabled" class="form-control hiddenInput">
                                 <div id="option_list" class="option_lst container-loads">
                                     <?php if (isset($modelAddress->getErrors('options')[0])) { ?>
                                         <label style="color:#a94442" for="DemographicDataOptions_Option">Option</label>
                                     <?php } ?>
-                                    <input size="60" maxlength="255" name="label[]" style="display: none" type="text" disabled="disabled" class="form-control hiddenInput">
                                     <?php foreach ($modelsFormsForm[$i] as $ix => $modelPaymentLoads): ?>
                                         <div class='load-item mBot10'>
                                             <?php
@@ -246,8 +246,6 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                 <?php DynamicFormWidget::end(); ?>
                                 <?= $form->field($modelAddress, "[{$i}]placeholder")->textInput(['class' => 'placeholder form-control']) ?>
                             </div>
-                            <hr>
-                            <hr>
                         <?php endforeach; ?>
 
                     </div>
@@ -359,17 +357,46 @@ use wbraganca\dynamicform\DynamicFormWidget;
                 $(this).parent().parent().find('.placeholder').prop('disabled', false);
             }
         });
-        
+
         var j = 1;
-        
-        $('.add-item').on('click',function(){
+
+        $('.add-item').on('click', function () {
             j = 0;
         });
-        
-        
+
+
         $('.item').bind("DOMSubtreeModified", function () {
             if (j === 0) {
                 $('.drop_down_list').on('change', function () {
+                    if ($(this).val() === 'select') {
+                        $(this).parent().parent().find('.load-item,.add-load').show();
+                        $(this).parent().parent().find('.hiddenInput').hide();
+                        $(this).parent().parent().find('.placeholder').prop('disabled', false);
+                    }
+                    if ($(this).val() === 'input') {
+                        $(this).parent().parent().find('.load-item,.add-load').hide();
+                        $(this).parent().parent().find('#options_error').hide();
+                        $(this).parent().parent().find('.hiddenInput').show();
+                        $(this).parent().parent().find('.placeholder').prop('disabled', false);
+                    }
+                    if ($(this).val() === 'radio') {
+                        $(this).parent().parent().find('.load-item,.add-load').show();
+                        $(this).parent().parent().find('.hiddenInput').hide();
+                        $(this).parent().parent().find('.placeholder').prop('disabled', true);
+                    }
+                    if ($(this).val() === 'checkbox') {
+                        $(this).parent().parent().find('.load-item,.add-load').show();
+                        $(this).parent().parent().find('.hiddenInput').hide();
+                        $(this).parent().parent().find('.placeholder').prop('disabled', true);
+                    }
+                    if ($(this).val() === 'textarea') {
+                        $(this).parent().parent().find('.load-item,.add-load').hide();
+                        $(this).parent().parent().find('#options_error').hide();
+                        $(this).parent().parent().find('.hiddenInput').show();
+                        $(this).parent().parent().find('.placeholder').prop('disabled', false);
+                    }
+                });
+                $('.drop_down_list').each(function () {
                     if ($(this).val() === 'select') {
                         $(this).parent().parent().find('.load-item,.add-load').show();
                         $(this).parent().parent().find('.hiddenInput').hide();

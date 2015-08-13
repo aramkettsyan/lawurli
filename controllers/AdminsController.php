@@ -74,8 +74,6 @@ class AdminsController extends \yii\web\Controller {
                 $section_model = new Sections();
                 $section_model = $section_model->findOne($id);
                 $form_model = new Forms();
-//        $f = Forms::findOne(['id' => 21]);
-//        $multiple_form_model = [$f];
                 $forms_form = new FormsForm();
                 $multiple_form_model = [$forms_form];
                 $sub_section_model = new SubSections();
@@ -87,8 +85,6 @@ class AdminsController extends \yii\web\Controller {
                 $sub_section_model = $sub_section_model->findOne($id);
                 $form_model = new Forms();
                 $form_model = $form_model->findAll(['sub_section_id' => $id]);
-//        $f = Forms::findOne(['id' => 21]);
-//        $multiple_form_model = [$f];
                 $forms_form = new FormsForm();
                 $forms_form_options = new \app\models\FormsFormOptions();
                 $i = 0;
@@ -114,8 +110,6 @@ class AdminsController extends \yii\web\Controller {
         } else {
             $section_model = new Sections();
             $form_model = new Forms();
-//        $f = Forms::findOne(['id' => 21]);
-//        $multiple_form_model = [$f];
             $forms_form = new FormsForm();
             $multiple_form_model = [$forms_form];
             $sub_section_model = new SubSections();
@@ -179,19 +173,6 @@ class AdminsController extends \yii\web\Controller {
                 $modelsFormsForm[$i] = Model::createMultiple(\app\models\FormsFormOptions::classname(), [], $loadsData);
                 Model::loadMultiple($modelsFormsForm[$i], $loadsData);
             }
-//            print_r(Yii::$app->request->post('FormsFormOptions'));
-//            print_r($newOptions);
-//            die();
-
-
-            // ajax validation
-//            if (Yii::$app->request->isAjax) {
-//                Yii::$app->response->format = Response::FORMAT_JSON;
-//                return ArrayHelper::merge(
-//                    ActiveForm::validateMultiple($multiple_form_model),
-//                    ActiveForm::validate( $sub_section_model)
-//                );
-//            }
             // validate all models
             $valid = $sub_section_model->validate();
 
@@ -257,19 +238,6 @@ class AdminsController extends \yii\web\Controller {
             } else {
                 Yii::$app->session->writeSession('showSubSection', true);
             }
-
-
-//            if ($form_model->load(Yii::$app->request->post()) && $form_model->validate()) {
-//                if ($sub_section_model->load(Yii::$app->request->post()) && $sub_section_model->save()) {
-//                    \Yii::$app->getSession()->addFlash('sub_section_success', 'The sub section added successfully!');
-//                    $section_id = Yii::$app->db->getLastInsertID();
-//                    $form_model->sub_section_id = $section_id;
-//                    $form_model->forms = Yii::$app->request->post('FormsForm');
-//                    if ($form_model->save()) {
-//                        return $this->refresh();
-//                    }
-//                }
-//            }
         }
 
 

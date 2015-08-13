@@ -49,7 +49,8 @@ class Sections extends \yii\db\ActiveRecord
             'modified' => 'Modified',
         ];
     }
-
+    
+    
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -57,6 +58,7 @@ class Sections extends \yii\db\ActiveRecord
     {
         return $this->hasMany(SubSections::className(), ['section_id' => 'id']);
     }
+    
     
     public function beforeSave($insert) {
         if ($this->isNewRecord) {

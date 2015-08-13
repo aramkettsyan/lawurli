@@ -26,7 +26,7 @@ use yii\widgets\ActiveForm;
         <?= $form->field($model, 'rememberMe')->checkbox() ?>
 
     <div class="form-group">
-    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+    <?= Html::submitButton('Login', ['class' => 'btn btn-primary']) ?>
     </div>
 <?= Html::a('Create a new account', ['users/registration']) ?>
     <br>
