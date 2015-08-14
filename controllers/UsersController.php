@@ -8,6 +8,7 @@ use \app\models\LoginForm;
 use app\models\Users;
 use \app\models\Sections;
 use \app\models\Forms;
+use app\models\UserForms;
 use Yii;
 
 class UsersController extends \yii\web\Controller {
@@ -65,16 +66,44 @@ class UsersController extends \yii\web\Controller {
 
     public function actionEdit($id = false) {
         if ($id === false && !\Yii::$app->user->isGuest) {
-            
+
             $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
+
             $connection = Yii::$app->db;
-            $sections = $connection->createCommand('SELECT sections.name as sectionName,sub_sections.name as subName,sub_sections.multiple as subMultiple,'
-                            . 'forms.id as formId,forms.label as formLabel,forms.type as formType,forms.placeholder as formPlaceholder,forms.numeric as formNumeric,forms.options as formOptions '
+            $sections = $connection->createCommand('SELECT '
+                            . ' sections.name as sectionName,'
+                            . 'sub_sections.name as subName,'
+                            . 'sub_sections.multiple as subMultiple,'
+                            . 'sub_sections.id as subId,'
+                            . 'forms.id as formId,'
+                            . 'forms.label as formLabel,'
+                            . 'forms.type as formType,'
+                            . 'forms.placeholder as formPlaceholder,'
+                            . 'forms.numeric as formNumeric,'
+                            . 'forms.options as formOptions '
                             . 'FROM sections '
-                            . 'JOIN sub_sections '
+                            . 'LEFT JOIN sub_sections '
                             . 'ON sub_sections.section_id = sections.id '
-                            . 'JOIN forms '
-                            . 'ON forms.sub_section_id = sub_sections.id')->queryAll();
+                            . 'LEFT JOIN forms '
+                            . 'ON forms.sub_section_id = sub_sections.id '
+                            . 'ORDER BY sections.id,sub_sections.id,forms.id ')->queryAll();
+            $user_forms = $connection->createCommand("SELECT user_forms.form_id,user_forms.index,user_forms.value,sub_sections.id as subSectionId FROM user_forms "
+                            . "LEFT JOIN forms ON user_forms.form_id = forms.id "
+                            . "LEFT JOIN sub_sections ON forms.sub_section_id = sub_sections.id "
+                            . "WHERE user_id =" . Yii::$app->user->identity->id)->queryAll();
+
+            $new_user_forms = [];
+            foreach ($user_forms as $user_form) {
+                if (isset($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
+                    if (!is_array($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
+                        $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = [$new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']]];
+                    }
+                    $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']][] = $user_form['value'];
+                } else {
+                    $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = $user_form['value'];
+                }
+            }
+
             $newSections = [];
             foreach ($sections as $section) {
 
@@ -85,7 +114,8 @@ class UsersController extends \yii\web\Controller {
                 if (!isset($newSections[$section['sectionName']][$section['subName']])) {
                     $newSections[$section['sectionName']][$section['subName']] = [
                         [
-                            'subMultiple' => $section['subMultiple']
+                            'subMultiple' => $section['subMultiple'],
+                            'subId' => $section['subId']
                         ],
                         [
                             'formId' => $section['formId'],
@@ -107,23 +137,85 @@ class UsersController extends \yii\web\Controller {
                     ];
                 }
             }
-            if(Yii::$app->request->post()){
-                $post = Yii::$app->request->post();
-                if(empty($post['Users']['password'])){
-                    unset($post['Users']['password']);
-                    unset($post['Users']['confirm_password']);
-                }
-                $user->old_password = $user->password;
-                $user->scenario = 'update';
-                if($user->load($post) && $user->save()){
-                    
+            if (Yii::$app->request->post()) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    $post = Yii::$app->request->post();
+                    if (empty($post['Users']['password'])) {
+                        unset($post['Users']['password']);
+                        unset($post['Users']['confirm_password']);
+                    }
+                    $old_user_forms = [];
+                    foreach ($user_forms as $user_form) {
+                        if (isset($old_user_forms[$user_form['form_id']][$user_form['index']])) {
+                            if (!is_array($old_user_forms[$user_form['form_id']][$user_form['index']])) {
+                                $old_user_forms[$user_form['form_id']][$user_form['index']] = [$old_user_forms[$user_form['form_id']][$user_form['index']]];
+                            }
+                            $old_user_forms[$user_form['form_id']][$user_form['index']][] = $user_form['value'];
+                        } else {
+                            $old_user_forms[$user_form['form_id']][$user_form['index']] = $user_form['value'];
+                        }
+                    }
+                    $user->old_password = $user->password;
+                    $user->scenario = 'update';
+                    if ($user->load($post) && $user->save()) {
+                        $custom_fields = $post['Users']['custom_fields'];
+                        $newArr = [];
+                        $updateArr = [];
+                        $user_forms_delete = $user_forms;
+                        $r = 0;
+                        foreach ($custom_fields as $key => $custom_field) {
+                            foreach ($custom_field as $k => $field) {
+                                if (empty($field)) {
+                                    continue;
+                                }
+                                if (!is_array($field)) {
+                                    $token = false;
+                                    if (isset($old_user_forms[$key][$k]) && $old_user_forms[$key][$k] === $field) {
+                                        $updateArr[] = [Yii::$app->user->identity->id, $key, $k, $field, '2015-08-11 00:00:00', '2015-08-11 00:00:00'];
+                                        $token = true;
+                                    }
+                                    if ($token === false) {
+                                        $newArr[] = [Yii::$app->user->identity->id, $key, $k, $field, '2015-08-11 00:00:00', '2015-08-11 00:00:00'];
+                                    }
+                                } else {
+                                    $token = false;
+                                    foreach ($field as $f) {
+                                        if (isset($old_user_forms[$key][$k]) && in_array($f, $old_user_forms[$key][$k])) {
+                                            $updateArr[] = [Yii::$app->user->identity->id, $key, $k, $f, '2015-08-11 00:00:00', '2015-08-11 00:00:00'];
+                                            $token = true;
+                                        }
+                                        if ($token === false) {
+                                            $newArr[] = [Yii::$app->user->identity->id, $key, $k, $f, '2015-08-11 00:00:00', '2015-08-11 00:00:00'];
+                                        }
+                                    }
+                                }
+                                $r++;
+                            }
+                        }
+                        if (!empty($newArr)) {
+                            if (Yii::$app->db->createCommand()->batchInsert('user_forms', ['user_id', 'form_id', 'index', 'value', 'created', 'modified'], $newArr)->execute()) {
+                                $transaction->commit();
+                                $this->refresh();
+                            }else{
+                                $transaction->rollBack();
+                            }
+                        }
+                    } else {
+                        $transaction->rollBack();
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
                 }
             }
             if ($user) {
                 return $this->render('/users/edit', [
                             'user' => $user,
-                            'sections' => $newSections
+                            'sections' => $newSections,
+                            'user_forms' => $new_user_forms
                 ]);
+            } else {
+                return $this->redirect('index');
             }
         }
     }

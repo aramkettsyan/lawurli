@@ -56,7 +56,6 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             [['auth_key'], 'unique'],
             [['username'], 'unique'],
             [['email'], 'unique'],
-            [['custom_fields'], 'customFields'],
             [['confirm_password'], 'validateConfirmPassword']
         ];
     }
@@ -98,9 +97,6 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                     $this->setPassword($this->password);
                 }
                 if ($this->scenario === 'update') {
-                    if (is_array($this->custom_fields)) {
-                        $this->custom_fields = json_encode($this->custom_fields);
-                    }
                     if ($this->old_password !== $this->password) {
                         if ($this->password !== $this->confirm_password) {
                             $this->addError('password', '');
@@ -118,18 +114,6 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         return false;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function customFields($attr, $params) {
-        $fields = $this->custom_fields;
-        if (!empty($fields) && is_array($fields)) {
-            foreach ($fields as $id => $field) {
-                
-            }
-        }
-        return true;
-    }
 
     /**
      * @inheritdoc

@@ -47,12 +47,22 @@ use wbraganca\dynamicform\DynamicFormWidget;
                 <?php foreach ($section as $subSectionName => $subSection) { ?>
                     <div class="sub_section">
                         <h4><?= $subSectionName ?></h4>
-                        <?php if ($subSection['0']['subMultiple'] === '1') { ?>
+                        <?php $subSectionId = $subSection['0']['subId']; ?>
+                        <?php if (isset($user_forms[$subSectionId])) { ?>
+                            <?php $sub_sections_count = count($user_forms[$subSectionId]); ?>
+                        <?php } else { ?>
+                            <?php $sub_sections_count = 1 ?>
+                        <?php } ?>
+                        <?php $i = 0; ?>
+                        <?php for ($u = 0; $u < $sub_sections_count; $u++) { ?>
                             <div class="formSecRep">
-                                <?php $i = 0; ?>
                                 <?php foreach ($subSection as $key => $form) { ?>
                                     <?php if ($key === 0) { ?>
                                         <?php continue; ?>
+                                    <?php } ?>
+
+                                    <?php if (isset($user_forms[$subSectionId][$u][$form['formId']])) { ?>
+                                        <?php $value = $user_forms[$subSectionId][$u][$form['formId']] ?>
                                     <?php } ?>
                                     <div class = 'item'>
                                         <?php if ($form['formLabel'] !== null) { ?>
@@ -60,45 +70,56 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                             <br>
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'input') { ?>
-                                            <input class='textInput' name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $form['formType'] ?>" />
+                                            <input class='textInput' value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $form['formType'] ?>" />
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'textarea') { ?>
-                                            <textarea class='inputTextarea' name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>"></textarea>
+                                            <textarea class='inputTextarea' value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>"></textarea>
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'select') { ?>
                                             <?php $options = explode(',', $form['formOptions']); ?>
                                             <select class='inputSelect' name="Users[custom_fields][<?= $form['formId'] ?>][]">
                                                 <option value=''><?= $form['formPlaceholder'] ?></option>
                                                 <?php foreach ($options as $option) { ?>
-                                                    <option value="<?= $option ?>"><?= $option ?></option>
+                                                    <option <?= ($value === $option) ? 'selected="selected"' : '' ?> value="<?= $option ?>"><?= $option ?></option>
                                                 <?php } ?>
                                             </select>
-
-                                            <?php $i++; ?>
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'checkbox') { ?>
                                             <?php $options = explode(',', $form['formOptions']); ?>
                                             <?php foreach ($options as $option) { ?>
-                                                <label><input  class='inputCheckbox' name="Users[custom_fields][<?= $form['formId'] ?>][<?= $i ?>][]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
-
+                                                <?php $checked = false; ?>
+                                                <?php if (isset($user_forms[$subSectionId][$u][$form['formId']])) { ?>
+                                                    <?php if (is_array($user_forms[$subSectionId][$u][$form['formId']])) { ?>
+                                                        <?php if (in_array($option, $user_forms[$subSectionId][$u][$form['formId']])) { ?>
+                                                            <?php $checked = true; ?>
+                                                        <?php } ?>
+                                                    <?php } else { ?>
+                                                        <?php if ($option === $user_forms[$subSectionId][$u][$form['formId']]) { ?>
+                                                            <?php $checked = true; ?>
+                                                        <?php } ?>   
+                                                    <?php } ?>
+                                                <?php } ?>
+                                                <label><input <?= $checked === true ? 'checked' : '' ?> class='inputCheckbox' name="Users[custom_fields][<?= $form['formId'] ?>][<?= $i ?>][]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
                                             <?php } ?>
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'radio') { ?>
                                             <?php $options = explode(',', $form['formOptions']); ?>
                                             <?php foreach ($options as $option) { ?>
-                                                <label><input class='inputRadio' name="Users[custom_fields][<?= $form['formId'] ?>][<?= $i ?>]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
+                                                <label><input <?= $option === $value ? 'checked' : '' ?> class='inputRadio' name="Users[custom_fields][<?= $form['formId'] ?>][<?= $i ?>]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
 
                                             <?php } ?>
                                         <?php } ?>
                                     </div>
+                                    <?php $value = ''; ?>
                                 <?php } ?>
                             </div>
+                            <?php $i++; ?>
+                        <?php } ?>
 
+                        <?php if ($subSection['0']['subMultiple'] === '1') { ?>
                             <div class="add-item text-left optionBtn">
                                 <a id="add_option_link" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-plus"></span>Add</a>
                             </div> 
-                        <?php } else { ?>
-
                         <?php } ?>
                     </div>
                 <?php } ?>
@@ -119,7 +140,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
 <script type="text/javascript">
 
-    function increaseIndex(name,nameCopy) {
+    function increaseIndex(name, nameCopy) {
         for (var j = 0; j < 2; j++) {
             var index = name.indexOf('[');
             var numb = index;
@@ -155,13 +176,13 @@ use wbraganca\dynamicform\DynamicFormWidget;
             var checkbox = item.find('.inputCheckbox').attr('name');
             var checkboxCopy = checkbox;
             if (checkbox !== undefined) {
-                var newCheckbox = increaseIndex(checkbox,checkboxCopy);
+                var newCheckbox = increaseIndex(checkbox, checkboxCopy);
                 item.find('.inputCheckbox').attr('name', newCheckbox);
             }
             var radio = item.find('.inputRadio').attr('name');
             var radioCopy = radio;
             if (radio !== undefined) {
-                var newRadio = increaseIndex(radio,radioCopy);
+                var newRadio = increaseIndex(radio, radioCopy);
                 item.find('.inputRadio').attr('name', newRadio);
             }
             item.appendTo(parent);
