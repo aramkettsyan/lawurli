@@ -65,10 +65,7 @@ class UsersController extends \yii\web\Controller {
 
     public function actionEdit($id = false) {
         if ($id === false && !\Yii::$app->user->isGuest) {
-            if(Yii::$app->request->post()){
-                print_r(Yii::$app->request->post());
-                die();
-            }
+            
             $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
             $connection = Yii::$app->db;
             $sections = $connection->createCommand('SELECT sections.name as sectionName,sub_sections.name as subName,sub_sections.multiple as subMultiple,'
@@ -108,6 +105,18 @@ class UsersController extends \yii\web\Controller {
                         'formNumeric' => $section['formNumeric'],
                         'formOptions' => $section['formOptions']
                     ];
+                }
+            }
+            if(Yii::$app->request->post()){
+                $post = Yii::$app->request->post();
+                if(empty($post['Users']['password'])){
+                    unset($post['Users']['password']);
+                    unset($post['Users']['confirm_password']);
+                }
+                $user->old_password = $user->password;
+                $user->scenario = 'update';
+                if($user->load($post) && $user->save()){
+                    
                 }
             }
             if ($user) {

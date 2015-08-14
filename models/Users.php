@@ -26,6 +26,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
     public $confirm_password;
     public $conditions;
     public $default_image = 'default.jpg';
+    public $old_password;
 
     /**
      * @inheritdoc
@@ -39,21 +40,23 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
      */
     public function rules() {
         return [
-            [['first_name', 'last_name', 'username', 'email', 'password', 'confirm_password'], 'required','on'=>'create'],
-            [['conditions'], 'checkConditions','on'=>'create'],
-            [['password', 'confirm_password'], 'required','on'=>'resetPassword'],
-            [['image'], 'required','on'=>'updateImage'],
+            [['first_name', 'last_name', 'username', 'email', 'password', 'confirm_password'], 'required', 'on' => 'create'],
+            [['first_name', 'last_name', 'username', 'email', 'password'], 'required', 'on' => 'update'],
+            [['conditions'], 'checkConditions', 'on' => 'create'],
+            [['password', 'confirm_password'], 'required', 'on' => 'resetPassword'],
+            [['image'], 'required', 'on' => 'updateImage'],
             [['active'], 'integer'],
-            [['email'],'email'],
+            [['email'], 'email'],
             [['created', 'modified'], 'safe'],
-            [['first_name', 'last_name', 'username', 'email', 'password', 'password_reset_token', 'activation_token','image'], 'string', 'max' => 255],
+            [['first_name', 'last_name', 'username', 'email', 'password', 'password_reset_token', 'activation_token', 'image'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 64],
-            [['password','username'], 'string', 'min' => 6],
-            [['first_name','last_name'], 'string', 'min' => 2],
+            [['password', 'username'], 'string', 'min' => 6],
+            [['first_name', 'last_name'], 'string', 'min' => 2],
             [['username', 'email', 'password_reset_token', 'activation_token'], 'unique', 'targetAttribute' => ['username', 'email', 'password_reset_token', 'activation_token'], 'message' => 'The combination of Username, Email, Password Reset Token and Activation Token has already been taken.'],
             [['auth_key'], 'unique'],
             [['username'], 'unique'],
             [['email'], 'unique'],
+            [['custom_fields'], 'customFields'],
             [['confirm_password'], 'validateConfirmPassword']
         ];
     }
@@ -76,6 +79,56 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             'created' => 'Created',
             'modified' => 'Modified',
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert) {
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->generateAuthKey();
+                $this->setPassword($this->password);
+                $this->generateEmailActivationToken();
+                $this->created = new Expression('NOW()');
+                $this->modified = new Expression('NOW()');
+                $this->image = $this->default_image;
+            } else {
+                if ($this->scenario === 'resetPassword') {
+                    $this->setPassword($this->password);
+                }
+                if ($this->scenario === 'update') {
+                    if (is_array($this->custom_fields)) {
+                        $this->custom_fields = json_encode($this->custom_fields);
+                    }
+                    if ($this->old_password !== $this->password) {
+                        if ($this->password !== $this->confirm_password) {
+                            $this->addError('password', '');
+                            $this->addError($attribute, 'Passwords do  not match');
+                            return false;
+                        } else {
+                            $this->setPassword($this->password);
+                        }
+                    }
+                }
+                $this->modified = new Expression('NOW()');
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function customFields($attr, $params) {
+        $fields = $this->custom_fields;
+        if (!empty($fields) && is_array($fields)) {
+            foreach ($fields as $id => $field) {
+                
+            }
+        }
+        return true;
     }
 
     /**
@@ -133,7 +186,6 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         return static::findOne(['email' => $email]);
     }
 
-    
     /**
      * Finds validate passwords
      *
@@ -149,8 +201,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         }
         return true;
     }
-    
-    
+
     /**
      * Finds validate passwords
      *
@@ -190,29 +241,6 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
      */
     public function generateAuthKey() {
         $this->auth_key = Yii::$app->security->generateRandomString();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeSave($insert) {
-        if (parent::beforeSave($insert)) {
-            if ($this->isNewRecord) {
-                $this->generateAuthKey();
-                $this->setPassword($this->password);
-                $this->generateEmailActivationToken();
-                $this->created = new Expression('NOW()');
-                $this->modified = new Expression('NOW()');
-                $this->image = $this->default_image;
-            } else {
-                if($this->scenario === 'resetPassword'){
-                    $this->setPassword($this->password);
-                }
-                $this->modified = new Expression('NOW()');
-            }
-            return true;
-        }
-        return false;
     }
 
     /**

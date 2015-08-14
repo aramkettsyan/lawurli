@@ -49,6 +49,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                                     <?php echo Html::a('<span class="glyphicon glyphicon-pencil"></span>', \yii\helpers\Url::to(['admins/user-settings', 'section' => 'sub-section', 'id' => $sub_section->id]), ['class' => 'btn btn-primary btn-xs pull-left']) ?>
                                                 </div>                                            
                                             </div>
+                                            <?php $i = 0; ?>
                                             <?php foreach ($forms as $sub) { ?>   
                                                 <div class="form-group">
                                                     <?php if ($sub->type === 'select' && $sub->sub_section_id === $sub_section->id) { ?>
@@ -59,26 +60,26 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
                                                     <?php } ?>
                                                     <?php if ($sub->type === 'input' && $sub->sub_section_id === $sub_section->id) { ?>
-                                                        <label class="customLbSt" for="<?= $sub->label; ?>"> <?php echo $sub->label; ?> </label>
+                                                        <label class="customLbSt" for="<?= $sub->label . '_' . $i; ?>"> <?php echo $sub->label; ?> </label>
                                                         <?php if ($sub->numeric == '0') { ?>
-                                                            <?php echo Html::input('text', $sub->label, NULL, ['id' => $sub->label, 'class' => 'form-control', 'placeholder' => $sub->placeholder]); ?>
+                                                            <?php echo Html::input('text', $sub->label, NULL, ['id' => $sub->label . '_' . $i, 'class' => 'form-control', 'placeholder' => $sub->placeholder]); ?>
                                                         <?php } else { ?>
-                                                            <?php echo Html::input('text', $sub->label, NULL, ['id' => $sub->label, 'class' => 'form-control', 'type' => 'number', 'placeholder' => $sub->placeholder]); ?>
+                                                            <?php echo Html::input('text', $sub->label, NULL, ['id' => $sub->label . '_' . $i, 'class' => 'form-control', 'type' => 'number', 'placeholder' => $sub->placeholder]); ?>
                                                         <?php } ?>
                                                     <?php } ?>
                                                     <?php if ($sub->type === 'checkbox' && $sub->sub_section_id === $sub_section->id) { ?>
-                                                        <label class="customLbSt" for=""> <?php echo $sub->label; ?></label>
+                                                        <label class="customLbSt"> <?php echo $sub->label; ?></label>
                                                         <?php $options = explode(',', $sub->options); ?>
                                                         <?php
                                                         echo Html::checkboxList('checkbox', null, $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value) {
-                                                                return '<label for="' . $value . '"><input id="' . $value . '" type="checkbox"><span>' . $label . '</span></label> ';
+                                                                return '<label for="' . $value . '_' . $index . '"><input id="' . $value . '_' . $index . '" name="' . $value . '" type="checkbox"><span>' . $label . '</span></label> ';
                                                             }]);
                                                         ?>
                                                         <div class="clearFull"></div>
                                                     <?php } ?>
                                                     <?php if ($sub->type === 'textarea' && $sub->sub_section_id === $sub_section->id) { ?>
-                                                        <label class="customLbSt" for="<?= $sub->label; ?>"><?php echo $sub->label; ?></label>
-                                                        <?php echo Html::textarea('textarea', '', ['id' => $sub->label, 'class' => 'form-control', 'placeholder' => $sub->placeholder]); ?>
+                                                        <label class="customLbSt" for="<?= $sub->label . '_' . $i; ?>"><?php echo $sub->label; ?></label>
+                                                        <?php echo Html::textarea('textarea', '', ['id' => $sub->label . '_' . $i, 'class' => 'form-control', 'placeholder' => $sub->placeholder]); ?>
                                                     <?php } ?>
                                                     <?php if ($sub->type === 'radio' && $sub->sub_section_id === $sub_section->id) { ?>
                                                         <span class="customLbSt"><?php echo $sub->label; ?></span>
@@ -86,12 +87,13 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                                         <?php ?>
                                                         <?php
                                                         echo Html::radioList('radio', NULL, $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value) {
-                                                                return '<label for="' . $value . '"><input id="' . $value . '" type="radio"><span>' . $label . '</span></label> ';
+                                                                return '<label for="' . $value . '_' . $name . '"><input id="' . $value . '_' . $name . '" name="' . $name . '" type="radio"><span>' . $label . '</span></label> ';
                                                             }]);
                                                         ?>
                                                         <div class="clearFull"></div>
                                                     <?php } ?>
                                                 </div>
+                                                <?php $i++; ?>
                                             <?php } ?>  
                                         <?php } ?>
                                     </div>
@@ -273,6 +275,35 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
 
 <script type="text/javascript">
+
+    function inputRules(obj) {
+        if ($(obj).val() === 'select') {
+            $(obj).parent().parent().find('.load-item,.add-load').show();
+            $(obj).parent().parent().find('.hiddenInput').hide();
+            $(obj).parent().parent().find('.placeholder').prop('disabled', false);
+        } else if ($(obj).val() === 'input') {
+            $(obj).parent().parent().find('.load-item,.add-load').hide();
+            $(obj).parent().parent().find('.hiddenInput').show();
+            $(obj).parent().parent().find('.placeholder').prop('disabled', false);
+        } else if ($(obj).val() === 'radio') {
+            $(obj).parent().parent().find('.load-item,.add-load').show();
+            $(obj).parent().parent().find('.hiddenInput').hide();
+            $(obj).parent().parent().find('.placeholder').prop('disabled', true);
+        } else if ($(obj).val() === 'checkbox') {
+            $(obj).parent().parent().find('.load-item,.add-load').show();
+            $(obj).parent().parent().find('.hiddenInput').hide();
+            $(obj).parent().parent().find('.placeholder').prop('disabled', true);
+        } else if ($(obj).val() === 'textarea') {
+            $(obj).parent().parent().find('.load-item,.add-load').hide();
+            $(obj).parent().parent().find('.hiddenInput').show();
+            $(obj).parent().parent().find('.placeholder').prop('disabled', false);
+        } else {
+            $(obj).parent().parent().find('.load-item,.add-load').hide();
+            $(obj).parent().parent().find('.hiddenInput').hide();
+            $(obj).parent().parent().find('.placeholder').prop('disabled', true);
+        }
+    }
+
     $(document).ready(function () {
         var showSection = <?= (Yii::$app->session->getHasSessionId('showSection') && Yii::$app->session->readSession('showSection')) ? Yii::$app->session->readSession('showSection') : 'false' ?>;
         var showSubSection = <?= (Yii::$app->session->getHasSessionId('showSubSection') && Yii::$app->session->readSession('showSubSection')) ? Yii::$app->session->readSession('showSubSection') : 'false' ?>;
@@ -300,65 +331,15 @@ use wbraganca\dynamicform\DynamicFormWidget;
             $(this).find('.del-load:first').css('display', 'none');
             i++;
         });
-        
-        $('.delSecBtn').first().css('display','none');
+
+        $('.delSecBtn').first().css('display', 'none');
 
         $('.drop_down_list').each(function () {
-            if ($(this).val() === 'select') {
-                $(this).parent().parent().find('.load-item,.add-load').show();
-                $(this).parent().parent().find('.hiddenInput').hide();
-                $(this).parent().parent().find('.placeholder').prop('disabled', false);
-            }
-            if ($(this).val() === 'input') {
-                $(this).parent().parent().find('.load-item,.add-load').hide();
-                $(this).parent().parent().find('.hiddenInput').show();
-                $(this).parent().parent().find('.placeholder').prop('disabled', false);
-            }
-            if ($(this).val() === 'radio') {
-                $(this).parent().parent().find('.load-item,.add-load').show();
-                $(this).parent().parent().find('.hiddenInput').hide();
-                $(this).parent().parent().find('.placeholder').prop('disabled', true);
-            }
-            if ($(this).val() === 'checkbox') {
-                $(this).parent().parent().find('.load-item,.add-load').show();
-                $(this).parent().parent().find('.hiddenInput').hide();
-                $(this).parent().parent().find('.placeholder').prop('disabled', true);
-            }
-            if ($(this).val() === 'textarea') {
-                $(this).parent().parent().find('.load-item,.add-load').hide();
-                $(this).parent().parent().find('.hiddenInput').show();
-                $(this).parent().parent().find('.placeholder').prop('disabled', false);
-            }
+            inputRules($(this));
         });
 
         $('.drop_down_list').on('change', function () {
-            if ($(this).val() === 'select') {
-                $(this).parent().parent().find('.load-item,.add-load').show();
-                $(this).parent().parent().find('.hiddenInput').hide();
-                $(this).parent().parent().find('.placeholder').prop('disabled', false);
-            }
-            if ($(this).val() === 'input') {
-                $(this).parent().parent().find('.load-item,.add-load').hide();
-                $(this).parent().parent().find('#options_error').hide();
-                $(this).parent().parent().find('.hiddenInput').show();
-                $(this).parent().parent().find('.placeholder').prop('disabled', false);
-            }
-            if ($(this).val() === 'radio') {
-                $(this).parent().parent().find('.load-item,.add-load').show();
-                $(this).parent().parent().find('.hiddenInput').hide();
-                $(this).parent().parent().find('.placeholder').prop('disabled', true);
-            }
-            if ($(this).val() === 'checkbox') {
-                $(this).parent().parent().find('.load-item,.add-load').show();
-                $(this).parent().parent().find('.hiddenInput').hide();
-                $(this).parent().parent().find('.placeholder').prop('disabled', true);
-            }
-            if ($(this).val() === 'textarea') {
-                $(this).parent().parent().find('.load-item,.add-load').hide();
-                $(this).parent().parent().find('#options_error').hide();
-                $(this).parent().parent().find('.hiddenInput').show();
-                $(this).parent().parent().find('.placeholder').prop('disabled', false);
-            }
+            inputRules($(this));
         });
 
         var j = 1;
@@ -370,64 +351,17 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
         $('.item').bind("DOMSubtreeModified", function () {
             if (j === 0) {
+                $('.container-loads').each(function () {
+                    $(this).find('.options:first').removeClass();
+                    $(this).find('.added_option:first').removeClass().addClass('form-control');
+                    $(this).find('.del-load:first').css('display', 'none');
+                    i++;
+                });
                 $('.drop_down_list').on('change', function () {
-                    if ($(this).val() === 'select') {
-                        $(this).parent().parent().find('.load-item,.add-load').show();
-                        $(this).parent().parent().find('.hiddenInput').hide();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', false);
-                    }
-                    if ($(this).val() === 'input') {
-                        $(this).parent().parent().find('.load-item,.add-load').hide();
-                        $(this).parent().parent().find('#options_error').hide();
-                        $(this).parent().parent().find('.hiddenInput').show();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', false);
-                    }
-                    if ($(this).val() === 'radio') {
-                        $(this).parent().parent().find('.load-item,.add-load').show();
-                        $(this).parent().parent().find('.hiddenInput').hide();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', true);
-                    }
-                    if ($(this).val() === 'checkbox') {
-                        $(this).parent().parent().find('.load-item,.add-load').show();
-                        $(this).parent().parent().find('.hiddenInput').hide();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', true);
-                    }
-                    if ($(this).val() === 'textarea') {
-                        $(this).parent().parent().find('.load-item,.add-load').hide();
-                        $(this).parent().parent().find('#options_error').hide();
-                        $(this).parent().parent().find('.hiddenInput').show();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', false);
-                    }
+                    inputRules($(this));
                 });
                 $('.drop_down_list').each(function () {
-                    if ($(this).val() === 'select') {
-                        $(this).parent().parent().find('.load-item,.add-load').show();
-                        $(this).parent().parent().find('.hiddenInput').hide();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', false);
-                    }
-                    if ($(this).val() === 'input') {
-                        $(this).parent().parent().find('.load-item,.add-load').hide();
-                        $(this).parent().parent().find('#options_error').hide();
-                        $(this).parent().parent().find('.hiddenInput').show();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', false);
-                    }
-                    if ($(this).val() === 'radio') {
-                        $(this).parent().parent().find('.load-item,.add-load').show();
-                        $(this).parent().parent().find('.hiddenInput').hide();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', true);
-                    }
-                    if ($(this).val() === 'checkbox') {
-                        $(this).parent().parent().find('.load-item,.add-load').show();
-                        $(this).parent().parent().find('.hiddenInput').hide();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', true);
-                    }
-                    if ($(this).val() === 'textarea') {
-                        $(this).parent().parent().find('.load-item,.add-load').hide();
-                        $(this).parent().parent().find('#options_error').hide();
-                        $(this).parent().parent().find('.hiddenInput').show();
-                        $(this).parent().parent().find('.placeholder').prop('disabled', false);
-                    }
-
+                    inputRules($(this));
                 });
             }
             j++;

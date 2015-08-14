@@ -22,12 +22,13 @@ use wbraganca\dynamicform\DynamicFormWidget;
     ?>
     <div style="display: inline-block;width: 500px;float: left">
 
+        <?= $fm->field($user, 'id')->hiddenInput()->label(false) ?>
         <?= $fm->field($user, 'first_name') ?>
         <?= $fm->field($user, 'last_name') ?>
         <?= $fm->field($user, 'username') ?>
         <?= $fm->field($user, 'email') ?>
         <?= $fm->field($user, 'password')->passwordInput(['value' => ''])->label('New password') ?>
-        <?= $fm->field($user, 'confirm_password')->passwordInput() ?>
+        <?= $fm->field($user, 'confirm_password')->passwordInput(['value' => '']) ?>
 
 
 
@@ -59,14 +60,14 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                             <br>
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'input') { ?>
-                                            <input class='textInput' name="Users[custom][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $form['formType'] ?>" />
+                                            <input class='textInput' name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $form['formType'] ?>" />
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'textarea') { ?>
-                                            <textarea class='inputTextarea' name="Users[custom][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>"></textarea>
+                                            <textarea class='inputTextarea' name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>"></textarea>
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'select') { ?>
                                             <?php $options = explode(',', $form['formOptions']); ?>
-                                            <select class='inputSelect' name="Users[custom][<?= $form['formId'] ?>][]">
+                                            <select class='inputSelect' name="Users[custom_fields][<?= $form['formId'] ?>][]">
                                                 <option value=''><?= $form['formPlaceholder'] ?></option>
                                                 <?php foreach ($options as $option) { ?>
                                                     <option value="<?= $option ?>"><?= $option ?></option>
@@ -78,14 +79,14 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                         <?php if ($form['formType'] === 'checkbox') { ?>
                                             <?php $options = explode(',', $form['formOptions']); ?>
                                             <?php foreach ($options as $option) { ?>
-                                                <label><input  class='inputCheckbox' name="Users[custom][<?= $form['formId'] ?>][<?= $i ?>][]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
+                                                <label><input  class='inputCheckbox' name="Users[custom_fields][<?= $form['formId'] ?>][<?= $i ?>][]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
 
                                             <?php } ?>
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'radio') { ?>
                                             <?php $options = explode(',', $form['formOptions']); ?>
                                             <?php foreach ($options as $option) { ?>
-                                                <label><input class='inputRadio' name="Users[custom][<?= $form['formId'] ?>][]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
+                                                <label><input class='inputRadio' name="Users[custom_fields][<?= $form['formId'] ?>][<?= $i ?>]" value="<?= $option ?>" type="<?= $form['formType'] ?>" /><?= $option ?></label>
 
                                             <?php } ?>
                                         <?php } ?>
@@ -118,20 +119,51 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
 <script type="text/javascript">
 
+    function increaseIndex(name,nameCopy) {
+        for (var j = 0; j < 2; j++) {
+            var index = name.indexOf('[');
+            var numb = index;
+            var c = name.charAt(numb);
+            name = name.substr(0, numb) + name.substr(numb + 1);
+        }
+
+        for (var k = 0; k < 2; k++) {
+            var index = name.indexOf(']');
+            var numb = index;
+            var c = name.charAt(numb);
+            name = name.substr(0, numb) + name.substr(numb + 1);
+        }
+        var index1 = name.indexOf('[');
+        var index2 = name.indexOf(']');
+        var n = index2 - index1;
+        var oldIndex = name.substr(index1 + 1, n - 1);
+        var newIndex = parseInt(oldIndex) + 1;
+        var last = nameCopy.lastIndexOf(oldIndex);
+        var newName = nameCopy.substr(0, last) + newIndex + nameCopy.substr(last + oldIndex.length, nameCopy.length);
+        return newName;
+    }
+
     $(document).ready(function () {
         $('.add-item').on('click', function () {
             var parent = $(this).parent();
-            var item = parent.find('.formSecRep:first').clone();
+            var item = parent.find('.formSecRep:last').clone();
             item.find('.textInput').val('');
             item.find('.inputTextarea').val('');
             item.find('.inputCheckbox').removeAttr('checked');
             item.find('.inputRadio').removeAttr('checked');
             item.find('.inputSelect').prop('selectedIndex', 0);
-            var name = item.find('.inputSelect').prop('name');
-//            for (var j = 0; j < 2; j++) {
-//                name.indexOf('[');
-//            }
-//            var index = name
+            var checkbox = item.find('.inputCheckbox').attr('name');
+            var checkboxCopy = checkbox;
+            if (checkbox !== undefined) {
+                var newCheckbox = increaseIndex(checkbox,checkboxCopy);
+                item.find('.inputCheckbox').attr('name', newCheckbox);
+            }
+            var radio = item.find('.inputRadio').attr('name');
+            var radioCopy = radio;
+            if (radio !== undefined) {
+                var newRadio = increaseIndex(radio,radioCopy);
+                item.find('.inputRadio').attr('name', newRadio);
+            }
             item.appendTo(parent);
             $(this).appendTo(parent);
 //            parent.find('.formSecRep:last input').val('');
