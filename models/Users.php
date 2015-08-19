@@ -11,7 +11,6 @@ use yii\db\Expression;
  * @property integer $id
  * @property string $first_name
  * @property string $last_name
- * @property string $username
  * @property string $email
  * @property string $password
  * @property string $password_reset_token
@@ -40,21 +39,20 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
      */
     public function rules() {
         return [
-            [['first_name', 'last_name', 'username', 'email', 'password', 'confirm_password'], 'required', 'on' => 'create'],
-            [['first_name', 'last_name', 'username', 'email', 'password'], 'required', 'on' => 'update'],
+            [['first_name', 'last_name', 'email', 'password', 'confirm_password'], 'required', 'on' => 'create'],
+            [['first_name', 'last_name', 'email', 'password'], 'required', 'on' => 'update'],
             [['conditions'], 'checkConditions', 'on' => 'create'],
             [['password', 'confirm_password'], 'required', 'on' => 'resetPassword'],
             [['image'], 'required', 'on' => 'updateImage'],
             [['active'], 'integer'],
             [['email'], 'email'],
             [['created', 'modified'], 'safe'],
-            [['first_name', 'last_name', 'username', 'email', 'password', 'password_reset_token', 'activation_token', 'image'], 'string', 'max' => 255],
+            [['first_name', 'last_name', 'email', 'password', 'password_reset_token', 'activation_token', 'image'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 64],
-            [['password', 'username'], 'string', 'min' => 6],
+            [['password'], 'string', 'min' => 6],
             [['first_name', 'last_name'], 'string', 'min' => 2],
-            [['username', 'email', 'password_reset_token', 'activation_token'], 'unique', 'targetAttribute' => ['username', 'email', 'password_reset_token', 'activation_token'], 'message' => 'The combination of Username, Email, Password Reset Token and Activation Token has already been taken.'],
+            [['email', 'password_reset_token', 'activation_token'], 'unique', 'targetAttribute' => ['email', 'password_reset_token', 'activation_token'], 'message' => 'Email has already been taken.'],
             [['auth_key'], 'unique'],
-            [['username'], 'unique'],
             [['email'], 'unique'],
             [['confirm_password'], 'validateConfirmPassword']
         ];
@@ -68,9 +66,9 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             'id' => 'ID',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
-            'username' => 'Username',
             'email' => 'Email',
             'password' => 'Password',
+            'confirm_password' => 'Retype password',
             'password_reset_token' => 'Password Reset Token',
             'active' => 'Active',
             'activation_token' => 'Activation Token',
@@ -157,13 +155,13 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
      * @return static|null
      */
     public static function findByUsername($username) {
-        return static::findOne(['username' => $username]);
+        throw new NotSupportedException('findByUsername is not implemented.');
     }
 
     /**
      * Finds user by email
      *
-     * @param string $username
+     * @param string $email
      * @return static|null
      */
     public static function findByEmail($email) {

@@ -66,7 +66,7 @@ class AdminsController extends \yii\web\Controller {
 
     public function actionUserSettings($section = false, $id = false) {
         $isUpdate = false;
-
+        $form_ids = [];
         if ($id) {
             $isUpdate = true;
             if ($section === 'section') {
@@ -88,7 +88,6 @@ class AdminsController extends \yii\web\Controller {
                 $forms_form = new FormsForm();
                 $forms_form_options = new \app\models\FormsFormOptions();
                 $i = 0;
-                $form_ids = [];
                 foreach ($form_model as $form) {
                     $forms_form->label = $form->label;
                     $forms_form->placeholder = $form->placeholder;
@@ -98,7 +97,7 @@ class AdminsController extends \yii\web\Controller {
                     $forms_form->sub_section_id = $form->sub_section_id;
                     $forms_form->options = $form->options;
                     $form_ids[] = $form->id;
-                    $options = explode(',', $form->options);
+                    $options = explode('-,-', $form->options);
                     foreach ($options as $option) {
                         $forms_form_options->options = $option;
                         $modelsFormsForm[$i][] = $forms_form_options;
@@ -150,7 +149,7 @@ class AdminsController extends \yii\web\Controller {
                     if (empty($options)) {
                         $options = $v['options'];
                     } else {
-                        $options = $options . ',' . $v['options'];
+                        $options = $options . '-,-' . $v['options'];
                     }
                 }
                 $form['FormsForm'][$key]['options'] = $options;
@@ -238,7 +237,7 @@ class AdminsController extends \yii\web\Controller {
                         }
                         if (!empty($delFormIds)) {
                             $f = Forms::deleteAll(['id' => $delFormIds]);
-                        }else{
+                        } else {
                             $f = true;
                         }
                         if (!$f) {

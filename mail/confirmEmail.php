@@ -7,7 +7,7 @@ use yii\helpers\Html;
 $confirmLink = Yii::$app->urlManager->createAbsoluteUrl(['users/confirm', 'id' => $user->id, 'key' => $user->activation_token]);
 ?>
 
-Dear <?= Html::encode($user->username) ?>,<br>
+Dear <?= Html::encode($user->first_name.' '.$user->last_name) ?>,<br>
 Thanks for signing up. Please confirm your email address by clicking this link: <?= Html::a(Html::encode($confirmLink), $confirmLink) ?> 
 <br>
 Best regards. 

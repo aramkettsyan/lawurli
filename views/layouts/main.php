@@ -14,38 +14,55 @@ UserAsset::register($this);
 <html lang="<?= Yii::$app->language ?>">
     <head>
         <meta charset="<?= Yii::$app->charset ?>">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
+        <script>
+            WebFont.load({
+                custom: {
+                    families: ['Open Sans']
+                }
+            });
+        </script>
     </head>
     <body>
         <?php $this->beginBody() ?>
-        <div class="maincontainer">
-            <nav class="navbar navbar-inverse navbar-static-top">
-                <div class="container">
-                    <div class="navbar-header">    
-                        <?php echo Html::a('Network', \yii\helpers\Url::to(['admins/index']), ['class' => 'navbar-brand']) ?>
+        <?= $content ?>  
+        <footer>
+            <div class="container">
+                <div class="clearAfter">
+                    <div class="footerAbout">
+                        <h4>About us</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam vero corporis, perspiciatis delectus dicta ullam et eaque consequuntur aliquid possimus facilis nesciunt voluptatem molestiae consectetur quibusdam temporibus voluptatum aliquam doloremque. Perspiciatis delectus dicta ullam et.</p>
                     </div>
-                    <div id="navbar" class="collapse navbar-collapse navbar-right">
-                        <ul class="nav navbar-nav">
-
-                            <?php if (Yii::$app->user->isGuest) { ?>
-                                <li class="<?= Yii::$app->controller->action->id === 'login' ? 'active' : '' ?>"><?php echo Html::a('Login', \yii\helpers\Url::to(['users/login']), ['class' => '']); ?></li>
-                                <li class="<?= Yii::$app->controller->action->id === 'registration' ? 'active' : '' ?>"><?php echo Html::a('Sign up', \yii\helpers\Url::to(['users/registration']), ['class' => '']); ?></li>
-                            <?php } else { ?>
-                                <li class="<?= Yii::$app->controller->action->id === 'index' ? 'active' : '' ?>"><?php echo Html::a('Home', \yii\helpers\Url::to(['users/index']), ['class' => '']); ?></li>
-                                <li class="<?= Yii::$app->controller->action->id === 'edit' ? 'active' : '' ?>"><?php echo Html::a('Edit', \yii\helpers\Url::to(['users/edit']), ['class' => '']); ?></li>
-                                <li ><?php echo Html::a('Logout(' . Yii::$app->user->identity->username . ')', \yii\helpers\Url::to(['users/logout']), ['class' => '']); ?></li>
-                            <?php } ?>
-                        </ul>
+                    <div class="footerContact">
+                        <h4>Contact Us</h4>
+                        <p><i class="icon-letter-mail-1"></i>blah@mail.com</p>
+                        <p><i class="icon-call-phone-square"></i>341 987 44 63</p>
+                        <div class="footerSocials">
+                            <ul>
+                                <li>
+                                    <a href="#"><i class="icon-twitter39"></i></a>
+                                    <a href="#"><i class="icon-youtube33"></i></a>
+                                    <a href="#"><i class="icon-pinterest28"></i></a>
+                                    <a href="#"><i class="icon-instagram14"></i></a>
+                                    <a href="#"><i class="icon-linkedin22"></i></a>
+                                    <a href="#"><i class="icon-facebook45"></i></a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </nav>
-
-            <?= $content ?> 
-
-        </div>
+                <div class="footerNav">
+                    <ul class="clearAfter linkHover">
+                        <li><a href="#" data-hover="Home">Home</a></li>
+                        <li><a href="#" data-hover="Blah menu">Blah menu</a></li>
+                        <li><a href="#" data-hover="Another blah">Another blah</a></li>
+                        <li><a href="#" data-hover="Something else">Something else</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
         <?php $this->endBody() ?>
     </body>
 </html>

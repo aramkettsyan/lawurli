@@ -10,9 +10,9 @@ use yii\base\Model;
  */
 class LoginForm extends Model {
 
-    public $username;
+    public $email;
     public $password;
-    public $rememberMe = true;
+    public $rememberMe = false;
     private $_user = false;
 
     /**
@@ -20,8 +20,8 @@ class LoginForm extends Model {
      */
     public function rules() {
         return [
-            // username and password are both required
-            [['username', 'password'], 'required'],
+            // email and password are both required
+            [['email', 'password'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
@@ -41,13 +41,13 @@ class LoginForm extends Model {
             $user = $this->getUser();
 
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Incorrect email or password.');
             }
         }
     }
 
     /**
-     * Logs in a user using the provided username and password.
+     * Logs in a user using the provided email and password.
      * @return boolean whether the user is logged in successfully
      */
     public function login() {
@@ -58,23 +58,23 @@ class LoginForm extends Model {
                 return false;
             }
         } else {
-            $this->addError('username','');
+            $this->addError('email','');
             $this->addError('password','You are already logged in as '.\Yii::$app->admin->identity->username.'!');
             return false;
         }
     }
 
     /**
-     * Finds user by [[username]]
+     * Finds user by [[email]]
      *
      * @return User|null
      */
     public function getUser() {
         if ($this->_user === false) {
-            $this->_user = Users::findByUsername($this->username);
+            $this->_user = Users::findByEmail($this->email);
             if(isset($this->_user->active ) && $this->_user->active === 0){
-                $this->addError('username','');
-                $this->addError('password','Your account not activated, check your email to activate your account!');
+                $this->addError('email','');
+                $this->addError('password','Your account is not activated!');
                 return false;
             }
         }

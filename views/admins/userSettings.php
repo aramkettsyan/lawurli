@@ -55,7 +55,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                                     <?php if ($sub->type === 'select' && $sub->sub_section_id === $sub_section->id) { ?>
 
                                                         <label class="customLbSt" for="<?= $sub->label; ?>"><?php echo $sub->label; ?></label> 
-                                                        <?php $options = explode(',', $sub->options); ?>
+                                                        <?php $options = explode('-,-', $sub->options); ?>
                                                         <?php echo Html::dropDownList($sub->label, '', $options, ['prompt' => $sub->placeholder, 'id' => $sub->label, 'class' => 'form-control']); ?>
 
                                                     <?php } ?>
@@ -69,7 +69,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                                     <?php } ?>
                                                     <?php if ($sub->type === 'checkbox' && $sub->sub_section_id === $sub_section->id) { ?>
                                                         <label class="customLbSt"> <?php echo $sub->label; ?></label>
-                                                        <?php $options = explode(',', $sub->options); ?>
+                                                        <?php $options = explode('-,-', $sub->options); ?>
                                                         <?php
                                                         echo Html::checkboxList('checkbox', null, $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value) {
                                                                 return '<label for="' . $value . '_' . $index . '"><input id="' . $value . '_' . $index . '" name="' . $value . '" type="checkbox"><span>' . $label . '</span></label> ';
@@ -83,7 +83,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                                     <?php } ?>
                                                     <?php if ($sub->type === 'radio' && $sub->sub_section_id === $sub_section->id) { ?>
                                                         <span class="customLbSt"><?php echo $sub->label; ?></span>
-                                                        <?php $items = explode(',', $sub->options); ?>
+                                                        <?php $items = explode('-,-', $sub->options); ?>
                                                         <?php ?>
                                                         <?php
                                                         echo Html::radioList('radio', NULL, $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value) {
@@ -280,26 +280,32 @@ use wbraganca\dynamicform\DynamicFormWidget;
         if ($(obj).val() === 'select') {
             $(obj).parent().parent().find('.load-item,.add-load').show();
             $(obj).parent().parent().find('.hiddenInput').hide();
+            $(obj).parent().parent().find('.numeric').hide();
             $(obj).parent().parent().find('.placeholder').prop('disabled', false);
         } else if ($(obj).val() === 'input') {
             $(obj).parent().parent().find('.load-item,.add-load').hide();
             $(obj).parent().parent().find('.hiddenInput').show();
+            $(obj).parent().parent().find('.numeric').show();
             $(obj).parent().parent().find('.placeholder').prop('disabled', false);
         } else if ($(obj).val() === 'radio') {
             $(obj).parent().parent().find('.load-item,.add-load').show();
             $(obj).parent().parent().find('.hiddenInput').hide();
+            $(obj).parent().parent().find('.numeric').hide();
             $(obj).parent().parent().find('.placeholder').prop('disabled', true);
         } else if ($(obj).val() === 'checkbox') {
             $(obj).parent().parent().find('.load-item,.add-load').show();
             $(obj).parent().parent().find('.hiddenInput').hide();
+            $(obj).parent().parent().find('.numeric').hide();
             $(obj).parent().parent().find('.placeholder').prop('disabled', true);
         } else if ($(obj).val() === 'textarea') {
             $(obj).parent().parent().find('.load-item,.add-load').hide();
             $(obj).parent().parent().find('.hiddenInput').show();
+            $(obj).parent().parent().find('.numeric').hide();
             $(obj).parent().parent().find('.placeholder').prop('disabled', false);
         } else {
             $(obj).parent().parent().find('.load-item,.add-load').hide();
             $(obj).parent().parent().find('.hiddenInput').hide();
+            $(obj).parent().parent().find('.numeric').hide();
             $(obj).parent().parent().find('.placeholder').prop('disabled', true);
         }
     }

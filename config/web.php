@@ -7,7 +7,7 @@ $config = [
     'basePath' => dirname(__DIR__),
     'homeUrl' => array('users/index'),
     'bootstrap' => ['log'],
-    'defaultRoute' => 'users/login',
+    'defaultRoute' => 'users/index',
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation

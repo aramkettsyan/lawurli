@@ -18,15 +18,27 @@ class UserAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [        
-        'css/bootstrap.css',
+        'include/jquery-ui/jquery-ui-1.9.2.custom.css',
+        'https://fontastic.s3.amazonaws.com/uQrZqTnHFXueUkKYTVpcnZ/icons.css',
+        'include/animated-headline/animated-headline.css',
+        'include/magnific-popup/magnific-popup.css',
+        'include/custom-scrollbar/jquery.mCustomScrollbar.css',
         'css/fileuploader.css',
-        'css/style.css',
+        'css/main.css'
     ];
     public $jsOptions = array(
         'position' => \yii\web\View::POS_HEAD
     );
     public $js = [
-        'js/fileuploader.js'
+        'js/fileuploader.js',
+        'js/jquery.validate.js',
+        'include/webfontloader/webfontloader.js',
+        'include/jquery/jquery-2.1.4.js',
+        'include/jquery-ui/jquery-ui-1.9.2.custom.js',
+        'include/animated-headline/animated-headline.js',
+        'include/magnific-popup/jquery.magnific-popup.js',
+        'include/custom-scrollbar/jquery.mCustomScrollbar.js',
+        'include/main.js'
     ];
     public $depends = [
         'yii\web\YiiAsset'
