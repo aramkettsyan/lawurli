@@ -19,7 +19,7 @@ $config = [
         'user' => [
             'class' => 'yii\web\User',
             'identityClass' => 'app\models\Users',
-            'loginUrl' => 'login',
+            'loginUrl' => 'index',
             'enableAutoLogin' => true,
         ],
         'admin' => [

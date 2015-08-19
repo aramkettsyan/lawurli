@@ -25,12 +25,13 @@ class UsersController extends \yii\web\Controller {
                             'roles' => ['@'],
                         ],
                         [
-                            'actions' => ['index', 'login', 'registration', 'email-confirmation', 'confirm', 'reset-password', 'reset-password-notifications', 'reset'],
+                            'actions' => ['index', 'email-confirmation', 'confirm', 'reset-password', 'reset-password-notifications', 'reset'],
                             'allow' => true,
                             'roles' => ['?']
                         ],
                     ],
                     'denyCallback' => function($rule, $action) {
+
                 if (Yii::$app->user->isGuest) {
                     $this->redirect('/users/index');
                 } else {
@@ -64,7 +65,7 @@ class UsersController extends \yii\web\Controller {
         return parent::beforeAction($action);
     }
 
-    public function actionEdit($id = false) {
+    public function actionEdit($action = 'general', $id = false) {
         if ($id === false && !\Yii::$app->user->isGuest) {
 
             $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
@@ -73,29 +74,25 @@ class UsersController extends \yii\web\Controller {
                             . "LEFT JOIN forms ON user_forms.form_id = forms.id "
                             . "LEFT JOIN sub_sections ON forms.sub_section_id = sub_sections.id "
                             . "WHERE user_id =" . Yii::$app->user->identity->id)->queryAll();
-            if (Yii::$app->request->post()) {
 
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    $post = Yii::$app->request->post();
-                    if (empty($post['Users']['password'])) {
-                        unset($post['Users']['password']);
-                        unset($post['Users']['confirm_password']);
-                    }
-                    $old_user_forms = [];
-                    foreach ($user_forms as $user_form) {
-                        if (isset($old_user_forms[$user_form['form_id']][$user_form['index']])) {
-                            if (!is_array($old_user_forms[$user_form['form_id']][$user_form['index']])) {
-                                $old_user_forms[$user_form['form_id']][$user_form['index']] = [$old_user_forms[$user_form['form_id']][$user_form['index']]];
+            if ($action === 'detailed') {
+                if (Yii::$app->request->post()) {
+
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    try {
+                        $post = Yii::$app->request->post();
+
+                        $old_user_forms = [];
+                        foreach ($user_forms as $user_form) {
+                            if (isset($old_user_forms[$user_form['form_id']][$user_form['index']])) {
+                                if (!is_array($old_user_forms[$user_form['form_id']][$user_form['index']])) {
+                                    $old_user_forms[$user_form['form_id']][$user_form['index']] = [$old_user_forms[$user_form['form_id']][$user_form['index']]];
+                                }
+                                $old_user_forms[$user_form['form_id']][$user_form['index']][] = $user_form['value'];
+                            } else {
+                                $old_user_forms[$user_form['form_id']][$user_form['index']] = $user_form['value'];
                             }
-                            $old_user_forms[$user_form['form_id']][$user_form['index']][] = $user_form['value'];
-                        } else {
-                            $old_user_forms[$user_form['form_id']][$user_form['index']] = $user_form['value'];
                         }
-                    }
-                    $user->old_password = $user->password;
-                    $user->scenario = 'update';
-                    if ($user->load($post) && $user->save()) {
 
                         $forms = Yii::$app->db->createCommand('SELECT forms.id,forms.type,forms.numeric,forms.options'
                                         . ' FROM forms')->queryAll();
@@ -212,14 +209,40 @@ class UsersController extends \yii\web\Controller {
                         } else {
                             Yii::$app->getSession()->writeSession('updateError', 'There are some error(s) in form(s), try again.');
                         }
-                    } else {
+                    } catch (Exception $e) {
                         $transaction->rollBack();
                     }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
+                }
+            } else {
+                if (Yii::$app->request->post()) {
+
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    try {
+                        $post = Yii::$app->request->post();
+                        if (empty($post['Users']['password'])) {
+                            unset($post['Users']['password']);
+                            unset($post['Users']['confirm_password']);
+                        }
+
+                        $user->old_password = $user->password;
+                        $user->scenario = 'update';
+                        if ($user->load($post) && $user->save()) {
+                            Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
+                            $transaction->commit();
+                            return $this->refresh();
+                        } else {
+                            $transaction->rollBack();
+                        }
+                    } catch (Exception $e) {
+                        $transaction->rollBack();
+                    }
                 }
             }
-            if ($user) {
+
+
+
+
+            if ($user && $action === 'detailed') {
                 $sections = $connection->createCommand('SELECT '
                                 . ' sections.name as sectionName,'
                                 . 'sub_sections.name as subName,'
@@ -285,10 +308,15 @@ class UsersController extends \yii\web\Controller {
                 }
 
 
+
                 return $this->render('/users/edit', [
                             'user' => $user,
                             'sections' => $newSections,
                             'user_forms' => $new_user_forms
+                ]);
+            } else if ($user && $action === 'general') {
+                return $this->render('/users/edit', [
+                            'user' => $user
                 ]);
             } else {
                 return $this->redirect('index');
@@ -502,7 +530,7 @@ class UsersController extends \yii\web\Controller {
                     $currentTime = time();
                     $difference = $currentTime - $emailTimeout;
                     if ($difference < 60) {
-                        Yii::$app->getSession()->setFlash('resetWarning', 'Please wait '.(60-$difference).' seconds and try again.');
+                        Yii::$app->getSession()->setFlash('resetWarning', 'Please wait ' . (60 - $difference) . ' seconds and try again.');
                         return $model;
                     }
                 }
@@ -565,9 +593,89 @@ class UsersController extends \yii\web\Controller {
 
     public function actionProfile($id = false) {
         if ($id === false && !\Yii::$app->user->isGuest) {
-            $user = Users::findOne(['id' => \Yii::$app->user->identity->id]);
+
+            $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
+            $connection = Yii::$app->db;
+            $user_forms = $connection->createCommand("SELECT user_forms.form_id,user_forms.index,user_forms.value,forms.type,sub_sections.id as subSectionId FROM user_forms "
+                            . "LEFT JOIN forms ON user_forms.form_id = forms.id "
+                            . "LEFT JOIN sub_sections ON forms.sub_section_id = sub_sections.id "
+                            . "WHERE user_id =" . Yii::$app->user->identity->id)->queryAll();
+
+
             if ($user) {
-                return $this->render('/users/profile', ['model' => $user]);
+                $sections = $connection->createCommand('SELECT '
+                                . ' sections.name as sectionName,'
+                                . 'sub_sections.name as subName,'
+                                . 'sub_sections.multiple as subMultiple,'
+                                . 'sub_sections.id as subId,'
+                                . 'forms.id as formId,'
+                                . 'forms.label as formLabel,'
+                                . 'forms.type as formType,'
+                                . 'forms.placeholder as formPlaceholder,'
+                                . 'forms.numeric as formNumeric,'
+                                . 'forms.options as formOptions '
+                                . 'FROM sections '
+                                . 'LEFT JOIN sub_sections '
+                                . 'ON sub_sections.section_id = sections.id '
+                                . 'LEFT JOIN forms '
+                                . 'ON forms.sub_section_id = sub_sections.id '
+                                . 'ORDER BY sections.id,sub_sections.id,forms.id ')->queryAll();
+
+                $new_user_forms = [];
+                foreach ($user_forms as $user_form) {
+                    if (isset($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
+                        if (!is_array($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
+                            $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = [$new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']]];
+                        }
+                        $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']][] = $user_form['value'];
+                    } else {
+                        $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = $user_form['value'];
+                    }
+                }
+
+                $newSections = [];
+                foreach ($sections as $section) {
+
+                    if (!isset($newSections[$section['sectionName']])) {
+                        $newSections[$section['sectionName']] = [];
+                    }
+
+                    if (!isset($newSections[$section['sectionName']][$section['subName']])) {
+                        $newSections[$section['sectionName']][$section['subName']] = [
+                            [
+                                'subMultiple' => $section['subMultiple'],
+                                'subId' => $section['subId']
+                            ],
+                            [
+                                'formId' => $section['formId'],
+                                'formLabel' => $section['formLabel'],
+                                'formType' => $section['formType'],
+                                'formPlaceholder' => $section['formPlaceholder'],
+                                'formNumeric' => $section['formNumeric'],
+                                'formOptions' => $section['formOptions']
+                            ]
+                        ];
+                    } else {
+                        $newSections[$section['sectionName']][$section['subName']][] = [
+                            'formId' => $section['formId'],
+                            'formLabel' => $section['formLabel'],
+                            'formType' => $section['formType'],
+                            'formPlaceholder' => $section['formPlaceholder'],
+                            'formNumeric' => $section['formNumeric'],
+                            'formOptions' => $section['formOptions']
+                        ];
+                    }
+                }
+
+
+
+                return $this->render('/users/profile', [
+                            'user' => $user,
+                            'sections' => $newSections,
+                            'user_forms' => $new_user_forms
+                ]);
+            } else {
+                return $this->redirect('index');
             }
         }
     }

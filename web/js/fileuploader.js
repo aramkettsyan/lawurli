@@ -947,8 +947,8 @@ qq.UploadButton = function (o) {
         name: 'file',
         onChange: function (input) {
         },
-        hoverClass: 'qq-upload-button-hover',
-        focusClass: 'qq-upload-button-focus'
+        hoverClass: '',
+        focusClass: ''
     };
 
     qq.extend(this._options, o);

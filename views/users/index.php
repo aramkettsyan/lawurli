@@ -8,159 +8,178 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\Users */
 /* @var $form ActiveForm */
 ?>
-<section id="cd-intro">
-    <div id="cd-intro-background"></div>
-    <div id="cd-intro-tagline"><!-- insert your tagline here --></div>
-</section>
-<div class="mainWrapper">
-    <div class="homeTop clearAfter">
-        <div class="container">
-            <div class="homeTopText">
-                <h4 class="cd-headline zoom">
-                    <span>Eligendi amet</span>
-                    <span>voluptatib, itaque elit</span>
-                    <span>totam asper volu</span>
-                    <span class="cd-words-wrapper">
-                        <b class="is-visible">debitis.</b>
-                        <b>aspernatur.</b>
-                        <b>consequu.</b>
-                    </span>
-                </h4>
-            </div>
-            <div class="homeSignInUp tabs">
-                <ul>
-                    <li><a href="#signupTab">Signup</a></li>
-                    <li><a href="#loginTab">Login</a></li>
-                </ul>
-                <div>
-                    <div id="signupTab">
-                        <?php
-                        echo \Yii::$app->getSession()->getFlash('registrationSuccess');
-                        echo \Yii::$app->getSession()->getFlash('registrationWarning');
-                        ?>
-                        <?php
-                        $f = ActiveForm::begin([
-                                    'id' => 'registration-form',
-                                    'action' => \yii\helpers\Url::to(['users/index'])
-                        ]);
-                        ?>
+<div class="homeTop clearAfter">
+    <div class="container">
+        <div class="homeTopText">
+            <h4 class="cd-headline zoom">
+                <span>Eligendi amet</span>
+                <span>voluptatib, itaque elit</span>
+                <span>totam asper volu</span>
+                <span class="cd-words-wrapper">
+                    <b class="is-visible">debitis.</b>
+                    <b>aspernatur.</b>
+                    <b>consequu.</b>
+                </span>
+                <div class="homeSearch">
+                    <input type="text" placeholder="Search for a colleague...">
+                    <button type="submit"><i class="icon-search"></i></button>
+                </div>
+            </h4>
+        </div>
+        <div class="homeSignInUp tabs">
+            <ul>
+                <li><a href="#signupTab">Signup</a></li>
+                <li><a href="#loginTab">Login</a></li>
+            </ul>
+            <div>
+                <div id="signupTab">
+                    <?php
+                    echo \Yii::$app->getSession()->getFlash('registrationSuccess');
+                    echo \Yii::$app->getSession()->getFlash('registrationWarning');
+                    ?>
+                    <?php
+                    $f = ActiveForm::begin([
+                                'id' => 'registration-form',
+                                'action' => \yii\helpers\Url::to(['users/index'])
+                    ]);
+                    ?>
 
+
+                    <?=
+                    $f->field($registrationModel, 'first_name', [
+                        'template' => "{input}<i class='icon-man-streamline-user'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                        'options' => [
+                            'class' => 'formRow frIconLeft'
+                ]])->textInput(['class' => 'formControl', 'placeholder' => 'Name'])->label(false);
+                    ?>
+                    <?=
+                    $f->field($registrationModel, 'last_name', [
+                        'template' => "{input} <i class='icon-man-streamline-user'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                        'options' => [
+                            'class' => 'formRow frIconLeft'
+                ]])->textInput(['class' => 'formControl', 'placeholder' => 'Last name'])->label(false);
+                    ?>
+                    <?=
+                    $f->field($registrationModel, 'email', [
+                        'template' => "{input} <i class='icon-email-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                        'options' => [
+                            'class' => 'formRow frIconLeft'
+                ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email'])->label(false);
+                    ?>
+                    <?=
+                    $f->field($registrationModel, 'password', [
+                        'template' => "{input} <i class='icon-lock-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                        'options' => [
+                            'class' => 'formRow frIconLeft'
+                ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password'])->label(false);
+                    ?>
+                    <?=
+                    $f->field($registrationModel, 'confirm_password', [
+                        'template' => "{input} <i class='icon-lock-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                        'options' => [
+                            'class' => 'formRow frIconLeft'
+                ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Retype password'])->label(false);
+                    ?>
+                    <?=
+                    $f->field($registrationModel, 'conditions', ['options' => [
+                            'class' => 'checkbox'
+                ]])->checkbox(['label' => 'Terms and conditions'])
+                    ?>
+
+                    <?= Html::submitButton('Register', ['class' => 'btn defBtn']) ?>
+
+
+                    <?php ActiveForm::end(); ?>
+                </div>
+                <div id="loginTab">
+                    <?php
+                    echo \Yii::$app->getSession()->getFlash('success');
+                    echo \Yii::$app->getSession()->getFlash('warning');
+                    ?>
+
+                    <?php
+                    $form = ActiveForm::begin([
+                                'id' => 'login-form',
+                                'action' => \yii\helpers\Url::to(['users/index'])
+                    ]);
+                    ?>
+
+
+
+                    <?=
+                    $form->field($model, 'email', [
+                        'template' => "{input}{error} <i class='icon-email-streamline'></i>",
+                        'options' => [
+                            'class' => 'formRow frIconLeft'
+                ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
+                    ?>
+
+                    <?=
+                    $form->field($model, 'password', [
+                        'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
+                        'options' => [
+                            'class' => 'formRow frIconLeft'
+                ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password']);
+                    ?>
+
+                    <div class="remMeForgPass clearAfter">
                         <?=
-                        $f->field($registrationModel, 'first_name', [
-                            'template' => "{input}{error} <i class='icon-man-streamline-user'></i>",
-                            'options' => [
-                                'class' => 'formRow frIconLeft'
-                    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Name'])->label(false);
-                        ?>
-                        <?=
-                        $f->field($registrationModel, 'last_name', [
-                            'template' => "{input}{error} <i class='icon-man-streamline-user'></i>",
-                            'options' => [
-                                'class' => 'formRow frIconLeft'
-                    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Last name'])->label(false);
-                        ?>
-                        <?=
-                        $f->field($registrationModel, 'email', [
-                            'template' => "{input}{error} <i class='icon-email-streamline'></i>",
-                            'options' => [
-                                'class' => 'formRow frIconLeft'
-                    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email'])->label(false);
-                        ?>
-                        <?=
-                        $f->field($registrationModel, 'password', [
-                            'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
-                            'options' => [
-                                'class' => 'formRow frIconLeft'
-                    ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password'])->label(false);
-                        ?>
-                        <?=
-                        $f->field($registrationModel, 'confirm_password', [
-                            'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
-                            'options' => [
-                                'class' => 'formRow frIconLeft'
-                    ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Retype password'])->label(false);
-                        ?>
-                        <?=
-                        $f->field($registrationModel, 'conditions', ['options' => [
+                        $form->field($model, 'rememberMe', ['options' => [
                                 'class' => 'checkbox'
-                    ]])->checkbox(['label' => 'Terms and conditions'])
+                    ]])->checkbox(['label' => 'Remember me!'])
                         ?>
-
-                        <?= Html::submitButton('Register', ['class' => 'btn defBtn']) ?>
-
-
-                        <?php ActiveForm::end(); ?>
-                    </div>
-                    <div id="loginTab">
-                        <?php
-                        echo \Yii::$app->getSession()->getFlash('success');
-                        echo \Yii::$app->getSession()->getFlash('warning');
-                        ?>
-
-                        <?php
-                        $form = ActiveForm::begin([
-                                    'id' => 'login-form',
-                                    'action' => \yii\helpers\Url::to(['users/index'])
-                        ]);
-                        ?>
-
-
-
-                        <?=
-                        $form->field($model, 'email', [
-                            'template' => "{input}{error} <i class='icon-email-streamline'></i>",
-                            'options' => [
-                                'class' => 'formRow frIconLeft'
-                    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
-                        ?>
-
-                        <?=
-                        $form->field($model, 'password', [
-                            'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
-                            'options' => [
-                                'class' => 'formRow frIconLeft'
-                    ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password']);
-                        ?>
-
-                        <div class="remMeForgPass clearAfter">
-                            <?=
-                            $form->field($model, 'rememberMe', ['options' => [
-                                    'class' => 'checkbox'
-                        ]])->checkbox(['label' => 'Remember me!'])
-                            ?>
-                            <div class="forgPass">
-                                <a class="textBtn popupBtn" href="#forgpass-popup" >Forgot password?</a>
-                            </div>
+                        <div class="forgPass">
+                            <a class="textBtn popupBtn" href="#forgpass-popup" >Forgot password?</a>
                         </div>
-                        <?= Html::submitButton('Login', ['class' => 'btn defBtn']) ?>
-                        <?php ActiveForm::end(); ?>
                     </div>
+                    <?= Html::submitButton('Login', ['class' => 'btn defBtn']) ?>
+                    <?php ActiveForm::end(); ?>
                 </div>
             </div>
         </div>
     </div>
-    <section class="homeSection">
-        <div class="container">
-            <div class="homeFeatures">
-                <!-- <p class="alignCenter mb30">Autem qui consequatur facere impedit excepturi tempora hic, sint commodi sed nostrum corporis sapiente.</p> -->
-                <ul class="clearAfter">
-                    <li>
-                        <i class="icon-portfolio"></i>
-                        <p>Similique recusandae corporis, in numquam doloribus itaque eveniet inventore dicta aut.</p>
-                    </li>
-                    <li>
-                        <i class="icon-anchor"></i>
-                        <p>Iusto quaerat, hic doloribus vel. Voluptatibus harum dolore sunt autem vero nesciunt.</p>
-                    </li>
-                    <li>
-                        <i class="icon-light-bulb"></i>
-                        <p>Dicta officiis, vero fugit dolore repellendus, placeat at. Eos perferendis voluptatem voluptatibus.</p>
-                    </li>
-                </ul>
-            </div>
+</div>
+<section class="homeSection">
+    <div class="container">
+        <div class="homeFeatures">
+            <!-- <p class="alignCenter mb30">Autem qui consequatur facere impedit excepturi tempora hic, sint commodi sed nostrum corporis sapiente.</p> -->
+            <ul class="clearAfter">
+                <li>
+                    <i class="icon-portfolio"></i>
+                    <p>Similique recusandae corporis, in numquam doloribus itaque eveniet inventore dicta aut.</p>
+                </li>
+                <li>
+                    <i class="icon-anchor"></i>
+                    <p>Iusto quaerat, hic doloribus vel. Voluptatibus harum dolore sunt autem vero nesciunt.</p>
+                </li>
+                <li>
+                    <i class="icon-light-bulb"></i>
+                    <p>Dicta officiis, vero fugit dolore repellendus, placeat at. Eos perferendis voluptatem voluptatibus.</p>
+                </li>
+            </ul>
         </div>
-    </section>
-</div> <!-- end of mainWrapper -->
+    </div>
+</section>
 
 <!-- forgot password -->
 <div id="forgpass-popup" class="popupWrap popupSmall mfp-hide">
