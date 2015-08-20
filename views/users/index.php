@@ -8,7 +8,8 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\Users */
 /* @var $form ActiveForm */
 ?>
-<div class="homeTop clearAfter">
+<?php Yii::$app->view->params['user'] = $user; ?>
+<div class="homeTop <?= !Yii::$app->user->isGuest?'homeTopUser':'' ?> clearAfter">
     <div class="container">
         <div class="homeTopText">
             <h4 class="cd-headline zoom">
@@ -26,145 +27,147 @@ use yii\widgets\ActiveForm;
                 </div>
             </h4>
         </div>
-        <div class="homeSignInUp tabs">
-            <ul>
-                <li><a href="#signupTab">Signup</a></li>
-                <li><a href="#loginTab">Login</a></li>
-            </ul>
-            <div>
-                <div id="signupTab">
-                    <?php
-                    echo \Yii::$app->getSession()->getFlash('registrationSuccess');
-                    echo \Yii::$app->getSession()->getFlash('registrationWarning');
-                    ?>
-                    <?php
-                    $f = ActiveForm::begin([
-                                'id' => 'registration-form',
-                                'action' => \yii\helpers\Url::to(['users/index'])
-                    ]);
-                    ?>
-
-
-                    <?=
-                    $f->field($registrationModel, 'first_name', [
-                        'template' => "{input}<i class='icon-man-streamline-user'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                        'options' => [
-                            'class' => 'formRow frIconLeft'
-                ]])->textInput(['class' => 'formControl', 'placeholder' => 'Name'])->label(false);
-                    ?>
-                    <?=
-                    $f->field($registrationModel, 'last_name', [
-                        'template' => "{input} <i class='icon-man-streamline-user'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                        'options' => [
-                            'class' => 'formRow frIconLeft'
-                ]])->textInput(['class' => 'formControl', 'placeholder' => 'Last name'])->label(false);
-                    ?>
-                    <?=
-                    $f->field($registrationModel, 'email', [
-                        'template' => "{input} <i class='icon-email-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                        'options' => [
-                            'class' => 'formRow frIconLeft'
-                ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email'])->label(false);
-                    ?>
-                    <?=
-                    $f->field($registrationModel, 'password', [
-                        'template' => "{input} <i class='icon-lock-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                        'options' => [
-                            'class' => 'formRow frIconLeft'
-                ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password'])->label(false);
-                    ?>
-                    <?=
-                    $f->field($registrationModel, 'confirm_password', [
-                        'template' => "{input} <i class='icon-lock-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                        'options' => [
-                            'class' => 'formRow frIconLeft'
-                ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Retype password'])->label(false);
-                    ?>
-                    <?=
-                    $f->field($registrationModel, 'conditions', ['options' => [
-                            'class' => 'checkbox'
-                ]])->checkbox(['label' => 'Terms and conditions'])
-                    ?>
-
-                    <?= Html::submitButton('Register', ['class' => 'btn defBtn']) ?>
-
-
-                    <?php ActiveForm::end(); ?>
-                </div>
-                <div id="loginTab">
-                    <?php
-                    echo \Yii::$app->getSession()->getFlash('success');
-                    echo \Yii::$app->getSession()->getFlash('warning');
-                    ?>
-
-                    <?php
-                    $form = ActiveForm::begin([
-                                'id' => 'login-form',
-                                'action' => \yii\helpers\Url::to(['users/index'])
-                    ]);
-                    ?>
-
-
-
-                    <?=
-                    $form->field($model, 'email', [
-                        'template' => "{input} <i class='icon-email-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                        'options' => [
-                            'class' => 'formRow frIconLeft'
-                ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
-                    ?>
-
-                    <?=
-                    $form->field($model, 'password', [
-                        'template' => "{input} <i class='icon-lock-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                        'options' => [
-                            'class' => 'formRow frIconLeft'
-                ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password']);
-                    ?>
-
-                    <div class="remMeForgPass clearAfter">
-                        <?=
-                        $form->field($model, 'rememberMe', ['options' => [
-                                'class' => 'checkbox'
-                    ]])->checkbox(['label' => 'Remember me!'])
+        <?php if (Yii::$app->user->isGuest) { ?>
+            <div class="homeSignInUp tabs">
+                <ul>
+                    <li><a href="#signupTab">Signup</a></li>
+                    <li><a href="#loginTab">Login</a></li>
+                </ul>
+                <div>
+                    <div id="signupTab">
+                        <?php
+                        echo \Yii::$app->getSession()->getFlash('registrationSuccess');
+                        echo \Yii::$app->getSession()->getFlash('registrationWarning');
                         ?>
-                        <div class="forgPass">
-                            <a class="textBtn popupBtn" href="#forgpass-popup" >Forgot password?</a>
-                        </div>
+                        <?php
+                        $f = ActiveForm::begin([
+                                    'id' => 'registration-form',
+                                    'action' => \yii\helpers\Url::to(['users/index'])
+                        ]);
+                        ?>
+
+
+                        <?=
+                        $f->field($registrationModel, 'first_name', [
+                            'template' => "{input}<i class='icon-man-streamline-user'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                            'options' => [
+                                'class' => 'formRow frIconLeft'
+                    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Name'])->label(false);
+                        ?>
+                        <?=
+                        $f->field($registrationModel, 'last_name', [
+                            'template' => "{input} <i class='icon-man-streamline-user'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                            'options' => [
+                                'class' => 'formRow frIconLeft'
+                    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Last name'])->label(false);
+                        ?>
+                        <?=
+                        $f->field($registrationModel, 'email', [
+                            'template' => "{input} <i class='icon-email-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                            'options' => [
+                                'class' => 'formRow frIconLeft'
+                    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email'])->label(false);
+                        ?>
+                        <?=
+                        $f->field($registrationModel, 'password', [
+                            'template' => "{input} <i class='icon-lock-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                            'options' => [
+                                'class' => 'formRow frIconLeft'
+                    ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password'])->label(false);
+                        ?>
+                        <?=
+                        $f->field($registrationModel, 'confirm_password', [
+                            'template' => "{input} <i class='icon-lock-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                            'options' => [
+                                'class' => 'formRow frIconLeft'
+                    ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Retype password'])->label(false);
+                        ?>
+                        <?=
+                        $f->field($registrationModel, 'conditions', ['options' => [
+                                'class' => 'checkbox'
+                    ]])->checkbox(['label' => 'Terms and conditions'])
+                        ?>
+
+                        <?= Html::submitButton('Register', ['class' => 'btn defBtn']) ?>
+
+
+                        <?php ActiveForm::end(); ?>
                     </div>
-                    <?= Html::submitButton('Login', ['class' => 'btn defBtn']) ?>
-                    <?php ActiveForm::end(); ?>
+                    <div id="loginTab">
+                        <?php
+                        echo \Yii::$app->getSession()->getFlash('success');
+                        echo \Yii::$app->getSession()->getFlash('warning');
+                        ?>
+
+                        <?php
+                        $form = ActiveForm::begin([
+                                    'id' => 'login-form',
+                                    'action' => \yii\helpers\Url::to(['users/index'])
+                        ]);
+                        ?>
+
+
+
+                        <?=
+                        $form->field($model, 'email', [
+                            'template' => "{input} <i class='icon-email-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                            'options' => [
+                                'class' => 'formRow frIconLeft'
+                    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
+                        ?>
+
+                        <?=
+                        $form->field($model, 'password', [
+                            'template' => "{input} <i class='icon-lock-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+                            'options' => [
+                                'class' => 'formRow frIconLeft'
+                    ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password']);
+                        ?>
+
+                        <div class="remMeForgPass clearAfter">
+                            <?=
+                            $form->field($model, 'rememberMe', ['options' => [
+                                    'class' => 'checkbox'
+                        ]])->checkbox(['label' => 'Remember me!'])
+                            ?>
+                            <div class="forgPass">
+                                <a class="textBtn popupBtn" href="#forgpass-popup" >Forgot password?</a>
+                            </div>
+                        </div>
+                        <?= Html::submitButton('Login', ['class' => 'btn defBtn']) ?>
+                        <?php ActiveForm::end(); ?>
+                    </div>
                 </div>
             </div>
-        </div>
+        <?php } ?>
     </div>
 </div>
 <section class="homeSection">

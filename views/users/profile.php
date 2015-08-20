@@ -44,9 +44,9 @@
     <div class="profileR">
         <div class="profileTabs">
             <ul class="clearAfter">
-                <li class="active"><a href="my-profile.html"><i class="icon-card-user-2"></i>My Profile</a></li>
-                <li><a href="my-colleagues.html"><i class="icon-contacts"></i>Colleagues</a></li>
-                <li><a href="my-notifications.html"><i class="icon-bell-two"></i>Notifications</a></li>
+                <li class="active"><a href="<?= \yii\helpers\Url::to(['users/profile']) ?>"><i class="icon-card-user-2"></i>My Profile</a></li>
+                <li><a href="#"><i class="icon-contacts"></i>Colleagues</a></li>
+                <li><a href="#"><i class="icon-bell-two"></i>Notifications</a></li>
             </ul>
         </div>
         <div class="tabsContent">
