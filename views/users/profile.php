@@ -14,10 +14,8 @@ use yii\widgets\ActiveForm;
             <?php if (is_file($filename)) { ?>
                 <img src="/images/user-1.png">
                 <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>')"></span>
-            </div>
-
-                                                                                                                                        <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
-        <?php } ?>
+            <?php } ?>
+        </div>
         <p style="color:green;display: none" id="imageUploadSuccess">Image uploaded successfully!</p>
         <p style="color:red;display: none" id="imageUploadError"></p>
 
@@ -95,7 +93,7 @@ use yii\widgets\ActiveForm;
 
                                                 <?php if ($form['formType'] === 'input') { ?>
                                                     <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                                                                <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                                                                                                                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
                                                     <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                 <?php } ?>
                                                 <?php if ($form['formType'] === 'textarea') { ?>
