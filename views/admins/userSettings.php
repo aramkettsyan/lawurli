@@ -357,7 +357,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
         $('.item').bind("DOMSubtreeModified", function () {
             if (j === 0) {
-                $('.container-loads').each(function () {
+                $(this).find('.container-loads').each(function () {
                     $(this).find('.options:first').removeClass();
                     $(this).find('.added_option:first').removeClass().addClass('form-control');
                     $(this).find('.del-load:first').css('display', 'none');
