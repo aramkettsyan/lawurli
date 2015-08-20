@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
                 <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>')"></span>
             </div>
 
-                                                                                                                        <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
+                                                                                                                                        <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
         <?php } ?>
         <p style="color:green;display: none" id="imageUploadSuccess">Image uploaded successfully!</p>
         <p style="color:red;display: none" id="imageUploadError"></p>
@@ -57,10 +57,12 @@ use yii\widgets\ActiveForm;
         </div>
         <div class="tabsContent">
             <?php foreach ($this->params['sections'] as $sectionName => $section) { ?>
+                <?php $emptySectionToken = false; ?>
                 <div class="cvTimeline">
                     <h4><?= $sectionName ?></h4>
 
                     <?php foreach ($section as $subSectionName => $subSection) { ?>
+                        <?php $emptySubSectionToken = false; ?>
                         <div class="cvSub sub_section">
                             <?php if ($subSectionName) { ?>
                                 <div class="cvSubLabel">
@@ -69,7 +71,6 @@ use yii\widgets\ActiveForm;
                             <?php } ?>
                             <div class="cvSubCont">
                                 <ul>
-
                                     <?php $subSectionId = $subSection['0']['subId']; ?>
                                     <?php if (isset($this->params['user_forms'][$subSectionId])) { ?>
                                         <?php $sub_sections_count = count($this->params['user_forms'][$subSectionId]); ?>
@@ -87,9 +88,14 @@ use yii\widgets\ActiveForm;
                                                 <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
                                                     <?php $value = $this->params['user_forms'][$subSectionId][$u][$form['formId']] ?>
                                                 <?php } ?>
+                                                <?php if (!empty($value)) { ?>
+                                                    <?php $emptySectionToken = true; ?>
+                                                    <?php $emptySubSectionToken = true; ?>
+                                                <?php } ?>
+
                                                 <?php if ($form['formType'] === 'input') { ?>
                                                     <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                                                                                                                                                                <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
                                                     <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                 <?php } ?>
                                                 <?php if ($form['formType'] === 'textarea') { ?>
@@ -141,12 +147,16 @@ use yii\widgets\ActiveForm;
                                 </ul>
 
                             </div>
-
+                            <?php if (!$emptySubSectionToken) { ?>
+                                <span class="hideSubSection"></span>
+                            <?php } ?>
                         </div>
+                    <?php } ?>
+                    <?php if (!$emptySectionToken) { ?>
+                        <span class="hideSection"></span>
                     <?php } ?>
                 </div>
             <?php } ?>
-
 
         </div>
     </div>
@@ -341,6 +351,11 @@ use yii\widgets\ActiveForm;
 
 <script type="text/javascript">
     $(document).ready(function () {
+
+        $('.hideSection').parent().hide();
+        $('.hideSubSection').parent().hide();
+
+
         $('.inputError').each(function () {
             if ($(this).find('.help-block').html().length > 0) {
                 $(this).show();
@@ -366,7 +381,7 @@ use yii\widgets\ActiveForm;
                 items: {src: '#signup-popup'}, type: 'inline'
             }, 0);
         }
-        
+
         var showLogin = <?= Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false' ?>;
 <?php Yii::$app->getSession()->destroySession('showLogin'); ?>
         if (showLogin) {
