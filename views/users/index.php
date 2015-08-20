@@ -128,7 +128,11 @@ use yii\widgets\ActiveForm;
 
                     <?=
                     $form->field($model, 'email', [
-                        'template' => "{input}{error} <i class='icon-email-streamline'></i>",
+                        'template' => "{input} <i class='icon-email-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
                         'options' => [
                             'class' => 'formRow frIconLeft'
                 ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
@@ -136,7 +140,11 @@ use yii\widgets\ActiveForm;
 
                     <?=
                     $form->field($model, 'password', [
-                        'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
+                        'template' => "{input} <i class='icon-lock-streamline'></i>
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
                         'options' => [
                             'class' => 'formRow frIconLeft'
                 ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password']);
@@ -259,6 +267,21 @@ use yii\widgets\ActiveForm;
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('.inputError').each(function () {
+            if ($(this).find('.help-block').html().length > 0) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+        $('.inputError').bind("DOMSubtreeModified", function () {
+            if ($(this).find('.help-block').html().length > 0) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+
 
         var showLogin = <?= Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false' ?>;
 <?php Yii::$app->getSession()->destroySession('showLogin'); ?>
