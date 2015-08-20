@@ -1407,6 +1407,22 @@ footer h4 {
     padding: 0 20px;
 }
 
+ .checkbox {
+    position: relative;
+}
+.checkbox .inputError {
+    left: -2px;
+    right: initial;
+}
+.checkbox .inputError span {
+    left: 0;
+    right: initial;
+    top: -39px;
+}
+.checkbox .inputError span:after {
+    right: initial;
+    left: 0;
+}
 
 
 

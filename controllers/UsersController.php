@@ -321,7 +321,7 @@ class UsersController extends \yii\web\Controller {
             } else {
                 return $this->redirect('/users/index');
             }
-        }else{
+        } else {
             return $this->redirect('/users/index');
         }
     }
@@ -438,7 +438,7 @@ class UsersController extends \yii\web\Controller {
         if ($action === 'reset_password') {
             if (Yii::$app->request->post('Users')) {
                 \Yii::$app->getSession()->writeSession('resetPassword', true);
-                $resetModel = $this->actionResetPassword($id, $key);
+                $resetModel = $this->actionResetPassword($id, $key, 'users/index');
             }
         }
 
@@ -492,7 +492,7 @@ class UsersController extends \yii\web\Controller {
 
     public function actionLogout() {
         Yii::$app->user->logout();
-        $this->goHome();
+        return $this->refresh();
     }
 
     public function actionEmailConfirmation($email = false) {
@@ -521,7 +521,7 @@ class UsersController extends \yii\web\Controller {
         $this->redirect('/users/index');
     }
 
-    public function actionResetPassword($id = false, $key = false) {
+    public function actionResetPassword($id = false, $key = false, $action = false) {
         $model = new Users();
         if (Yii::$app->request->post('Users')) {
             $email = Yii::$app->request->post('Users')['email'];
@@ -543,7 +543,7 @@ class UsersController extends \yii\web\Controller {
                 }
                 $model->generatePasswordResetToken();
                 $model->save();
-                $email = \Yii::$app->mailer->compose('resetPassword', ['user' => $model])
+                $email = \Yii::$app->mailer->compose('resetPassword', ['user' => $model, 'action' => $action])
                         ->setTo($model->email)
                         ->setFrom(['admin@email.com' => \Yii::$app->name])
                         ->setSubject('Password reset')
@@ -598,7 +598,7 @@ class UsersController extends \yii\web\Controller {
         }
     }
 
-    public function actionProfile($id = false) {
+    public function actionProfile($action = false, $id = false, $key = false) {
 
         if ($id) {
             $user = Users::findOne(['id' => (int) $id]);
@@ -608,6 +608,65 @@ class UsersController extends \yii\web\Controller {
         } else {
             return $this->redirect('/users/index');
         }
+
+
+        if (\Yii::$app->user->isGuest) {
+            $resetModel = new Users();
+            $user_reset = new Users();
+            if ($action === 'reset_password') {
+                if (Yii::$app->request->post('Users')) {
+                    \Yii::$app->getSession()->writeSession('resetPassword', true);
+                    $resetModel = $this->actionResetPassword($id, $key, 'users/profile');
+                }
+            }
+
+            if ($action === 'reset') {
+                $user_reset = $this->actionReset($id, $key);
+                if ($user_reset === true) {
+                    return $this->redirect('#loginTab');
+                }
+            }
+
+
+            $registrationModel = new Users();
+            $model = new LoginForm();
+            $registrationModel->scenario = 'create';
+            if ($action !== 'reset' && $action !== 'reset_password' && Yii::$app->request->post('Users')) {
+                if ($registrationModel->load(Yii::$app->request->post()) && $registrationModel->save()) {
+                    $email = \Yii::$app->mailer->compose('confirmEmail', ['user' => $registrationModel])
+                            ->setTo($registrationModel->email)
+                            ->setFrom(['admin@email.com' => \Yii::$app->name])
+                            ->setSubject('E-mail confirmation')
+                            ->send();
+
+                    if ($email) {
+                        Yii::$app->getSession()->setFlash('registrationSuccess', 'Please check your email address!');
+                        $registrationModel = new Users();
+                    } else {
+                        Yii::$app->getSession()->setFlash('registrationWarning', 'Error,please try again!');
+                        $registrationModel->password = '';
+                        $registrationModel->confirm_password = '';
+                    }
+                }else{
+                    Yii::$app->getSession()->writeSession('showRegistration', true);
+                }
+            } else if (Yii::$app->request->post('LoginForm')) {
+                if ($model->load(Yii::$app->request->post()) && $model->login()) {
+                    return $this->refresh();
+                } else {
+                    Yii::$app->getSession()->writeSession('showLogin', true);
+                }
+            }
+            $models = [
+                'registrationModel' => $registrationModel,
+                'resetModel' => $resetModel,
+                'model' => $model,
+            ];
+        } else {
+            $models = [];
+        }
+
+
         if ($user) {
             $connection = Yii::$app->db;
             $user_forms = $connection->createCommand("SELECT user_forms.form_id,user_forms.index,user_forms.value,forms.type,sub_sections.id as subSectionId FROM user_forms "
@@ -677,14 +736,14 @@ class UsersController extends \yii\web\Controller {
                     ];
                 }
             }
+            
+            $models['user'] = $user;
+            $models['user_forms'] = $new_user_forms;
+            $models['sections'] = $newSections;
 
 
 
-            return $this->render('/users/profile', [
-                        'user' => $user,
-                        'sections' => $newSections,
-                        'user_forms' => $new_user_forms
-            ]);
+            return $this->render('/users/profile', $models);
         } else {
             return $this->redirect('/users/index');
         }

@@ -9,13 +9,13 @@ use yii\widgets\ActiveForm;
 /* @var $form ActiveForm */
 ?>
 <?php Yii::$app->view->params['user'] = $user; ?>
-<div class="homeTop <?= !Yii::$app->user->isGuest?'homeTopUser':'' ?> clearAfter">
+<div class="homeTop <?= !Yii::$app->user->isGuest ? 'homeTopUser' : '' ?> clearAfter">
     <div class="container">
         <div class="homeTopText">
             <h4 class="cd-headline zoom">
-                <span>Eligendi amet</span>
-                <span>voluptatib, itaque elit</span>
-                <span>totam asper volu</span>
+                <span>Eligendi amet</span><br>
+                <span>voluptatib, itaque elit</span><br>
+                <span>totam asper volu</span><br>
                 <span class="cd-words-wrapper">
                     <b class="is-visible">debitis.</b>
                     <b>aspernatur.</b>
@@ -103,7 +103,11 @@ use yii\widgets\ActiveForm;
                     ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Retype password'])->label(false);
                         ?>
                         <?=
-                        $f->field($registrationModel, 'conditions', ['options' => [
+                        $f->field($registrationModel, 'conditions', ['template' => "{input}
+                            <span class='inputError'>
+                                <span>{error}</span>
+                            </span>",
+                            'options' => [
                                 'class' => 'checkbox'
                     ]])->checkbox(['label' => 'Terms and conditions'])
                         ?>
@@ -283,6 +287,10 @@ use yii\widgets\ActiveForm;
             } else {
                 $(this).hide();
             }
+        });
+        
+        $('.checkbox').on('change',function(){
+            $(this).find('.inputError').hide();
         });
 
 

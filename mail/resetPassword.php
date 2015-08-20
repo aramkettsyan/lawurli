@@ -4,7 +4,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $user app\modules\user\models\User */
  
-$confirmLink = Yii::$app->urlManager->createAbsoluteUrl(['users/index','action'=>'reset', 'id' => $user->id, 'key' => $user->password_reset_token]).'#forgpass-popup-2';
+$confirmLink = Yii::$app->urlManager->createAbsoluteUrl([$action,'action'=>'reset', 'id' => $user->id, 'key' => $user->password_reset_token]).'#forgpass-popup-2';
 ?>
 
 Dear <?= Html::encode($user->first_name.' '.$user->last_name) ?>,<br>

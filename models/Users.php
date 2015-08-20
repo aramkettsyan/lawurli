@@ -53,7 +53,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             [['first_name', 'last_name'], 'string', 'min' => 2],
             [['email', 'password_reset_token', 'activation_token'], 'unique', 'targetAttribute' => ['email', 'password_reset_token', 'activation_token'], 'message' => 'Email has already been taken.'],
             [['auth_key'], 'unique'],
-            [['email'], 'unique'],
+            [['email'], 'unique','message'=>'Email has already been taken.'],
             [['confirm_password'], 'validateConfirmPassword']
         ];
     }
