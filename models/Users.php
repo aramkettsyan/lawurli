@@ -12,6 +12,8 @@ use yii\db\Expression;
  * @property string $first_name
  * @property string $last_name
  * @property string $email
+ * @property string $phone
+ * @property string $location
  * @property string $password
  * @property string $password_reset_token
  * @property integer $active
@@ -47,8 +49,9 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             [['active'], 'integer'],
             [['email'], 'email'],
             [['created', 'modified'], 'safe'],
-            [['first_name', 'last_name', 'email', 'password', 'password_reset_token', 'activation_token', 'image'], 'string', 'max' => 255],
+            [['first_name', 'last_name', 'email', 'password','location','latlng', 'password_reset_token', 'activation_token', 'image'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 64],
+            [['phone'], 'string', 'max' => 128],
             [['password'], 'string', 'min' => 6],
             [['first_name', 'last_name'], 'string', 'min' => 2],
             [['email', 'password_reset_token', 'activation_token'], 'unique', 'targetAttribute' => ['email', 'password_reset_token', 'activation_token'], 'message' => 'Email has already been taken.'],
@@ -67,6 +70,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'email' => 'Email',
+            'phone' => 'Phone',
+            'location' => 'Location',
             'password' => 'Password',
             'confirm_password' => 'Retype password',
             'password_reset_token' => 'Password Reset Token',

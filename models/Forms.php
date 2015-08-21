@@ -43,7 +43,7 @@ class Forms extends \yii\db\ActiveRecord {
             ['options', 'checkOptions', 'skipOnEmpty' => false],
             ['placeholder', 'required','on'=>'input'],
             ['placeholder', 'required','on'=>'textarea'],
-            [['options', 'placeholder'], 'required','on'=>'select'],
+            [['options', 'label'], 'required','on'=>'select'],
             [['label','options'], 'required','on'=>'radio'],
             [['label','options'], 'required','on'=>'checkbox'],
         ];

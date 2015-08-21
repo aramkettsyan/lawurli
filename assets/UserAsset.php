@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -13,13 +14,14 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UserAsset extends AssetBundle
-{
+class UserAsset extends AssetBundle {
+
     public $basePath = '@webroot';
     public $baseUrl = '@web';
-    public $css = [        
+    public $css = [
         'include/jquery-ui/jquery-ui-1.9.2.custom.css',
         'https://fontastic.s3.amazonaws.com/uQrZqTnHFXueUkKYTVpcnZ/icons.css',
+        'https://fonts.googleapis.com/css?family=Roboto:300,400,500',
         'include/animated-headline/animated-headline.css',
         'include/magnific-popup/magnific-popup.css',
         'include/custom-scrollbar/jquery.mCustomScrollbar.css',
@@ -38,9 +40,11 @@ class UserAsset extends AssetBundle
         'include/animated-headline/animated-headline.js',
         'include/magnific-popup/jquery.magnific-popup.js',
         'include/custom-scrollbar/jquery.mCustomScrollbar.js',
-        'include/main.js'
+        'include/main.js',
+        'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places',
     ];
     public $depends = [
         'yii\web\YiiAsset'
     ];
+
 }

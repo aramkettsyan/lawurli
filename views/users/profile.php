@@ -27,11 +27,11 @@ use yii\widgets\ActiveForm;
             <ul class="listWithIcons">
                 <li>
                     <i class="icon-location"></i>
-                    <p>Clay County, Missouri, US</p>
+                    <p><?= $user->location ? $user->location : 'Location undefined' ?></p>
                 </li>
                 <li>
                     <i class="icon-smart-phone-2"></i>
-                    <p>+421 756 32 12</p>
+                    <p><?= $user->phone?$user->phone:'No phone number' ?></p>
                 </li>
                 <li>
                     <i class="icon-letter-mail-1"></i>
@@ -46,9 +46,13 @@ use yii\widgets\ActiveForm;
         <?php } ?>
     </div>
     <div class="profileR">
+        <h4 style="color:green"><?= Yii::$app->getSession()->readSession('updateSuccess') ?></h4>
+        <h4 style="color:red"><?= Yii::$app->getSession()->readSession('updateError') ?></h4>
+        <?php Yii::$app->getSession()->destroySession('updateSuccess'); ?>
+        <?php Yii::$app->getSession()->destroySession('updateError'); ?>
         <div class="profileTabs">
             <ul class="clearAfter">
-                <li class="active"><a href="<?= \yii\helpers\Url::to(['users/profile']) ?>"><i class="icon-card-user-2"></i>My Profile</a></li>
+                <li class="active"><a href="<?= \yii\helpers\Url::to(['users/profile']) ?>"><i class="icon-card-user-2"></i>Profile</a></li>
                 <li><a href="#"><i class="icon-contacts"></i>Colleagues</a></li>
                 <li><a href="#"><i class="icon-bell-two"></i>Notifications</a></li>
             </ul>
@@ -93,7 +97,7 @@ use yii\widgets\ActiveForm;
 
                                                 <?php if ($form['formType'] === 'input') { ?>
                                                     <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                                                                                                                                                                                                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
                                                     <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                 <?php } ?>
                                                 <?php if ($form['formType'] === 'textarea') { ?>
@@ -309,20 +313,47 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 
+
     <!-- forgot password -->
     <div id="forgpass-popup" class="popupWrap popupSmall mfp-hide">
+
+
         <div class="popupTitle">
             <h5>Reset password</h5>
             <button class="mfp-close"></button>
         </div>
+
+        <?php
+        $resetPassForm = ActiveForm::begin([
+                    'id' => 'password-reset-form',
+                    'action' => \yii\helpers\Url::to(['users/profile', 'action' => 'reset_password', 'id' => $id]),
+                    'options' => ['class' => '']
+        ]);
+        ?>
+
         <div class="popupCont">
-            <div class="formRow frIconLeft">
-                <input type="text" class="formControl" placeholder="Email">
-                <i class="icon-email-streamline"></i>
-            </div>
-            <a href="#forgpass-popup-2" class="btn defBtn popupBtn">Send Email</a>
-            <!-- <input type="submit" class="btn defBtn" value="Send email"> -->
+            <?=
+            $resetPassForm->field($resetModel, 'email', [
+                'template' => "{input}{error} <i class='icon-email-streamline'></i>",
+                'options' => [
+                    'class' => 'formRow frIconLeft'
+        ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
+            ?>
+            <p style="color:red">
+                <?php
+                echo \Yii::$app->getSession()->getFlash('resetWarning');
+                ?>
+            </p>
+            <p style="color:green">
+                <?php
+                echo \Yii::$app->getSession()->getFlash('resetSuccess');
+                ?>
+            </p>
+
+            <?= Html::submitButton('Send Email', ['id' => 'password-reset-form_submit', 'class' => 'btn defBtn']) ?>
         </div>
+
+        <?php ActiveForm::end(); ?>
     </div>
 
     <!-- forgot password 2 -->
@@ -331,19 +362,32 @@ use yii\widgets\ActiveForm;
             <h5>Reset password</h5>
             <button class="mfp-close"></button>
         </div>
-        <div class="popupCont">
-            <div class="formRow frIconLeft">
-                <input type="password" class="formControl" placeholder="New password">
-                <i class="icon-lock-streamline"></i>
-            </div>
-            <div class="formRow frIconLeft">
-                <input type="password" class="formControl" placeholder="Confirm password">
-                <i class="icon-lock-streamline"></i>
-            </div>
-            <input type="submit" class="btn defBtn" value="Confirm">
-        </div>
-    </div>
+        <?php
+        $resetForm = ActiveForm::begin([
+                    'id' => 'password-reset-form',
+        ]);
+        ?>
 
+
+        <div class="popupCont">
+            <?=
+            $resetForm->field($user_reset, 'password', [
+                'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
+                'options' => [
+                    'class' => 'formRow frIconLeft'
+        ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'New password']);
+            ?>
+            <?=
+            $resetForm->field($user_reset, 'confirm_password', [
+                'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
+                'options' => [
+                    'class' => 'formRow frIconLeft'
+        ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Confirm password']);
+            ?>
+            <?= Html::submitButton('Confirm', ['id' => 'password-reset-form_submit', 'class' => 'btn defBtn']) ?>
+        </div>
+        <?php ActiveForm::end(); ?>
+    </div>
 <?php } ?>
 
 

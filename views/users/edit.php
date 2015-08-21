@@ -10,24 +10,24 @@
                 </div>
             </div>
 
-    <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
+        <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
         <?php } ?>
         <p style="color:green;display: none" id="imageUploadSuccess">Image uploaded successfully!</p>
         <p style="color:red;display: none" id="imageUploadError"></p>
 
         <div class="userDetails">
             <h3 class="userName"><?= $user->first_name ?> <?= $user->last_name ?></h3>
-<!--            <div class="proffInfo">
-                <span class="userProff">Bandit</span> 
-            </div>-->
+            <!--            <div class="proffInfo">
+                            <span class="userProff">Bandit</span> 
+                        </div>-->
             <ul class="listWithIcons">
                 <li>
                     <i class="icon-location"></i>
-                    <p>Clay County, Missouri, US</p>
+                    <p><?= $user->location ? $user->location : 'Location undefined' ?></p>
                 </li>
                 <li>
                     <i class="icon-smart-phone-2"></i>
-                    <p>+421 756 32 12</p>
+                    <p><?= $user->phone ?></p>
                 </li>
                 <li>
                     <i class="icon-letter-mail-1"></i>
@@ -37,10 +37,6 @@
         </div>
     </div>
     <div class="profileR">
-        <h4 style="color:green"><?= Yii::$app->getSession()->readSession('updateSuccess') ?></h4>
-        <h4 style="color:red"><?= Yii::$app->getSession()->readSession('updateError') ?></h4>
-        <?php Yii::$app->getSession()->destroySession('updateSuccess'); ?>
-        <?php Yii::$app->getSession()->destroySession('updateError'); ?>
 
         <?php $action = Yii::$app->getRequest()->getQueryParam('action'); ?>
 
@@ -226,7 +222,7 @@
         onComplete: function (id, fileName, responseJSON) {
 
             if (responseJSON.success) {
-                $('.profileImage').css('background-image','url(/images/users_images/'+responseJSON.fileName+')');
+                $('.profileImage').css('background-image', 'url(/images/users_images/' + responseJSON.fileName + ')');
                 $('#imageUploadSuccess').show();
                 $('#imageUploadError').hide();
             }
@@ -239,5 +235,6 @@
         }
     });
 </script>
+
 
 

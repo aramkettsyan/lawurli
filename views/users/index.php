@@ -22,8 +22,10 @@ use yii\widgets\ActiveForm;
                     <b>consequu.</b>
                 </span>
                 <div class="homeSearch">
-                    <input type="text" placeholder="Search for a colleague...">
-                    <button type="submit"><i class="icon-search"></i></button>
+                    <form method="GET" action="<?= \yii\helpers\Url::to(['users/search']) ?>">
+                        <input type="text" name="query" placeholder="Search for a colleague...">
+                        <button type="submit"><i class="icon-search"></i></button>
+                    </form>
                 </div>
             </h4>
         </div>
@@ -274,6 +276,16 @@ use yii\widgets\ActiveForm;
 
 <script type="text/javascript">
     $(document).ready(function () {
+
+        $('#signupTab input').on('keyup', function () {
+            $(this).parent().find('.help-block').html('');
+            $(this).parent().find('.inputError').hide();
+        });
+        $('#loginTab input').on('keyup', function () {
+            $(this).parent().find('.help-block').html('');
+            $(this).parent().find('.inputError').hide();
+        });
+
         $('.inputError').each(function () {
             if ($(this).find('.help-block').html().length > 0) {
                 $(this).show();
@@ -288,8 +300,8 @@ use yii\widgets\ActiveForm;
                 $(this).hide();
             }
         });
-        
-        $('.checkbox').on('change',function(){
+
+        $('.checkbox').on('change', function () {
             $(this).find('.inputError').hide();
         });
 

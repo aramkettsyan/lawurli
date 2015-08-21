@@ -56,7 +56,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
                                                         <label class="customLbSt" for="<?= $sub->label; ?>"><?php echo $sub->label; ?></label> 
                                                         <?php $options = explode('-,-', $sub->options); ?>
-                                                        <?php echo Html::dropDownList($sub->label, '', $options, ['prompt' => $sub->placeholder, 'id' => $sub->label, 'class' => 'form-control']); ?>
+                                                        <?php echo Html::dropDownList($sub->label, '', $options, ['prompt' => $sub->placeholder?$sub->placeholder:'Select', 'id' => $sub->label, 'class' => 'form-control']); ?>
 
                                                     <?php } ?>
                                                     <?php if ($sub->type === 'input' && $sub->sub_section_id === $sub_section->id) { ?>

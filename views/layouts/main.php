@@ -41,10 +41,12 @@ UserAsset::register($this);
                         </div>
                         <div class="headerRight">
                             <div class="headerSrch">
-                                <input type="text" placeholder="Search...">
-                                <button type="submit">
-                                    <i class="icon-search"></i>
-                                </button>
+                                <form method="GET" action="<?= \yii\helpers\Url::to(['users/search']) ?>">
+                                    <input type="text" name="query" value="<?= isset($this->params['query'])?$this->params['query']:'' ?>" placeholder="Search...">
+                                    <button type="submit">
+                                        <i class="icon-search"></i>
+                                    </button>
+                                </form>
                             </div>
                             <nav class="headerMenu">
                                 <ul class="clearAfter linkHover">
@@ -117,6 +119,7 @@ UserAsset::register($this);
                                     <div class="dropDnSub">
                                         <ul>
                                             <li><a href="<?= \yii\helpers\Url::to(['users/profile']) ?>">My account</a></li>
+                                            <li><a href="<?= \yii\helpers\Url::to(['users/edit']) ?>">Edit</a></li>
                                             <li><a href="<?= \yii\helpers\Url::to(['users/logout']) ?>">Logout</a></li>
                                         </ul>
                                     </div>
@@ -197,6 +200,7 @@ UserAsset::register($this);
                                 <div class="dropDnSub">
                                     <ul>
                                         <li><a href="<?= \yii\helpers\Url::to(['users/profile']) ?>">My account</a></li>
+                                        <li><a href="<?= \yii\helpers\Url::to(['users/edit']) ?>">Edit</a></li>
                                         <li><a href="<?= \yii\helpers\Url::to(['users/logout']) ?>">Logout</a></li>
                                     </ul>
                                 </div>

@@ -20,23 +20,18 @@ class UsersController extends \yii\web\Controller {
                     'user' => 'user',
                     'rules' => [
                         [
-                            'actions' => ['logout', 'edit', 'profile', 'upload-image', 'index'],
+                            'actions' => ['logout', 'search', 'edit', 'profile', 'upload-image', 'index'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
                         [
-                            'actions' => ['index', 'email-confirmation', 'confirm', 'reset-password', 'reset-password-notifications', 'reset', 'profile'],
+                            'actions' => ['index', 'search', 'email-confirmation', 'confirm', 'reset-password', 'reset-password-notifications', 'reset', 'profile'],
                             'allow' => true,
                             'roles' => ['?']
                         ],
                     ],
                     'denyCallback' => function($rule, $action) {
-
-                if (Yii::$app->user->isGuest) {
-                    $this->redirect('/users/index');
-                } else {
-                    $this->redirect('/users/edit');
-                }
+                $this->redirect('/users/index');
             }
             ]];
         } else {
@@ -196,7 +191,7 @@ class UsersController extends \yii\web\Controller {
                                 if (Yii::$app->db->createCommand()->batchInsert('user_forms', ['user_id', 'form_id', 'index', 'value', 'created', 'modified'], $newArr)->execute()) {
                                     Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
                                     $transaction->commit();
-                                    return $this->refresh();
+                                    return $this->redirect('/users/profile');
                                 } else {
                                     Yii::$app->getSession()->writeSession('updateError', 'Can\'t insert form(s), try again.');
                                     $transaction->rollBack();
@@ -204,7 +199,7 @@ class UsersController extends \yii\web\Controller {
                             } else if (!$deleteFailed) {
                                 Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
                                 $transaction->commit();
-                                return $this->refresh();
+                                return $this->redirect('/users/profile');
                             }
                         } else {
                             Yii::$app->getSession()->writeSession('updateError', 'There are some error(s) in form(s), try again.');
@@ -229,7 +224,7 @@ class UsersController extends \yii\web\Controller {
                         if ($user->load($post) && $user->save()) {
                             Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
                             $transaction->commit();
-                            return $this->refresh();
+                            return $this->redirect('/users/profile');
                         } else {
                             $transaction->rollBack();
                         }
@@ -462,7 +457,7 @@ class UsersController extends \yii\web\Controller {
                         ->send();
 
                 if ($email) {
-                    Yii::$app->getSession()->setFlash('registrationSuccess', 'Please check your email address!');
+                    Yii::$app->getSession()->setFlash('registrationSuccess', 'Please check your mail inbox (spam) folder for account activation.');
                     $registrationModel = new Users();
                 } else {
                     Yii::$app->getSession()->setFlash('registrationWarning', 'Error,please try again!');
@@ -513,7 +508,7 @@ class UsersController extends \yii\web\Controller {
             $user->active = 1;
             $user->activation_token = null;
             $user->save();
-            Yii::$app->getSession()->setFlash('success', 'Your account successfully activated.');
+            Yii::$app->getSession()->setFlash('success', 'Your account is now activated. Please login.');
         } else {
             Yii::$app->getSession()->setFlash('warning', 'Invalid token.');
         }
@@ -562,10 +557,6 @@ class UsersController extends \yii\web\Controller {
             }
         }
         return $model;
-    }
-
-    public function actionResetPasswordNotifications() {
-        
     }
 
     public function actionReset($id, $key) {
@@ -621,9 +612,10 @@ class UsersController extends \yii\web\Controller {
             }
 
             if ($action === 'reset') {
-                $user_reset = $this->actionReset($id, $key);
-                if ($user_reset === true) {
-                    return $this->redirect('#loginTab');
+                $u = $this->actionReset($id, $key);
+                if ($u === true) {
+                    Yii::$app->getSession()->writeSession('showLogin', true);
+                    return $this->redirect('/users/profile/' . $id);
                 }
             }
 
@@ -647,7 +639,7 @@ class UsersController extends \yii\web\Controller {
                         $registrationModel->password = '';
                         $registrationModel->confirm_password = '';
                     }
-                }else{
+                } else {
                     Yii::$app->getSession()->writeSession('showRegistration', true);
                 }
             } else if (Yii::$app->request->post('LoginForm')) {
@@ -660,7 +652,9 @@ class UsersController extends \yii\web\Controller {
             $models = [
                 'registrationModel' => $registrationModel,
                 'resetModel' => $resetModel,
+                'user_reset' => $user_reset,
                 'model' => $model,
+                'id' => $id,
             ];
         } else {
             $models = [];
@@ -736,7 +730,7 @@ class UsersController extends \yii\web\Controller {
                     ];
                 }
             }
-            
+
             $models['user'] = $user;
             $models['user_forms'] = $new_user_forms;
             $models['sections'] = $newSections;
@@ -746,6 +740,60 @@ class UsersController extends \yii\web\Controller {
             return $this->render('/users/profile', $models);
         } else {
             return $this->redirect('/users/index');
+        }
+    }
+
+    public function actionSearch($search = 'basic', $query = false) {
+
+        if ($query !== false) {
+            if (!Yii::$app->user->isGuest) {
+                $id = Yii::$app->user->identity->id;
+                $user = Users::findOne(['id' => $id]);
+                \Yii::$app->view->params['user'] = $user;
+
+                $models = ['user' => $user];
+            } else {
+                $models = [];
+            }
+
+            $query_array = explode(' ', $query, 2);
+
+            if (!isset($query_array[1])) {
+                $likeQuery = '%' . $query_array[0] . '%';
+                $query_array = $query_array[0];
+                $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` WHERE `first_name` LIKE :likeQuery OR `last_name` LIKE :likeQuery ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
+                        ->bindParam(':likeQuery', $likeQuery)
+                        ->bindParam(':query', $query_array)
+                        ->queryAll();
+            } else {
+                $first_name = $query_array[0];
+                $last_name = $query_array[1];
+                $like_first_name = '%' . $query_array[0] . '%';
+                $like_last_name = '%' . $query_array[1] . '%';
+                $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                . 'WHERE `first_name` LIKE :likeFirstName '
+                                . 'OR `last_name` LIKE :likeFirstName '
+                                . 'OR `first_name` LIKE :likeLastName '
+                                . 'OR `last_name` LIKE :likeLastName '
+                                . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
+                                . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
+                        ->bindParam(':likeFirstName', $like_first_name)
+                        ->bindParam(':likeLastName', $like_last_name)
+                        ->bindParam(':firstName', $first_name)
+                        ->bindParam(':lastName', $last_name)
+                        ->queryAll();
+            }
+            $models['search'] = $search_result;
+//                $models['query'] = $query;
+            \Yii::$app->view->params['query'] = $query;
+
+
+            $advanced_search = Forms::find()->all();
+            $models['advanced'] = $advanced_search;
+
+            return $this->render('search', $models);
+        } else {
+            return $this->redirect('users/index');
         }
     }
 

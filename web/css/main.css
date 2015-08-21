@@ -405,14 +405,15 @@ li.ui-tabs-active a {
     top: 0;
     top: 8px;
     right: 8px;
+    padding: 3px 0;
 }
 .inputError i {
     margin: 0;
 }
 .inputError span {
     position: absolute;
-    top: -130%;
-    right: -2px;
+    top: 0;
+    right: 25px;
     white-space: nowrap;
     padding: 2px 5px;
     background: #DA8213;
@@ -420,12 +421,12 @@ li.ui-tabs-active a {
 }
 .inputError span:after {
     content: '';
-    border: solid 10px transparent;
-    border-top-color: #DA8213;
+    border: solid 5px transparent;
+    border-left-color: #DA8213;
     position: absolute;
     bottom: 10px;
-    bottom: -17px;
-    right: 0;
+    bottom: 6px;
+    right: -10px;
 }
 /* end input errors */
 .homeSearch {
@@ -1359,7 +1360,22 @@ header {
     left: 0;
     width: 100%;
 }*/
-
+.checkbox {
+    position: relative;
+}
+.checkbox .inputError {
+    /*left: -2px;*/
+    /*right: initial;*/
+}
+.checkbox .inputError span {
+    /*left: 0;*/
+    /*right: initial;*/
+    top: -10px;
+}
+.checkbox .inputError span:after {
+    /*right: initial;*/
+    /*left: 0;*/
+}
 
 
 /* footer */
@@ -1407,22 +1423,6 @@ footer h4 {
     padding: 0 20px;
 }
 
- .checkbox {
-    position: relative;
-}
-.checkbox .inputError {
-    left: -2px;
-    right: initial;
-}
-.checkbox .inputError span {
-    left: 0;
-    right: initial;
-    top: -39px;
-}
-.checkbox .inputError span:after {
-    right: initial;
-    left: 0;
-}
 
 
 

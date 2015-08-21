@@ -28,14 +28,25 @@ $fm = ActiveForm::begin([
                 'class' => 'formRow'
     ]])->textInput(['class' => 'formControl'])->label();
         ?>
-        <div class="formRow">
-            <label>Phone</label>
-            <input type="text" class="formControl">
-        </div>
-        <div class="formRow">
-            <label>Address</label>
-            <input type="text" class="formControl">
-        </div>
+        <?=
+        $fm->field($this->params['user'], 'phone', [
+            'options' => [
+                'class' => 'formRow'
+    ]])->textInput(['class' => 'formControl'])->label();
+        ?>
+        <?=
+        $fm->field($this->params['user'], 'location', [
+            'options' => [
+                'class' => 'formRow',
+    ]])->textInput(['class' => 'formControl',
+            'id' => 'autocomplete'])->label();
+        ?>
+        <?=
+        $fm->field($this->params['user'], 'latlng', [
+            'options' => [
+                'class' => 'formRow',
+    ]])->hiddenInput(['class' => 'formControl', 'id' => 'latlng'])->label(false);
+        ?>
 
     </div>
 
@@ -44,7 +55,7 @@ $fm = ActiveForm::begin([
     <div>
         <?php $this->params['user']->password = ''; ?>
         <?php $this->params['user']->confirm_password = ''; ?>
-        
+
         <?=
         $fm->field($this->params['user'], 'password', [
             'options' => [
@@ -65,3 +76,22 @@ $fm = ActiveForm::begin([
 </div>
 
 <?php ActiveForm::end(); ?>
+
+
+<script>
+    var autocomplete;
+
+    function initialize() {
+        autocomplete = new google.maps.places.Autocomplete(
+                /** @type {HTMLInputElement} */(document.getElementById('autocomplete')),
+                {types: ['geocode']});
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var place = autocomplete.getPlace();
+            document.getElementById('autocomplete').value = place.name;
+            document.getElementById('latlng').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+//            alert("This function is working!");
+            alert(document.getElementById('latlng').value);
+        });
+    }
+    initialize();
+</script>
