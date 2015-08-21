@@ -116,35 +116,39 @@ use yii\helpers\Html;
         <button class="mfp-close"></button>
     </div>
     <div class="popupCont srchPopupCont">
+        <?php
+        $fm = ActiveForm::begin([
+                    'id' => 'advanced-search-form',
+                    'method' => 'GET',
+                    'action' => \yii\helpers\Url::to(['users/search']),
+                    'options' => ['class' => 'form-horizontal', 'novalidate' => '']
+        ]);
+        ?>
         <div class="customScroll">
-            <?php
-            $fm = ActiveForm::begin([
-                        'id' => 'advanced-search-form',
-                        'options' => ['class' => 'form-horizontal', 'novalidate' => '']
-            ]);
-            ?>
             <div class="cols cols2">
                 <?php $i = 0; ?>
                 <div>
-                    <?php foreach ($advanced as $key=>$input) { ?>
-                        <?php if (!($key % 2)) { ?>
+                    <input type="hidden" name="search" value="advanced" >
+                    <input type="hidden" name="query" value="<?= isset($query[1])?$query[0].' '.$query[1]:$query[0] ?>" >
+                    <?php foreach ($advanced as $key => $input) { ?>
+                        <?php if ($key != 0 && !($key % 2)) { ?>
                             <div class="formRow">
                                 <?php if ($input->type === 'input') { ?>
                                     <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"> <?php echo $input->label; ?> </label>
                                     <?php if ($input->numeric == '0') { ?>
-                                        <?php echo Html::input('text', $input->label, NULL, ['id' => $input->label . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => $input->placeholder]); ?>
+                                        <?php echo Html::input('text', $input->label, NULL, ['id' => $input->label . '_' . $i,'name'=>'advanced['.$input->id.']', 'class' => 'formControl sForm', 'placeholder' => $input->placeholder]); ?>
                                     <?php } else { ?>
-                                        <?php echo Html::input('text', $input->label, NULL, ['id' => $input->label . '_' . $i, 'class' => 'formControl sForm', 'type' => 'number', 'placeholder' => $input->placeholder]); ?>
+                                        <?php echo Html::input('text', $input->label, NULL, ['id' => $input->label . '_' . $i,'name'=>'advanced['.$input->id.']', 'class' => 'formControl sForm', 'type' => 'number', 'placeholder' => $input->placeholder]); ?>
                                     <?php } ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'textarea') { ?>
                                     <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"><?php echo $input->label; ?></label>
-                                    <?php echo Html::textarea('textarea', '', ['id' => $input->label . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => $input->placeholder]); ?>
+                                    <?php echo Html::textarea('textarea', '', ['id' => $input->label . '_' . $i,'name'=>'advanced['.$input->id.']', 'class' => 'formControl sForm', 'placeholder' => $input->placeholder]); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'select') { ?>
                                     <label class="customLbSt" for="<?= $input->label; ?>"><?php echo $input->label; ?></label> 
                                     <?php $options = explode('-,-', $input->options); ?>
-                                    <?php echo Html::dropDownList($input->label, '', $options, ['prompt' => $input->placeholder ? $input->placeholder : 'Select', 'id' => $input->label, 'class' => 'formControl sForm']); ?>
+                                    <?php echo Html::dropDownList($input->label, '', $options, ['prompt' => $input->placeholder ? $input->placeholder : 'Select', 'id' => $input->label,'name'=>'advanced['.$input->id.']', 'class' => 'formControl sForm']); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'checkbox') { ?>
                                     <label class="customLbSt"> <?php echo $input->label; ?></label>
@@ -152,7 +156,7 @@ use yii\helpers\Html;
                                         <?php $options = explode('-,-', $input->options); ?>
                                         <?php
                                         echo Html::checkboxList('checkbox', null, $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value) {
-                                                return '<label for="' . $value . '_' . $index . '"><input id="' . $value . '_' . $index . '" name="' . $value . '" type="checkbox"><span>' . $label . '</span></label> ';
+                                                return '<label for="' . $value . '_' . $index . '"><input id="' . $value . '_' . $index . '" name="advanced[' . $value . ']" type="checkbox"><span>' . $label . '</span></label> ';
                                             }]);
                                         ?>
                                     </div>
@@ -163,7 +167,7 @@ use yii\helpers\Html;
                                     <div class="radio">
                                         <?php
                                         echo Html::radioList('radio', NULL, $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value) {
-                                                return '<label for="' . $value . '_' . $name . '"><input id="' . $value . '_' . $name . '" name="' . $name . '" type="radio"><span>' . $label . '</span></label> ';
+                                                return '<label for="' . $value . '_' . $name . '"><input id="' . $value . '_' . $name . '" name="advanced[' . $name . ']" type="radio"><span>' . $label . '</span></label> ';
                                             }]);
                                         ?>
                                     </div>
@@ -175,8 +179,8 @@ use yii\helpers\Html;
 
                 </div>
                 <div>
-                    <?php foreach ($advanced as $key=>$input) { ?>
-                        <?php if ($i % 2) { ?>
+                    <?php foreach ($advanced as $key => $input) { ?>
+                        <?php if ($key == 0 || $key % 2) { ?>
                             <div class="formRow">
                                 <?php if ($input->type === 'input') { ?>
                                     <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"> <?php echo $input->label; ?> </label>
@@ -223,11 +227,12 @@ use yii\helpers\Html;
                     <?php } ?>
                 </div>
             </div>
-            <?php ActiveForm::end(); ?>
         </div>
         <div class="submitSect">
             <input class="btn defBtn" type="submit" value="Apply">
         </div>
+
+        <?php ActiveForm::end(); ?>
     </div>
 </div>
 

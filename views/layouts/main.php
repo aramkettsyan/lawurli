@@ -37,7 +37,7 @@ UserAsset::register($this);
                 <header>
                     <div class="container">
                         <div class="headerLogo">
-                            <a href="<?= \yii\helpers\Url::to(['users/index']) ?>"><img src="<?= \Yii::getAlias('@web') . '/images/header-logo.png'; ?>" alt=""></a>
+                            <a href="<?= \yii\helpers\Url::to(['users/index']) ?>"><img src="<?= \Yii::getAlias('@web') . '/images/'.$this->params['logo']; ?>" alt=""></a>
                         </div>
                         <div class="headerRight">
                             <div class="headerSrch">
@@ -133,7 +133,7 @@ UserAsset::register($this);
                 <header>
                     <div class="container">
                         <div class="headerLogo">
-                            <a href="<?= \yii\helpers\Url::to(['users/index']) ?>"><img src="<?= \Yii::getAlias('@web') . '/images/header-logo.png'; ?>" alt=""></a>
+                            <a href="<?= \yii\helpers\Url::to(['users/index']) ?>"><img src="<?= \Yii::getAlias('@web') . '/images/'.$this->params['logo']; ?>" alt=""></a>
                         </div>
                         <div class="headerRight">
                             <nav class="headerMenu">

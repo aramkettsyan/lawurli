@@ -12,7 +12,7 @@ use app\models\UserForms;
 use Yii;
 
 class UsersController extends \yii\web\Controller {
-
+    
     public function behaviors() {
         if (!\Yii::$app->admin->identity) {
             $access = ['access' => [
@@ -56,6 +56,7 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function beforeAction($action) {
+        \Yii::$app->view->params['logo'] = $this->getLogo();
         $this->enableCsrfValidation = false;
         return parent::beforeAction($action);
     }
@@ -588,6 +589,11 @@ class UsersController extends \yii\web\Controller {
             return true;
         }
     }
+    
+    protected function getLogo(){
+        $logo = \Yii::$app->db->createCommand('SELECT `value` FROM `site_settings` WHERE `key`="logo"')->queryOne();
+        return $logo['value'];
+    }
 
     public function actionProfile($action = false, $id = false, $key = false) {
 
@@ -743,8 +749,13 @@ class UsersController extends \yii\web\Controller {
         }
     }
 
-    public function actionSearch($search = 'basic', $query = false) {
-
+    public function actionSearch() {
+        $query = \Yii::$app->request->get('query');
+        $search = \Yii::$app->request->get('search')?\Yii::$app->request->get('search'):'basic';
+//        $advanced = \Yii::$app->request->get('advanced');
+//        print_r($query);
+//        print_r($search);
+//        die();
         if ($query !== false) {
             if (!Yii::$app->user->isGuest) {
                 $id = Yii::$app->user->identity->id;
@@ -790,6 +801,15 @@ class UsersController extends \yii\web\Controller {
 
             $advanced_search = Forms::find()->all();
             $models['advanced'] = $advanced_search;
+
+            if ($search === 'advanced') {
+                if (Yii::$app->request->get()) {
+                    $post = Yii::$app->request->get();
+                    print_r($post);
+                    die();
+                }
+            }
+
 
             return $this->render('search', $models);
         } else {
