@@ -859,7 +859,7 @@ class UsersController extends \yii\web\Controller {
             if (!isset($query_array[1])) {
                 $likeQuery = '%' . $query_array[0] . '%';
                 $query_array = $query_array[0];
-                $and = !Yii::$app->user->isGuest?'AND id <> ' . Yii::$app->user->id . ' ':'';
+                $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
                 if ($search === 'advanced') {
                     $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
                                     . 'WHERE (`first_name` LIKE :likeQuery '
@@ -897,7 +897,7 @@ class UsersController extends \yii\web\Controller {
                 $last_name = $query_array[1];
                 $like_first_name = '%' . $query_array[0] . '%';
                 $like_last_name = '%' . $query_array[1] . '%';
-                $and = !Yii::$app->user->isGuest?'AND id <> ' . Yii::$app->user->id . ' ':'';
+                $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
                 if ($search === 'advanced') {
                     $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
                                     . 'WHERE (`first_name` LIKE :likeFirstName '
@@ -967,41 +967,52 @@ class UsersController extends \yii\web\Controller {
                         $user_ids .= $user['id'] . $quote;
                         $i++;
                     }
-                    $sqlJoin = '';
+                    $sqlIf = '';
+                    $sqlIfValue = '';
                     $j = false;
                     foreach ($advanced as $key => $input) {
                         if (!empty($input)) {
                             $formId = $key;
                             if (!is_array($input)) {
                                 $j = true;
-                                $sqlJoin .= 'INNER JOIN user_forms as user_forms_' . $key . ' '
-                                        . 'ON user_forms_' . $key . '.form_id = "' . $key . '" '
-                                        . 'AND user_forms_' . $key . '.user_id = users.id '
-                                        . 'AND user_forms_' . $key . '.value = "' . $input . '" ';
+                                if (empty($sqlIf)) {
+                                    $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
+                                    $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                } else {
+                                    $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
+                                    $sqlIfValue .= " ,GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                }
                             } else {
                                 foreach ($input as $k => $i) {
                                     $j = true;
-                                    $sqlJoin .= 'INNER JOIN user_forms as user_forms_' . $key . '_' . $k . ' '
-                                            . 'ON user_forms_' . $key . '_' . $k . '.form_id = "' . $key . '" '
-                                            . 'AND user_forms_' . $key . '_' . $k . '.user_id = users.id '
-                                            . 'AND user_forms_' . $key . '_' . $k . '.value = "' . $i . '" ';
+                                    if (empty($sqlIf)) {
+                                        $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
+                                        $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                    } else {
+                                        $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
+                                        $sqlIfValue .= ", GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                    }
                                 }
                             }
                         }
                     }
                     if ($j) {
-                        $and = !Yii::$app->user->isGuest?'AND id <> ' . Yii::$app->user->id . ' ':'';
-                        $sql = 'SELECT users.* '
+                        $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
+                        $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
                                 . 'FROM users '
-                                . $sqlJoin
+                                . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
                                 . 'WHERE users.id IN(' . $user_ids . ') '
-                                . 'AND users.id <> ' . Yii::$app->user->id . ' ';
+                                . 'GROUP BY user_forms.user_id '
+                                . 'HAVING is_result=1 '
+                                . $and;
                         $query = Users::findBySql($sql)->all();
                         $pages = new Pagination(['totalCount' => count($query), 'pageSize' => 6]);
-                        $sql = 'SELECT users.* '
+                        $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
                                 . 'FROM users '
-                                . $sqlJoin
+                                . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
                                 . 'WHERE users.id IN(' . $user_ids . ') '
+                                . 'GROUP BY user_forms.user_id '
+                                . 'HAVING is_result=1 '
                                 . $and
                                 . 'LIMIT ' . $pages->limit . ' '
                                 . 'OFFSET ' . $pages->offset;
@@ -1018,6 +1029,7 @@ class UsersController extends \yii\web\Controller {
                 }
             }
         }
+
         return $this->render('search', $models);
     }
 
