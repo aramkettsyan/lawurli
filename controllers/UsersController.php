@@ -842,11 +842,12 @@ class UsersController extends \yii\web\Controller {
             if (!isset($query_array[1])) {
                 $likeQuery = '%' . $query_array[0] . '%';
                 $query_array = $query_array[0];
+                $and = !Yii::$app->user->isGuest?'AND id <> ' . Yii::$app->user->id . ' ':'';
                 if ($search === 'advanced') {
                     $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
                                     . 'WHERE (`first_name` LIKE :likeQuery '
                                     . 'OR `last_name` LIKE :likeQuery) '
-                                    . 'AND id <> ' . Yii::$app->user->id . ' '
+                                    . $and
                                     . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
                             ->bindParam(':likeQuery', $likeQuery)
                             ->bindParam(':query', $query_array)
@@ -855,7 +856,7 @@ class UsersController extends \yii\web\Controller {
                     $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
                                             . 'WHERE (`first_name` LIKE :likeQuery '
                                             . 'OR `last_name` LIKE :likeQuery) '
-                                            . 'AND id <> ' . Yii::$app->user->id . ' '
+                                            . $and
                                             . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
                                     ->bindParam(':likeQuery', $likeQuery)
                                     ->bindParam(':query', $query_array)->queryAll();
@@ -865,7 +866,7 @@ class UsersController extends \yii\web\Controller {
                     $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
                                     . 'WHERE (`first_name` LIKE :likeQuery '
                                     . 'OR `last_name` LIKE :likeQuery) '
-                                    . 'AND id <> ' . Yii::$app->user->id . ' '
+                                    . $and
                                     . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC '
                                     . 'LIMIT ' . $pages->limit . ' '
                                     . 'OFFSET ' . $pages->offset)
@@ -879,13 +880,14 @@ class UsersController extends \yii\web\Controller {
                 $last_name = $query_array[1];
                 $like_first_name = '%' . $query_array[0] . '%';
                 $like_last_name = '%' . $query_array[1] . '%';
+                $and = !Yii::$app->user->isGuest?'AND id <> ' . Yii::$app->user->id . ' ':'';
                 if ($search === 'advanced') {
                     $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
                                     . 'WHERE (`first_name` LIKE :likeFirstName '
                                     . 'OR `last_name` LIKE :likeFirstName '
                                     . 'OR `first_name` LIKE :likeLastName '
                                     . 'OR `last_name` LIKE :likeLastName) '
-                                    . 'AND id <> ' . Yii::$app->user->id . ' '
+                                    . $and
                                     . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
                                     . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
                             ->bindParam(':likeFirstName', $like_first_name)
@@ -899,7 +901,7 @@ class UsersController extends \yii\web\Controller {
                                             . 'OR `last_name` LIKE :likeFirstName '
                                             . 'OR `first_name` LIKE :likeLastName '
                                             . 'OR `last_name` LIKE :likeLastName) '
-                                            . 'AND id <> ' . Yii::$app->user->id . ' '
+                                            . $and
                                             . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
                                             . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
                                     ->bindParam(':likeFirstName', $like_first_name)
@@ -915,7 +917,7 @@ class UsersController extends \yii\web\Controller {
                                     . 'OR `last_name` LIKE :likeFirstName '
                                     . 'OR `first_name` LIKE :likeLastName '
                                     . 'OR `last_name` LIKE :likeLastName) '
-                                    . 'AND id <> ' . Yii::$app->user->id . ' '
+                                    . $and
                                     . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
                                     . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC LIMIT ' . $pages->limit . ' OFFSET ' . $pages->offset)
                             ->bindParam(':likeFirstName', $like_first_name)
@@ -971,6 +973,7 @@ class UsersController extends \yii\web\Controller {
                         }
                     }
                     if ($j) {
+                        $and = !Yii::$app->user->isGuest?'AND id <> ' . Yii::$app->user->id . ' ':'';
                         $sql = 'SELECT users.* '
                                 . 'FROM users '
                                 . $sqlJoin
@@ -982,7 +985,7 @@ class UsersController extends \yii\web\Controller {
                                 . 'FROM users '
                                 . $sqlJoin
                                 . 'WHERE users.id IN(' . $user_ids . ') '
-                                . 'AND users.id <> ' . Yii::$app->user->id . ' '
+                                . $and
                                 . 'LIMIT ' . $pages->limit . ' '
                                 . 'OFFSET ' . $pages->offset;
                         $count = Users::findBySql($sql);
@@ -992,14 +995,12 @@ class UsersController extends \yii\web\Controller {
                         $models['search'] = $model;
                         $models['pages'] = $pages;
                     } else {
-                        $res = 'No result';
                         $models['search'] = [];
                         $models['pages'] = [];
                     }
                 }
             }
         }
-
         return $this->render('search', $models);
     }
 
