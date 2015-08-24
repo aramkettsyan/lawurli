@@ -349,7 +349,7 @@ em {
 }
 .homeTop {
     /*height: 450px;*/
-    background: url('../img/home-img.jpg') center;
+    background: url('../images/home-img.jpg') center;
     background-size: cover;
     padding: 60px 0;
 }
