@@ -21,7 +21,7 @@ class UsersController extends \yii\web\Controller {
                     'user' => 'user',
                     'rules' => [
                         [
-                            'actions' => ['logout', 'search', 'edit', 'profile', 'upload-image', 'index'],
+                            'actions' => ['logout', 'search', 'edit', 'profile', 'upload-image', 'index','connect'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
@@ -1000,6 +1000,29 @@ class UsersController extends \yii\web\Controller {
         }
 
         return $this->render('search', $models);
+    }
+    
+    public function actionConnect($id = null){
+        $contacts = Users::GetContactIds();
+        $user = Users::findOne(['id'=>$id]);
+        if(!$user){
+            throw new \yii\web\NotFoundHttpException();
+        }else{
+            $checkRequest = Request::findOne(['user_from_id'=>Yii::$app->user->identity->id,'user_to_id'=>$user->id]);
+            if(!$checkRequest){
+                $dateNow = new \yii\db\Expression('NOW()');
+                $requestModel = new Request();
+                $requestModel->user_from_id = Yii::$app->user->identity->id;
+                $requestModel->user_to_id = $user->id;
+                $requestModel->request_created = $dateNow;
+                $requestModel->request_modified = $dateNow;
+                $requestModel->save(false);
+                return $this->redirect(Yii::$app->request->referrer);
+            }else{
+                return $this->redirect(Yii::$app->request->referrer);
+            }
+            
+        }
     }
 
 }

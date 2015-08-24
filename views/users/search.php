@@ -42,7 +42,7 @@ use yii\widgets\LinkPager;
                                 </div>
                                 <div class="plActions">
                                     <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="btn lineDefBtn sBtn">View Profile</a>
-                                    <a href="#" class="btn lineDefBtn sBtn">Connect</a>
+                                    <a href="<?= \yii\helpers\Url::to(['users/connect', 'id' => $user['id']]) ?>" class="btn lineDefBtn sBtn">Connect</a>
                                 </div>
                             </div>
                         </li>

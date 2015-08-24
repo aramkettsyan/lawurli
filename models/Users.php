@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\db\Expression;
+use yii\db\Query;
 
 /**
  * This is the model class for table "users".
@@ -298,12 +299,23 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         $this->email_confirm_token = null;
     }
     
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserForms()
     {
         return $this->hasMany(UserForms::className(), ['user_id' => 'id']);
+    }
+
+    public function GetContactIds(){
+        return  (new Query())
+                    ->select('user_to_id,user_from_id,request_accepted')
+                    ->distinct()
+                    ->from('contact_requests')
+                    ->where('user_from_id ='.Yii::$app->user->identity->id)
+                    ->orWhere('user_to_id ='.Yii::$app->user->identity->id)
+                    ->all();
     }
 
 }
