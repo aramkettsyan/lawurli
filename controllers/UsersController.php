@@ -9,10 +9,11 @@ use app\models\Users;
 use \app\models\Sections;
 use \app\models\Forms;
 use app\models\UserForms;
+use yii\data\Pagination;
 use Yii;
 
 class UsersController extends \yii\web\Controller {
-    
+
     public function behaviors() {
         if (!\Yii::$app->admin->identity) {
             $access = ['access' => [
@@ -589,8 +590,8 @@ class UsersController extends \yii\web\Controller {
             return true;
         }
     }
-    
-    protected function getLogo(){
+
+    protected function getLogo() {
         $logo = \Yii::$app->db->createCommand('SELECT `value` FROM `site_settings` WHERE `key`="logo"')->queryOne();
         return $logo['value'];
     }
@@ -669,7 +670,8 @@ class UsersController extends \yii\web\Controller {
 
         if ($user) {
             $connection = Yii::$app->db;
-            $user_forms = $connection->createCommand("SELECT user_forms.form_id,user_forms.index,user_forms.value,forms.type,sub_sections.id as subSectionId FROM user_forms "
+            $user_forms = $connection->createCommand("SELECT user_forms.form_id,user_forms.index,user_forms.value,forms.type,sub_sections.id as subSectionId "
+                            . "FROM user_forms "
                             . "LEFT JOIN forms ON user_forms.form_id = forms.id "
                             . "LEFT JOIN sub_sections ON forms.sub_section_id = sub_sections.id "
                             . "WHERE user_id =" . $id)->queryAll();
@@ -749,50 +751,179 @@ class UsersController extends \yii\web\Controller {
         }
     }
 
-    public function actionSearch() {
+    public function actionSearch($action = false, $id = false, $key = false) {
         $query = \Yii::$app->request->get('query');
-        $search = \Yii::$app->request->get('search')?\Yii::$app->request->get('search'):'basic';
+        $search = \Yii::$app->request->get('search') ? \Yii::$app->request->get('search') : 'basic';
 //        $advanced = \Yii::$app->request->get('advanced');
 //        print_r($query);
 //        print_r($search);
 //        die();
+
+
+
+
+        if (\Yii::$app->user->isGuest) {
+            $resetModel = new Users();
+            $user_reset = new Users();
+            if ($action === 'reset_password') {
+                if (Yii::$app->request->post('Users')) {
+                    \Yii::$app->getSession()->writeSession('resetPassword', true);
+                    $resetModel = $this->actionResetPassword($id, $key, 'users/search');
+                }
+            }
+
+            if ($action === 'reset') {
+                $u = $this->actionReset($id, $key);
+                if ($u === true) {
+                    Yii::$app->getSession()->writeSession('showLogin', true);
+                    return $this->redirect('/users/search/' . $id);
+                }
+            }
+
+
+            $registrationModel = new Users();
+            $model = new LoginForm();
+            $registrationModel->scenario = 'create';
+            if ($action !== 'reset' && $action !== 'reset_password' && Yii::$app->request->post('Users')) {
+                if ($registrationModel->load(Yii::$app->request->post()) && $registrationModel->save()) {
+                    $email = \Yii::$app->mailer->compose('confirmEmail', ['user' => $registrationModel])
+                            ->setTo($registrationModel->email)
+                            ->setFrom(['admin@email.com' => \Yii::$app->name])
+                            ->setSubject('E-mail confirmation')
+                            ->send();
+
+                    if ($email) {
+                        Yii::$app->getSession()->setFlash('registrationSuccess', 'Please check your email address!');
+                        $registrationModel = new Users();
+                    } else {
+                        Yii::$app->getSession()->setFlash('registrationWarning', 'Error,please try again!');
+                        $registrationModel->password = '';
+                        $registrationModel->confirm_password = '';
+                    }
+                } else {
+                    Yii::$app->getSession()->writeSession('showRegistration', true);
+                }
+            } else if (Yii::$app->request->post('LoginForm')) {
+                if ($model->load(Yii::$app->request->post()) && $model->login()) {
+                    return $this->refresh();
+                } else {
+                    Yii::$app->getSession()->writeSession('showLogin', true);
+                }
+            }
+            $models = [
+                'registrationModel' => $registrationModel,
+                'resetModel' => $resetModel,
+                'user_reset' => $user_reset,
+                'model' => $model,
+                'id' => $id,
+            ];
+        } else {
+            $models = [];
+        }
+
+
         if ($query !== false) {
+            $models['contacts'] = [];
+
             if (!Yii::$app->user->isGuest) {
                 $id = Yii::$app->user->identity->id;
                 $user = Users::findOne(['id' => $id]);
                 \Yii::$app->view->params['user'] = $user;
 
-                $models = ['user' => $user];
-            } else {
-                $models = [];
+                $models['user'] = $user;
+                $contacts = Users::GetContactIds();
+                $models['contacts'] = $contacts;
             }
+
 
             $query_array = explode(' ', $query, 2);
 
             if (!isset($query_array[1])) {
                 $likeQuery = '%' . $query_array[0] . '%';
                 $query_array = $query_array[0];
-                $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` WHERE `first_name` LIKE :likeQuery OR `last_name` LIKE :likeQuery ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
-                        ->bindParam(':likeQuery', $likeQuery)
-                        ->bindParam(':query', $query_array)
-                        ->queryAll();
+                if ($search === 'advanced') {
+                    $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeQuery '
+                                    . 'OR `last_name` LIKE :likeQuery) '
+                                    . 'AND id <> ' . Yii::$app->user->id . ' '
+                                    . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
+                            ->bindParam(':likeQuery', $likeQuery)
+                            ->bindParam(':query', $query_array)
+                            ->queryAll();
+                } else {
+                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                            . 'WHERE (`first_name` LIKE :likeQuery '
+                                            . 'OR `last_name` LIKE :likeQuery) '
+                                            . 'AND id <> ' . Yii::$app->user->id . ' '
+                                            . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
+                                    ->bindParam(':likeQuery', $likeQuery)
+                                    ->bindParam(':query', $query_array)->queryAll();
+
+                    $pages = new Pagination(['totalCount' => count($q), 'pageSize' => 6]);
+
+                    $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeQuery '
+                                    . 'OR `last_name` LIKE :likeQuery) '
+                                    . 'AND id <> ' . Yii::$app->user->id . ' '
+                                    . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC '
+                                    . 'LIMIT ' . $pages->limit . ' '
+                                    . 'OFFSET ' . $pages->offset)
+                            ->bindParam(':likeQuery', $likeQuery)
+                            ->bindParam(':query', $query_array)
+                            ->queryAll();
+                    $models['pages'] = $pages;
+                }
             } else {
                 $first_name = $query_array[0];
                 $last_name = $query_array[1];
                 $like_first_name = '%' . $query_array[0] . '%';
                 $like_last_name = '%' . $query_array[1] . '%';
-                $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                . 'WHERE `first_name` LIKE :likeFirstName '
-                                . 'OR `last_name` LIKE :likeFirstName '
-                                . 'OR `first_name` LIKE :likeLastName '
-                                . 'OR `last_name` LIKE :likeLastName '
-                                . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
-                                . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
-                        ->bindParam(':likeFirstName', $like_first_name)
-                        ->bindParam(':likeLastName', $like_last_name)
-                        ->bindParam(':firstName', $first_name)
-                        ->bindParam(':lastName', $last_name)
-                        ->queryAll();
+                if ($search === 'advanced') {
+                    $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeFirstName '
+                                    . 'OR `last_name` LIKE :likeFirstName '
+                                    . 'OR `first_name` LIKE :likeLastName '
+                                    . 'OR `last_name` LIKE :likeLastName) '
+                                    . 'AND id <> ' . Yii::$app->user->id . ' '
+                                    . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
+                                    . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
+                            ->bindParam(':likeFirstName', $like_first_name)
+                            ->bindParam(':likeLastName', $like_last_name)
+                            ->bindParam(':firstName', $first_name)
+                            ->bindParam(':lastName', $last_name)
+                            ->queryAll();
+                } else {
+                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                            . 'WHERE (`first_name` LIKE :likeFirstName '
+                                            . 'OR `last_name` LIKE :likeFirstName '
+                                            . 'OR `first_name` LIKE :likeLastName '
+                                            . 'OR `last_name` LIKE :likeLastName) '
+                                            . 'AND id <> ' . Yii::$app->user->id . ' '
+                                            . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
+                                            . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
+                                    ->bindParam(':likeFirstName', $like_first_name)
+                                    ->bindParam(':likeLastName', $like_last_name)
+                                    ->bindParam(':firstName', $first_name)
+                                    ->bindParam(':lastName', $last_name)->queryAll();
+
+
+                    $pages = new Pagination(['totalCount' => count($q), 'pageSize' => 6]);
+
+                    $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeFirstName '
+                                    . 'OR `last_name` LIKE :likeFirstName '
+                                    . 'OR `first_name` LIKE :likeLastName '
+                                    . 'OR `last_name` LIKE :likeLastName) '
+                                    . 'AND id <> ' . Yii::$app->user->id . ' '
+                                    . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
+                                    . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC LIMIT ' . $pages->limit . ' OFFSET ' . $pages->offset)
+                            ->bindParam(':likeFirstName', $like_first_name)
+                            ->bindParam(':likeLastName', $like_last_name)
+                            ->bindParam(':firstName', $first_name)
+                            ->bindParam(':lastName', $last_name)
+                            ->queryAll();
+                    $models['pages'] = $pages;
+                }
             }
             $models['search'] = $search_result;
 //                $models['query'] = $query;
@@ -804,17 +935,71 @@ class UsersController extends \yii\web\Controller {
 
             if ($search === 'advanced') {
                 if (Yii::$app->request->get()) {
-                    $post = Yii::$app->request->get();
-                    print_r($post);
-                    die();
+                    $advanced = Yii::$app->request->get('advanced');
+                    $user_ids = '';
+                    $i = 1;
+                    foreach ($search_result as $user) {
+                        if (count($search_result) === $i) {
+                            $quote = '';
+                        } else {
+                            $quote = ',';
+                        }
+                        $user_ids .= $user['id'] . $quote;
+                        $i++;
+                    }
+                    $sqlJoin = '';
+                    $j = false;
+                    foreach ($advanced as $key => $input) {
+                        if (!empty($input)) {
+                            $formId = $key;
+                            if (!is_array($input)) {
+                                $j = true;
+                                $sqlJoin .= 'INNER JOIN user_forms as user_forms_' . $key . ' '
+                                        . 'ON user_forms_' . $key . '.form_id = "' . $key . '" '
+                                        . 'AND user_forms_' . $key . '.user_id = users.id '
+                                        . 'AND user_forms_' . $key . '.value = "' . $input . '" ';
+                            } else {
+                                foreach ($input as $k => $i) {
+                                    $j = true;
+                                    $sqlJoin .= 'INNER JOIN user_forms as user_forms_' . $key . '_' . $k . ' '
+                                            . 'ON user_forms_' . $key . '_' . $k . '.form_id = "' . $key . '" '
+                                            . 'AND user_forms_' . $key . '_' . $k . '.user_id = users.id '
+                                            . 'AND user_forms_' . $key . '_' . $k . '.value = "' . $i . '" ';
+                                }
+                            }
+                        }
+                    }
+                    if ($j) {
+                        $sql = 'SELECT users.* '
+                                . 'FROM users '
+                                . $sqlJoin
+                                . 'WHERE users.id IN(' . $user_ids . ') '
+                                . 'AND users.id <> ' . Yii::$app->user->id . ' ';
+                        $query = Users::findBySql($sql)->all();
+                        $pages = new Pagination(['totalCount' => count($query), 'pageSize' => 6]);
+                        $sql = 'SELECT users.* '
+                                . 'FROM users '
+                                . $sqlJoin
+                                . 'WHERE users.id IN(' . $user_ids . ') '
+                                . 'AND users.id <> ' . Yii::$app->user->id . ' '
+                                . 'LIMIT ' . $pages->limit . ' '
+                                . 'OFFSET ' . $pages->offset;
+                        $count = Users::findBySql($sql);
+
+                        $model = $count->all();
+
+                        $models['search'] = $model;
+                        $models['pages'] = $pages;
+                    } else {
+                        $res = 'No result';
+                        $models['search'] = [];
+                        $models['pages'] = [];
+                    }
                 }
             }
-
-
-            return $this->render('search', $models);
-        } else {
-            return $this->redirect('users/index');
         }
+
+        return $this->render('search', $models);
     }
 
 }

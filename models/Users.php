@@ -297,5 +297,13 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
     public function removeEmailActivationToken() {
         $this->email_confirm_token = null;
     }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserForms()
+    {
+        return $this->hasMany(UserForms::className(), ['user_id' => 'id']);
+    }
 
 }
