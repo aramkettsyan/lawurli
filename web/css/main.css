@@ -288,6 +288,13 @@ em {
     padding: 4px 8px;
     font-size: 13px;
 }
+.disabledBtn:hover {
+    border-radius: 0;
+    opacity: .45;
+}
+.disabledBtn {
+    opacity: .45;
+}
 /* end of button styles */
 
 /* margins and paddings */
@@ -342,7 +349,7 @@ em {
 }
 .homeTop {
     /*height: 450px;*/
-    background: url('../images/home-img.jpg') center;
+    background: url('../img/home-img.jpg') center;
     background-size: cover;
     padding: 60px 0;
 }
@@ -409,6 +416,7 @@ li.ui-tabs-active a {
 }
 .inputError i {
     margin: 0;
+    color: #DA8213;
 }
 .inputError span {
     position: absolute;
@@ -418,6 +426,10 @@ li.ui-tabs-active a {
     padding: 2px 5px;
     background: #DA8213;
     color: #fff;
+    display: none;
+}
+.inputError:hover span {
+    display: block;
 }
 .inputError span:after {
     content: '';
@@ -1219,10 +1231,21 @@ header {
     line-height: normal;
 }
 .notifList ul li .notifC {
-    line-height: 60px;
+    min-height: 60px;
+    padding: 6px 0;
+    /*white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;*/
+}
+.notifList ul li .notifC p {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+.notifList ul li .notifC time {
+    border-left: solid 2px #DA8213;
+    padding-left: 7px;
+    color: #DA8213;
 }
 /* end notification page */
 
@@ -1381,6 +1404,99 @@ header {
 .checkbox .inputError span:after {
     /*right: initial;*/
     /*left: 0;*/
+}
+
+/* top notification */
+.topNotif {
+    position: fixed;
+    top: 5px;
+    width: 400px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #eee;
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.1);
+    /*margin-top: -100%;
+    opacity: 0
+    transition: margin-top 1s, opacity 1s;
+    -webkit-transition: margin-top 1s, opacity 1s;*/
+}
+.topNotif.showNotif {
+   /* margin-top: 0;
+    opacity: 1;*/
+}
+
+.topNotif p i {
+    font-size: 41px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.topNotif p {
+    position: relative;
+    display: table;
+    width: 100%;
+    min-height: 40px;
+    padding-left: 45px;
+    padding-right: 18px;
+}
+.topNotif p span {
+    display: table-cell; 
+    vertical-align: middle; 
+}
+.topNotif button {
+    position: absolute;
+    top: 25px;
+    right: 15px;
+    margin: 0;
+    z-index: 2;
+}
+.topNotif button:hover {
+    opacity: .8;
+}
+.topNotif button i {
+    margin: 0;
+}
+.topNotif.errorNotif p {
+    color: #f3413c;
+}
+.topNotif.successNotif p {
+    color: #76BB62;
+}
+.pagin {
+    border-top: solid 1px #E0E0E0;
+    padding-top: 20px;
+    text-align: right;
+}
+.pagin ul {
+    display: inline-block;
+}
+.pagin ul:after {
+    content: '';
+    clear: both;
+    display: block;
+}
+.pagin ul li {
+    float: left;
+    margin-left: 7px;
+}
+.pagin ul li a {
+    display: block;
+    padding: 2px 8px;
+    border: solid 2px #CACACA;
+    color: #CACACA;
+    /*transition: .7s color, .7s border-color;*/
+    /*-webkit-transition: .7s color, .7s border-color;*/
+}
+.pagin ul li a:hover {
+    /*opacity: .7;*/
+    color: #DA8213;
+    border-color: #DA8213;
+}
+.pagin ul li.active a {
+    border: solid 2px #DA8213;
+    color: #DA8213;
 }
 
 

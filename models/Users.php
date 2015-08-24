@@ -309,13 +309,23 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
     }
 
     public function GetContactIds(){
-        return  (new Query())
+        $requests =  (new Query())
                     ->select('user_to_id,user_from_id,request_accepted')
                     ->distinct()
                     ->from('contact_requests')
                     ->where('user_from_id ='.Yii::$app->user->identity->id)
                     ->orWhere('user_to_id ='.Yii::$app->user->identity->id)
                     ->all();
+        
+        $requestArr = [];
+        foreach($requests as $request){
+            if($request['user_to_id'] <> Yii::$app->user->identity->id){
+                $requestArr[$request['user_to_id']] = $request;
+            }elseif ($request['user_from_id'] <> Yii::$app->user->identity->id) {
+                 $requestArr[$request['user_from_id']] = $request;
+            }
+        }
+       return $requestArr;
     }
 
 }

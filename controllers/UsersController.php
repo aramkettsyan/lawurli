@@ -22,12 +22,29 @@ class UsersController extends \yii\web\Controller {
                     'user' => 'user',
                     'rules' => [
                         [
-                            'actions' => ['logout', 'search', 'edit', 'profile', 'upload-image', 'index', 'connect'],
+                            'actions' => ['logout', 
+                                          'search', 
+                                          'edit', 
+                                          'profile', 
+                                          'upload-image', 
+                                          'index', 
+                                          'connect',
+                                          'accetpt',
+                                          'decline',
+                                ],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
                         [
-                            'actions' => ['index', 'search', 'email-confirmation', 'confirm', 'reset-password', 'reset-password-notifications', 'reset', 'profile'],
+                            'actions' => ['index',
+                                          'search', 
+                                          'email-confirmation', 
+                                          'confirm', 
+                                          'reset-password', 
+                                          'reset-password-notifications', 
+                                          'reset', 
+                                          'profile'
+                                        ],
                             'allow' => true,
                             'roles' => ['?']
                         ],
@@ -1005,7 +1022,6 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionConnect($id = null) {
-        $contacts = Users::GetContactIds();
         $user = Users::findOne(['id' => $id]);
         if (!$user) {
             throw new \yii\web\NotFoundHttpException();
@@ -1021,6 +1037,43 @@ class UsersController extends \yii\web\Controller {
                 $requestModel->save(false);
                 return $this->redirect(Yii::$app->request->referrer);
             } else {
+                // TO DO
+                return $this->redirect(Yii::$app->request->referrer);
+            }
+        }
+    }
+    
+    public function actionAccetpt($id = null){
+        $user = Users::findOne(['id' => $id]);
+        $dateNow = new \yii\db\Expression('NOW()');
+        if (!$user) {
+            throw new \yii\web\NotFoundHttpException();
+        } else {
+            $request = Request::findOne(['user_from_id' => $user->id, 'user_to_id' => Yii::$app->user->identity->id]);
+            if ($request) {
+                $request->request_accepted = 'Y';
+                $request->request_seen     = 'Y';
+                $requestModel->request_modified = $dateNow;
+                $request->save(false);
+                return $this->redirect(Yii::$app->request->referrer);
+            } else {
+                // TO DO
+                return $this->redirect(Yii::$app->request->referrer);
+            }
+        }
+    }
+    public function actionDecline($id = null){
+        $user = Users::findOne(['id' => $id]);
+        if (!$user) {
+            throw new \yii\web\NotFoundHttpException();
+        } else {
+            $decline = Request::deleteAll('user_from_id = :declineId AND user_to_id = :identityId '
+                    . 'OR user_from_id = :identityId AND  user_to_id = :declineId', 
+                    [':declineId' => $id,':identityId'=>Yii::$app->user->identity->id]); 
+            if ($decline) {
+                return $this->redirect(Yii::$app->request->referrer);
+            } else {
+                // TO DO
                 return $this->redirect(Yii::$app->request->referrer);
             }
         }
