@@ -10,6 +10,7 @@ use \app\models\Sections;
 use \app\models\Forms;
 use app\models\UserForms;
 use yii\data\Pagination;
+use app\models\Request;
 use Yii;
 
 class UsersController extends \yii\web\Controller {
@@ -21,7 +22,7 @@ class UsersController extends \yii\web\Controller {
                     'user' => 'user',
                     'rules' => [
                         [
-                            'actions' => ['logout', 'search', 'edit', 'profile', 'upload-image', 'index','connect'],
+                            'actions' => ['logout', 'search', 'edit', 'profile', 'upload-image', 'index', 'connect'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
@@ -820,10 +821,10 @@ class UsersController extends \yii\web\Controller {
         } else {
             $models = [];
         }
+        $models['contacts'] = [];
 
 
         if ($query !== false) {
-            $models['contacts'] = [];
 
             if (!Yii::$app->user->isGuest) {
                 $id = Yii::$app->user->identity->id;
@@ -1001,15 +1002,15 @@ class UsersController extends \yii\web\Controller {
 
         return $this->render('search', $models);
     }
-    
-    public function actionConnect($id = null){
+
+    public function actionConnect($id = null) {
         $contacts = Users::GetContactIds();
-        $user = Users::findOne(['id'=>$id]);
-        if(!$user){
+        $user = Users::findOne(['id' => $id]);
+        if (!$user) {
             throw new \yii\web\NotFoundHttpException();
-        }else{
-            $checkRequest = Request::findOne(['user_from_id'=>Yii::$app->user->identity->id,'user_to_id'=>$user->id]);
-            if(!$checkRequest){
+        } else {
+            $checkRequest = Request::findOne(['user_from_id' => Yii::$app->user->identity->id, 'user_to_id' => $user->id]);
+            if (!$checkRequest) {
                 $dateNow = new \yii\db\Expression('NOW()');
                 $requestModel = new Request();
                 $requestModel->user_from_id = Yii::$app->user->identity->id;
@@ -1018,10 +1019,9 @@ class UsersController extends \yii\web\Controller {
                 $requestModel->request_modified = $dateNow;
                 $requestModel->save(false);
                 return $this->redirect(Yii::$app->request->referrer);
-            }else{
+            } else {
                 return $this->redirect(Yii::$app->request->referrer);
             }
-            
         }
     }
 
