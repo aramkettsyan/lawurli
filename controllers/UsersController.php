@@ -1023,7 +1023,7 @@ class UsersController extends \yii\web\Controller {
             if ($request) {
                 $request->request_accepted = 'Y';
                 $request->request_seen = 'Y';
-                $requestModel->request_modified = $dateNow;
+                $request->request_modified = $dateNow;
                 $request->save(false);
                 return $this->redirect(Yii::$app->request->referrer);
             } else {

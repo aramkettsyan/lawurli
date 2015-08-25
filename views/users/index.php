@@ -15,14 +15,13 @@ $this->title = 'Home'
     <div class="container">
         <div class="homeTopText">
             <h4 class="cd-headline zoom">
-                <span>Eligendi amet</span><br>
-                <span>voluptatib, itaque elit</span><br>
-                <span>totam asper volu</span><br>
-                <span class="cd-words-wrapper">
+                <span>Simple Solutions </span><br>
+                <span>To Complex Issues.</span><br>
+<!--                <span class="cd-words-wrapper">
                     <b class="is-visible">debitis.</b>
                     <b>aspernatur.</b>
                     <b>consequu.</b>
-                </span>
+                </span>-->
                 <div class="homeSearch">
                     <form method="GET" action="<?= \yii\helpers\Url::to(['users/search']) ?>">
                         <input type="text" name="query" placeholder="Search for a colleague...">
@@ -106,15 +105,7 @@ $this->title = 'Home'
                                 'class' => 'formRow frIconLeft'
                     ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Retype password'])->label(false);
                         ?>
-                        <?=
-                        $f->field($registrationModel, 'conditions', ['template' => "{input}
-                            <span class='inputError'>
-                                <span>{error}</span>
-                            </span>",
-                            'options' => [
-                                'class' => 'checkbox'
-                    ]])->checkbox(['label' => 'Terms and conditions'])
-                        ?>
+                        <p>By clicking Register, you agree to our Terms and Conditions.</p>
 
                         <?= Html::submitButton('Register', ['class' => 'btn defBtn']) ?>
 

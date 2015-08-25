@@ -394,6 +394,14 @@ use yii\widgets\ActiveForm;
 
 
 <script type="text/javascript">
+    function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    var colleaguesTab = getParameterByName('colleaguesTab');
+
     $(document).ready(function () {
 
         $('.hideSection').parent().hide();
@@ -449,7 +457,14 @@ use yii\widgets\ActiveForm;
                 items: {src: '#forgpass-popup'}, type: 'inline'
             }, 0);
         }
-        
+      
+      if(colleaguesTab == 'open'){
+           $( "#profileInfo" ).hide();
+           $( "#colleag" ).parent().addClass("active");
+           $( "#colleag" ).parent().siblings().removeClass("active");
+           $( "#tabContent" ).load( "/users/load-colleagues");
+      }
+      
       $(document).on("click","#colleag", function(event){
            event.preventDefault();
            $( "#profileInfo" ).hide();

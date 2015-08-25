@@ -44,7 +44,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         return [
             [['first_name', 'last_name', 'email', 'password', 'confirm_password'], 'required', 'on' => 'create'],
             [['first_name', 'last_name', 'email', 'password'], 'required', 'on' => 'update'],
-            [['conditions'], 'checkConditions', 'on' => 'create'],
+//            [['conditions'], 'checkConditions', 'on' => 'create'],
             [['password', 'confirm_password'], 'required', 'on' => 'resetPassword'],
             [['image'], 'required', 'on' => 'updateImage'],
             [['active'], 'integer'],

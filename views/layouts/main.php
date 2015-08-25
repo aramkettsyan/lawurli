@@ -55,7 +55,7 @@ UserAsset::register($this);
                                         <li><a href="#signup-popup" class="popupBtn" data-hover="Sign up">Sign up</a></li>
                                     <?php } else { ?>
                                         <li><a href="<?= \yii\helpers\Url::to(['users/index']) ?>" data-hover="Home">Home</a></li>
-                                        <li><a href="#" data-hover="Colleagues">Colleagues</a></li>
+                                        <li><a href="/users/profile?colleaguesTab=open" data-hover="Colleagues">Colleagues</a></li>
                                     <?php } ?>
                                 </ul>
                             </nav>
@@ -95,7 +95,7 @@ UserAsset::register($this);
                             <nav class="headerMenu">
                                 <ul class="clearAfter linkHover">
                                     <li><a href="<?= \yii\helpers\Url::to(['users/index']) ?>" data-hover="Home">Home</a></li>
-                                    <li><a href="#" data-hover="Colleagues">Colleagues</a></li>
+                                    <li><a href="/users/profile?colleaguesTab=open" data-hover="Colleagues">Colleagues</a></li>
                                 </ul>
                             </nav>
                             <?= $this->render('//notifications/notifications') ?>
