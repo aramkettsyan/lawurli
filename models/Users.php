@@ -338,15 +338,21 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
      * @return object
      */
     public function getColleagues($requestAccepted){
-       return (new Query())
+      $query = (new Query())
                 ->select('id,first_name,last_name,location,image,request_created')
                 ->distinct()
-                ->from('contact_requests')
-                ->where("user_from_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'")
-                ->orWhere("user_to_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'")
-                ->innerJoin('users','user_from_id = id AND id<>'.Yii::$app->user->identity->id.
-                            ' OR user_to_id = id AND id<>'.Yii::$app->user->identity->id)
-               ->orderBy('request_modified DESC');
+                ->from('contact_requests');
+                if($requestAccepted == "N"){
+                    $query->where("user_to_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'");
+                }else{
+                    $query->where("user_from_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'")
+                          ->orWhere("user_to_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'");
+                }
+                
+                $query->innerJoin('users','user_from_id = id AND id<>'.Yii::$app->user->identity->id.
+                            ' OR user_to_id = id AND id<>'.Yii::$app->user->identity->id);
+                $query = $query->orderBy('request_modified DESC');
+                return $query;
     }
     
 
