@@ -68,6 +68,18 @@ class UsersController extends \yii\web\Controller {
         return $access;
     }
 
+    public function actions() {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
+        ];
+    }
+
     public function beforeAction($action) {
         \Yii::$app->view->params['logo'] = $this->getLogo();
         $this->enableCsrfValidation = false;
@@ -1060,8 +1072,8 @@ class UsersController extends \yii\web\Controller {
             $request = Request::findOne(['user_from_id' => $user->id, 'user_to_id' => Yii::$app->user->identity->id]);
             if ($request) {
                 $request->request_accepted = 'Y';
-                $request->request_seen     = 'Y';
-                $request->request_modified = $dateNow;
+                $request->request_seen = 'Y';
+                $requestModel->request_modified = $dateNow;
                 $request->save(false);
                 return $this->redirect(Yii::$app->request->referrer);
             } else {
