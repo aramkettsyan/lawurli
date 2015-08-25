@@ -60,51 +60,7 @@ UserAsset::register($this);
                                 </ul>
                             </nav>
                             <?php if (!Yii::$app->user->isGuest) { ?>
-                                <div class="headerDrDn dropDn notifDrDn">
-                                    <a href="#" class="dropDnBtn">
-                                        <i class="icon-bell-two"></i>
-                                    </a>
-                                    <div class="dropDnSub">
-                                        <ul>
-                                            <li>
-                                                <div class="hdrNotifL">
-                                                    <img src="<?= \Yii::getAlias('@web') . '/images/user-4.png'; ?>" alt="">
-                                                </div>
-                                                <div class="hdrNotifC">
-                                                    Notification text
-                                                </div>
-                                                <div class="hdrNotifR">
-                                                    <button><i class="icon-check-1"></i></button>
-                                                    <button><i class="icon-cross-mark"></i></button>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="hdrNotifL">
-                                                    <img src="<?= \Yii::getAlias('@web') . '/images/user-2.png'; ?>" alt="">
-                                                </div>
-                                                <div class="hdrNotifC">
-                                                    Blah blah text
-                                                </div>
-                                                <div class="hdrNotifR">
-                                                    <button><i class="icon-check-1"></i></button>
-                                                    <button><i class="icon-cross-mark"></i></button>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="hdrNotifL">
-                                                    <img src="<?= \Yii::getAlias('@web') . '/images/user-1.png'; ?>" alt="">
-                                                </div>
-                                                <div class="hdrNotifC">
-                                                    lorem ipsum dolor sit
-                                                </div>
-                                                <div class="hdrNotifR">
-                                                    <button><i class="icon-check-1"></i></button>
-                                                    <button><i class="icon-cross-mark"></i></button>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                    <?= $this->render('//notifications/notifications') ?>
                                 <div class="headerDrDn dropDn">
                                     <a href="#" class="dropDnBtn">
                                         <div class="udImg">
@@ -142,51 +98,7 @@ UserAsset::register($this);
                                     <li><a href="#" data-hover="Colleagues">Colleagues</a></li>
                                 </ul>
                             </nav>
-                            <div class="headerDrDn dropDn notifDrDn">
-                                <a href="#" class="dropDnBtn">
-                                    <i class="icon-bell-two"></i>
-                                </a>
-                                <div class="dropDnSub">
-                                    <ul>
-                                        <li>
-                                            <div class="hdrNotifL">
-                                                <img src="<?= \Yii::getAlias('@web') . '/images/user-4.png'; ?>" alt="">
-                                            </div>
-                                            <div class="hdrNotifC">
-                                                Notification text
-                                            </div>
-                                            <div class="hdrNotifR">
-                                                <button><i class="icon-check-1"></i></button>
-                                                <button><i class="icon-cross-mark"></i></button>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="hdrNotifL">
-                                                <img src="<?= \Yii::getAlias('@web') . '/images/user-2.png'; ?>" alt="">
-                                            </div>
-                                            <div class="hdrNotifC">
-                                                Blah blah text
-                                            </div>
-                                            <div class="hdrNotifR">
-                                                <button><i class="icon-check-1"></i></button>
-                                                <button><i class="icon-cross-mark"></i></button>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="hdrNotifL">
-                                                <img src="<?= \Yii::getAlias('@web') . '/images/user-1.png'; ?>" alt="">
-                                            </div>
-                                            <div class="hdrNotifC">
-                                                lorem ipsum dolor sit
-                                            </div>
-                                            <div class="hdrNotifR">
-                                                <button><i class="icon-check-1"></i></button>
-                                                <button><i class="icon-cross-mark"></i></button>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                            <?= $this->render('//notifications/notifications') ?>
                             <div class="headerDrDn dropDn">
                                 <a href="#" class="dropDnBtn">
                                     <div class="udImg">

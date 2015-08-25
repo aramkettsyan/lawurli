@@ -93,6 +93,9 @@ class UsersController extends \yii\web\Controller {
     public function beforeAction($action) {
         \Yii::$app->view->params['logo'] = $this->getLogo();
         $this->enableCsrfValidation = false;
+        if(!\Yii::$app->user->isGuest){
+            Yii::$app->view->params['notify'] = $this->getNotifications($pageSize = 4)[1];
+        }
         return parent::beforeAction($action);
     }
 
@@ -1059,6 +1062,20 @@ class UsersController extends \yii\web\Controller {
        if(!Yii::$app->request->isAjax){
             throw new \yii\web\NotFoundHttpException();
        }
+       $returnParams = $this->getNotifications($pageSize = 6);
+       $pages = $returnParams[0];
+       $notifications = $returnParams[1];
+       return $this->render('load-notifications',['notifications'=> $notifications,
+                                                  'pages'        => $pages
+                                                 ]);
+    }
+    
+    /**
+     * 
+     * @param int $pageSize
+     * @return array
+     */
+    protected function getNotifications($pageSize){
        $notifications = Users::getColleagues($requestAccepted='N');
        $countQuery = clone $notifications;
        $pages = new Pagination(['totalCount' => $countQuery->count(),'pageSize'=>6]);
@@ -1066,9 +1083,7 @@ class UsersController extends \yii\web\Controller {
        $notifications = $notifications->offset($pages->offset)
                             ->limit($pages->limit)
                             ->all();
-       return $this->render('load-notifications',['notifications'=> $notifications,
-                                                  'pages'        => $pages
-                                                 ]);
+       return [$pages,$notifications];
     }
 
 }
