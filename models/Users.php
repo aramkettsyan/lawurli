@@ -307,7 +307,11 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
     {
         return $this->hasMany(UserForms::className(), ['user_id' => 'id']);
     }
-
+    
+    /**
+     * 
+     * @return array
+     */
     public function GetContactIds(){
         $requests =  (new Query())
                     ->select('user_to_id,user_from_id,request_accepted')
@@ -327,5 +331,23 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         }
        return $requestArr;
     }
+    
+    /**
+     * $requestAccepted ENUM Y/N
+     * @param string $requestAccepted
+     * @return object
+     */
+    public function getColleagues($requestAccepted){
+       return (new Query())
+                ->select('id,first_name,last_name,location,image,request_created')
+                ->distinct()
+                ->from('contact_requests')
+                ->where("user_from_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'")
+                ->orWhere("user_to_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'")
+                ->innerJoin('users','user_from_id = id AND id<>'.Yii::$app->user->identity->id.
+                            ' OR user_to_id = id AND id<>'.Yii::$app->user->identity->id)
+               ->orderBy('request_modified DESC');
+    }
+    
 
 }

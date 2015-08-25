@@ -52,12 +52,14 @@ use yii\widgets\ActiveForm;
         <?php Yii::$app->getSession()->destroySession('updateError'); ?>
         <div class="profileTabs">
             <ul class="clearAfter">
-                <li class="active"><a href="<?= \yii\helpers\Url::to(['users/profile']) ?>"><i class="icon-card-user-2"></i>Profile</a></li>
+                <li class="active"><a href="#" id="profiletab"><i class="icon-card-user-2"></i>Profile</a></li>
                 <li><a href="#" id="colleag"><i class="icon-contacts"></i>Colleagues</a></li>
-                <li><a href="#"><i class="icon-bell-two"></i>Notifications</a></li>
+                <li><a href="#" id="profiletabNot"><i class="icon-bell-two"></i>Notifications</a></li>
             </ul>
         </div>
         <div class="tabsContent">
+            <div id="tabContent"></div>
+            <div id="profileInfo">
             <?php foreach ($this->params['sections'] as $sectionName => $section) { ?>
                 <?php $emptySectionToken = false; ?>
                 <div class="cvTimeline">
@@ -159,7 +161,7 @@ use yii\widgets\ActiveForm;
                     <?php } ?>
                 </div>
             <?php } ?>
-
+            </div>
         </div>
     </div>
 </div>
@@ -447,6 +449,54 @@ use yii\widgets\ActiveForm;
                 items: {src: '#forgpass-popup'}, type: 'inline'
             }, 0);
         }
+        
+      $(document).on("click","#colleag", function(event){
+           event.preventDefault();
+           $( "#profileInfo" ).hide();
+           $(this).parent().addClass("active");
+           $(this).parent().siblings().removeClass("active");
+           $( "#tabContent" ).load( "/users/load-colleagues");
+      });
+      
+      $(document).on("click","#profiletab", function(event){
+           event.preventDefault();
+           $( "#profileInfo" ).show();
+           $( "#tabContent" ).html('');
+           $(this).parent().addClass("active");
+           $(this).parent().siblings().removeClass("active");
+      });  
+      
+      $(document).on("click",".colleagPage li a", function(event){
+           event.preventDefault();
+           var pageString  = $(this).attr('data-page');
+           var pageInt = parseInt(pageString) + 1;
+           $( "#profileInfo" ).hide();
+           $(this).parent().addClass("active");
+           $(this).parent().siblings().removeClass("active");
+           $( "#tabContent" ).load( "/users/load-colleagues?page="+pageInt);
+           
+      });  
+
+      $(document).on("click","#profiletabNot", function(event){
+           event.preventDefault();
+           $( "#profileInfo" ).hide();
+           $(this).parent().addClass("active");
+           $(this).parent().siblings().removeClass("active");
+           $( "#tabContent" ).load( "/users/load-notifications");
+      });
+        
+      $(document).on("click",".notifyPage li a", function(event){
+           event.preventDefault();
+           var pageString  = $(this).attr('data-page');
+           var pageInt = parseInt(pageString) + 1;
+           $( "#profileInfo" ).hide();
+           $(this).parent().addClass("active");
+           $(this).parent().siblings().removeClass("active");
+           $( "#tabContent" ).load( "/users/load-notifications?page="+pageInt);
+           
+      });    
+        
+        
 
     });
 </script>

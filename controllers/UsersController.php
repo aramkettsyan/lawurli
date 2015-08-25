@@ -31,6 +31,8 @@ class UsersController extends \yii\web\Controller {
                                 'connect',
                                 'accetpt',
                                 'decline',
+                                'load-colleagues',
+                                'load-notifications',
                             ],
                             'allow' => true,
                             'roles' => ['@'],
@@ -1101,6 +1103,40 @@ class UsersController extends \yii\web\Controller {
                 return $this->redirect(Yii::$app->request->referrer);
             }
         }
+    }
+    
+    public function actionLoadColleagues(){
+       $this->layout = false;
+       if(!Yii::$app->request->isAjax){
+            throw new \yii\web\NotFoundHttpException();
+       }
+       $colleagues  = Users::getColleagues($requestAccepted='Y');
+       $countQuery = clone $colleagues;
+       $pages = new Pagination(['totalCount' => $countQuery->count(),'pageSize'=>4]);
+       $pages->pageSizeParam = false;
+       $colleagues = $colleagues->offset($pages->offset)
+                        ->limit($pages->limit)
+                        ->all();
+       return $this->render('load-colleagues',['colleagues'=> $colleagues,
+                                               'pages'     => $pages
+                                              ]);
+    }
+    
+    public function actionLoadNotifications(){
+       $this->layout = false;
+       if(!Yii::$app->request->isAjax){
+            throw new \yii\web\NotFoundHttpException();
+       }
+       $notifications = Users::getColleagues($requestAccepted='N');
+       $countQuery = clone $notifications;
+       $pages = new Pagination(['totalCount' => $countQuery->count(),'pageSize'=>6]);
+       $pages->pageSizeParam = false;
+       $notifications = $notifications->offset($pages->offset)
+                            ->limit($pages->limit)
+                            ->all();
+       return $this->render('load-notifications',['notifications'=> $notifications,
+                                                  'pages'        => $pages
+                                                 ]);
     }
 
 }

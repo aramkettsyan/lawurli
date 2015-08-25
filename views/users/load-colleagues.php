@@ -1,64 +1,40 @@
+<?php
+use yii\widgets\LinkPager;
+use yii\helpers\Html;
+/* @var $this yii\web\View */
+/* @var $model app\models\User */
+?>
+
 <div class="peopleList">
     <ul>
+        <?php if($colleagues) : ?>
+        <?php foreach($colleagues as $colleague) : ?>
         <li>
             <div class="peopleListL">
-                <img src="img/user-1.png" alt="">
+                <img src="/images/users_images/<?=$colleague['image']?>" alt="">
             </div>
             <div class="peopleListR">
-                <a href="#" class="plName">Clifford Moreno</a>
+                <a href="/users/profile/<?=$colleague['id']?>" class="plName"><?=$colleague['first_name'].' '.$colleague['last_name']?></a>
                 <div class="plDets">
-                    <p>Plumber at "Clean House" Ltd</p>
-                    <p class="plAddress"><i class="icon-location"></i>Southaven, Mississippi</p>
+                   <?= ($colleague['location'] ?  '<p class="plAddress"><i class="icon-location"></i>'.$colleague['location'].'</p>'  : '' )?>
                 </div>
                 <div class="plActions">
-                    <a href="#" class="btn lineDefBtn sBtn">Disconnect</a>
+                    <a href="/users/decline/<?=$colleague['id']?>" class="btn lineDefBtn sBtn">Disconnect</a>
                 </div>
             </div>
         </li>
-        <li>
-            <div class="peopleListL">
-                <img src="img/user-2.png" alt="">
-            </div>
-            <div class="peopleListR">
-                <a href="#" class="plName">Charlotte Douglas</a>
-                <div class="plDets">
-                    <p>CEO at "Clean House" Ltd</p>
-                    <p class="plAddress"><i class="icon-location"></i>Southaven, Mississippi</p>
-                </div>
-                <div class="plActions">
-                    <a href="#" class="btn lineDefBtn sBtn">Disconnect</a>
-                </div>
-            </div>
-        </li>
-        <li>
-            <div class="peopleListL">
-                <img src="img/user-3.png" alt="">
-            </div>
-            <div class="peopleListR">
-                <a href="#" class="plName">Charlotte Douglas</a>
-                <div class="plDets">
-                    <p>Programmer at "Clean House" Ltd</p>
-                    <p class="plAddress"><i class="icon-location"></i>Southaven, Mississippi</p>
-                </div>
-                <div class="plActions">
-                    <a href="#" class="btn lineDefBtn sBtn">Disconnect</a>
-                </div>
-            </div>
-        </li>
-        <li>
-            <div class="peopleListL">
-                <img src="img/user-4.png" alt="">
-            </div>
-            <div class="peopleListR">
-                <a href="#" class="plName">Charlotte Douglas</a>
-                <div class="plDets">
-                    <p>Sale Manager at "Clean House" Ltd</p>
-                    <p class="plAddress"><i class="icon-location"></i>Southaven, Mississippi</p>
-                </div>
-                <div class="plActions">
-                    <a href="#" class="btn lineDefBtn sBtn">Disconnect</a>
-                </div>
-            </div>
-        </li>
+        <?php endforeach; ?>
+        
+        <?php else : ?>
+        <div> No Colleagues </div>
+        <?php endif; ?>
     </ul>
+   
+</div>
+ <div class="pagin colleagPage">
+    <?php // display pagination
+           echo LinkPager::widget([
+               'pagination' => $pages,
+           ]);
+    ?>
 </div>
