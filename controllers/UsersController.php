@@ -48,10 +48,7 @@ class UsersController extends \yii\web\Controller {
                             'allow' => true,
                             'roles' => ['?']
                         ],
-                    ],
-                    'denyCallback' => function($rule, $action) {
-                $this->redirect('/users/index');
-            }
+                    ]
             ]];
         } else {
             $access = [
@@ -64,10 +61,7 @@ class UsersController extends \yii\web\Controller {
                             'allow' => true,
                             'roles' => ['@'],
                         ]
-                    ],
-                    'denyCallback' => function($rule, $action) {
-                $this->redirect('/admins/index');
-            }
+                    ]
                 ]
             ];
         }
@@ -334,10 +328,10 @@ class UsersController extends \yii\web\Controller {
                             'user' => $user
                 ]);
             } else {
-                return $this->redirect('/users/index');
+                throw new \yii\web\NotFoundHttpException();
             }
         } else {
-            return $this->redirect('/users/index');
+            throw new \yii\web\NotFoundHttpException();
         }
     }
 
@@ -502,7 +496,7 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionError() {
-        return $this->render('index');
+        throw new \yii\web\NotFoundHttpException();
     }
 
     public function actionLogout() {
@@ -514,7 +508,7 @@ class UsersController extends \yii\web\Controller {
         if ($email) {
             return $this->render('/users/emailConfirmation', ['email' => $email]);
         } else {
-            return $this->redirect('/users/index');
+            throw new \yii\web\NotFoundHttpException();
         }
     }
 
@@ -622,7 +616,7 @@ class UsersController extends \yii\web\Controller {
             $id = Yii::$app->user->identity->id;
             $user = Users::findOne(['id' => $id]);
         } else {
-            return $this->redirect('/users/index');
+            throw new \yii\web\NotFoundHttpException();
         }
 
 
@@ -765,7 +759,7 @@ class UsersController extends \yii\web\Controller {
 
             return $this->render('/users/profile', $models);
         } else {
-            return $this->redirect('/users/index');
+            throw new \yii\web\NotFoundHttpException();
         }
     }
 
@@ -776,9 +770,9 @@ class UsersController extends \yii\web\Controller {
 //        print_r($query);
 //        print_r($search);
 //        die();
-if (!$query) {
-    return $this->redirect('/users/index');
-}
+        if (!$query) {
+            throw new \yii\web\NotFoundHttpException();
+        }
 
 
 

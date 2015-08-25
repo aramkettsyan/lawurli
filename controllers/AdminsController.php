@@ -29,7 +29,7 @@ class AdminsController extends \yii\web\Controller {
                         ]
                     ],
                     'denyCallback' => function($rule, $action) {
-                $this->redirect('/users/index');
+                throw new \yii\web\NotFoundHttpException();
             }
             ]];
         } else {
@@ -49,7 +49,7 @@ class AdminsController extends \yii\web\Controller {
                         ],
                     ],
                     'denyCallback' => function($rule, $action) {
-                $this->redirect('/users/index');
+                throw new \yii\web\NotFoundHttpException();
             }
                 ]
             ];
