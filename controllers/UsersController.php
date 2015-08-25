@@ -134,263 +134,268 @@ class UsersController extends \yii\web\Controller {
 
     public function actionEdit($action = 'general', $id = false) {
         if ($id === false && !\Yii::$app->user->isGuest) {
-
-            $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
-            $connection = Yii::$app->db;
-            $user_forms = $connection->createCommand("SELECT user_forms.form_id,user_forms.index,user_forms.value,forms.type,sub_sections.id as subSectionId FROM user_forms "
-                            . "LEFT JOIN forms ON user_forms.form_id = forms.id "
-                            . "LEFT JOIN sub_sections ON forms.sub_section_id = sub_sections.id "
-                            . "WHERE user_id =" . Yii::$app->user->identity->id)->queryAll();
-
             if ($action === 'detailed') {
-                if (Yii::$app->request->post()) {
-
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        $post = Yii::$app->request->post();
-
-                        $old_user_forms = [];
-                        foreach ($user_forms as $user_form) {
-                            if (isset($old_user_forms[$user_form['form_id']][$user_form['index']])) {
-                                if (!is_array($old_user_forms[$user_form['form_id']][$user_form['index']])) {
-                                    $old_user_forms[$user_form['form_id']][$user_form['index']] = [$old_user_forms[$user_form['form_id']][$user_form['index']]];
-                                }
-                                $old_user_forms[$user_form['form_id']][$user_form['index']][] = $user_form['value'];
-                            } else {
-                                $old_user_forms[$user_form['form_id']][$user_form['index']] = $user_form['value'];
-                            }
-                        }
-
-                        $forms = Yii::$app->db->createCommand('SELECT forms.id,forms.type,forms.numeric,forms.options'
-                                        . ' FROM forms')->queryAll();
-                        $newForms = [];
-                        foreach ($forms as $form) {
-                            $newForms[$form['id']] = [ 'type' => $form['type'], 'options' => $form['options'], 'numeric' => $form['numeric']];
-                        }
-                        $custom_fields = $post['Users']['custom_fields'];
-                        $newArr = [];
-                        $updateArr = [];
-                        $user_forms_delete = $user_forms;
-                        $r = 0;
-                        $validate = true;
-                        foreach ($custom_fields as $key => $custom_field) {
-                            foreach ($custom_field as $k => $field) {
-                                if (empty($field)) {
-                                    continue;
-                                }
-                                if (!is_array($field)) {
-                                    $token = false;
-                                    if (isset($old_user_forms[$key][$k]) && $old_user_forms[$key][$k] === $field) {
-                                        unset($old_user_forms[$key][$k]);
-                                        $token = true;
-                                    }
-                                    if ($token === false) {
-                                        $time = new \yii\db\Expression('NOW()');
-                                        $validate = $this->actionValidateForms($newForms, $key, $field);
-                                        if (!$validate) {
-                                            $transaction->rollBack();
-                                            break 2;
-                                        }
-                                        $newArr[] = [Yii::$app->user->identity->id, $key, $k, $field, $time, $time];
-                                    }
-                                } else {
-                                    $token = false;
-                                    foreach ($field as $i => $f) {
-                                        if (isset($old_user_forms[$key][$k]) && is_array(isset($old_user_forms[$key][$k])) && in_array($f, $old_user_forms[$key][$k])) {
-                                            foreach ($old_user_forms[$key][$k] as $optKey => $opt) {
-                                                if ($opt == $f) {
-                                                    unset($old_user_forms[$key][$k][$optKey]);
-                                                }
-                                            }
-                                            $token = true;
-                                        }
-                                        if ($token === false) {
-                                            $time = new \yii\db\Expression('NOW()');
-                                            $validate = $this->actionValidateForms($newForms, $key, $f);
-                                            if (!$validate) {
-                                                $transaction->rollBack();
-                                                break 2;
-                                            }
-                                            $newArr[] = [Yii::$app->user->identity->id, $key, $k, $f, $time, $time];
-                                        }
-                                    }
-                                }
-                                $r++;
-                            }
-                        }
-
-
-                        if ($validate === true) {
-                            $deleteFormId = [];
-                            $deleteIndex = [];
-                            $deleteValue = [];
-                            foreach ($old_user_forms as $key_old_user_form => $old_user_form) {
-                                if (is_array($old_user_form)) {
-                                    foreach ($old_user_form as $key_ouf => $ouf) {
-                                        if (!empty($ouf)) {
-                                            if (is_array($ouf)) {
-                                                foreach ($ouf as $o) {
-                                                    $deleteFormId[] = $key_old_user_form;
-                                                    $deleteIndex[] = $key_ouf;
-                                                    $deleteValue[] = $o;
-                                                }
-                                            } else {
-                                                $deleteFormId[] = $key_old_user_form;
-                                                $deleteIndex[] = $key_ouf;
-                                                $deleteValue[] = $ouf;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            $deleteUserId = Yii::$app->user->identity->id;
-                            $deleteFailed = false;
-                            foreach ($deleteFormId as $key => $del) {
-                                $sql = Yii::$app->db->createCommand("DELETE FROM `user_forms` WHERE `user_id` = :user_id AND `form_id`=:form_id AND `index`=:index AND `value`=:value ");
-                                $sql->bindParam(':user_id', $deleteUserId);
-                                $sql->bindParam(':form_id', $deleteFormId[$key]);
-                                $sql->bindParam(':index', $deleteIndex[$key]);
-                                $sql->bindParam(':value', $deleteValue[$key]);
-                                if (!$sql->execute()) {
-                                    Yii::$app->getSession()->writeSession('updateError', 'Can\'t delete form(s), try again.');
-                                    $deleteFailed = true;
-                                    $transaction->rollBack();
-                                    break;
-                                }
-                            }
-
-                            if (!empty($newArr) && !$deleteFailed) {
-                                if (Yii::$app->db->createCommand()->batchInsert('user_forms', ['user_id', 'form_id', 'index', 'value', 'created', 'modified'], $newArr)->execute()) {
-                                    Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
-                                    $transaction->commit();
-                                    return $this->redirect('/users/profile');
-                                } else {
-                                    Yii::$app->getSession()->writeSession('updateError', 'Can\'t insert form(s), try again.');
-                                    $transaction->rollBack();
-                                }
-                            } else if (!$deleteFailed) {
-                                Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
-                                $transaction->commit();
-                                return $this->redirect('/users/profile');
-                            }
-                        } else {
-                            Yii::$app->getSession()->writeSession('updateError', 'There are some error(s) in form(s), try again.');
-                        }
-                    } catch (Exception $e) {
-                        $transaction->rollBack();
-                    }
-                }
+                
             } else {
-                if (Yii::$app->request->post()) {
-
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        $post = Yii::$app->request->post();
-                        if (empty($post['Users']['password'])) {
-                            unset($post['Users']['password']);
-                            unset($post['Users']['confirm_password']);
-                        }
-
-                        $user->old_password = $user->password;
-                        $user->scenario = 'update';
-                        if ($user->load($post) && $user->save()) {
-                            Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
-                            $transaction->commit();
-                            return $this->redirect('/users/profile');
-                        } else {
-                            $transaction->rollBack();
-                        }
-                    } catch (Exception $e) {
-                        $transaction->rollBack();
-                    }
-                }
-            }
-
-
-
-
-            if ($user && $action === 'detailed') {
-                $sections = $connection->createCommand('SELECT '
-                                . ' sections.name as sectionName,'
-                                . 'sub_sections.name as subName,'
-                                . 'sub_sections.multiple as subMultiple,'
-                                . 'sub_sections.id as subId,'
-                                . 'forms.id as formId,'
-                                . 'forms.label as formLabel,'
-                                . 'forms.type as formType,'
-                                . 'forms.placeholder as formPlaceholder,'
-                                . 'forms.numeric as formNumeric,'
-                                . 'forms.options as formOptions '
-                                . 'FROM sections '
-                                . 'LEFT JOIN sub_sections '
-                                . 'ON sub_sections.section_id = sections.id '
-                                . 'LEFT JOIN forms '
-                                . 'ON forms.sub_section_id = sub_sections.id '
-                                . 'ORDER BY sections.id,sub_sections.id,forms.id ')->queryAll();
-
-                $new_user_forms = [];
-                foreach ($user_forms as $user_form) {
-                    if (isset($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
-                        if (!is_array($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
-                            $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = [$new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']]];
-                        }
-                        $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']][] = $user_form['value'];
-                    } else {
-                        $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = $user_form['value'];
-                    }
-                }
-
-                $newSections = [];
-                foreach ($sections as $section) {
-
-                    if (!isset($newSections[$section['sectionName']])) {
-                        $newSections[$section['sectionName']] = [];
-                    }
-
-                    if (!isset($newSections[$section['sectionName']][$section['subName']])) {
-                        $newSections[$section['sectionName']][$section['subName']] = [
-                            [
-                                'subMultiple' => $section['subMultiple'],
-                                'subId' => $section['subId']
-                            ],
-                            [
-                                'formId' => $section['formId'],
-                                'formLabel' => $section['formLabel'],
-                                'formType' => $section['formType'],
-                                'formPlaceholder' => $section['formPlaceholder'],
-                                'formNumeric' => $section['formNumeric'],
-                                'formOptions' => $section['formOptions']
-                            ]
-                        ];
-                    } else {
-                        $newSections[$section['sectionName']][$section['subName']][] = [
-                            'formId' => $section['formId'],
-                            'formLabel' => $section['formLabel'],
-                            'formType' => $section['formType'],
-                            'formPlaceholder' => $section['formPlaceholder'],
-                            'formNumeric' => $section['formNumeric'],
-                            'formOptions' => $section['formOptions']
-                        ];
-                    }
-                }
-
-
-
-                return $this->render('/users/edit', [
-                            'user' => $user,
-                            'sections' => $newSections,
-                            'user_forms' => $new_user_forms
-                ]);
-            } else if ($user && $action === 'general') {
-                return $this->render('/users/edit', [
-                            'user' => $user
-                ]);
-            } else {
-                throw new \yii\web\NotFoundHttpException();
+                
             }
         } else {
             throw new \yii\web\NotFoundHttpException();
         }
+    }
+
+    public function actionLoadGeneralEdit() {
+        if (!Yii::$app->request->isAjax) {
+            throw new \yii\web\NotFoundHttpException;
+        }
+
+        $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
+
+        if (Yii::$app->request->post()) {
+
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $post = Yii::$app->request->post();
+                if (empty($post['Users']['password'])) {
+                    unset($post['Users']['password']);
+                    unset($post['Users']['confirm_password']);
+                }
+
+                $user->old_password = $user->password;
+                $user->scenario = 'update';
+                if ($user->load($post) && $user->save()) {
+                    Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
+                    $transaction->commit();
+                    return $this->redirect('/users/profile');
+                } else {
+                    $transaction->rollBack();
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+            }
+        }
+
+
+        return $this->render('load-general', ['user' => $user]);
+    }
+
+    public function actionLoadDetailedEdit() {
+        $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
+        $connection = Yii::$app->db;
+        $user_forms = $connection->createCommand("SELECT user_forms.form_id,user_forms.index,user_forms.value,forms.type,sub_sections.id as subSectionId FROM user_forms "
+                        . "LEFT JOIN forms ON user_forms.form_id = forms.id "
+                        . "LEFT JOIN sub_sections ON forms.sub_section_id = sub_sections.id "
+                        . "WHERE user_id =" . Yii::$app->user->identity->id)->queryAll();
+
+        if (Yii::$app->request->post()) {
+
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $post = Yii::$app->request->post();
+
+                $old_user_forms = [];
+                foreach ($user_forms as $user_form) {
+                    if (isset($old_user_forms[$user_form['form_id']][$user_form['index']])) {
+                        if (!is_array($old_user_forms[$user_form['form_id']][$user_form['index']])) {
+                            $old_user_forms[$user_form['form_id']][$user_form['index']] = [$old_user_forms[$user_form['form_id']][$user_form['index']]];
+                        }
+                        $old_user_forms[$user_form['form_id']][$user_form['index']][] = $user_form['value'];
+                    } else {
+                        $old_user_forms[$user_form['form_id']][$user_form['index']] = $user_form['value'];
+                    }
+                }
+
+                $forms = Yii::$app->db->createCommand('SELECT forms.id,forms.type,forms.numeric,forms.options'
+                                . ' FROM forms')->queryAll();
+                $newForms = [];
+                foreach ($forms as $form) {
+                    $newForms[$form['id']] = [ 'type' => $form['type'], 'options' => $form['options'], 'numeric' => $form['numeric']];
+                }
+                $custom_fields = $post['Users']['custom_fields'];
+                $newArr = [];
+                $updateArr = [];
+                $user_forms_delete = $user_forms;
+                $r = 0;
+                $validate = true;
+                foreach ($custom_fields as $key => $custom_field) {
+                    foreach ($custom_field as $k => $field) {
+                        if (empty($field)) {
+                            continue;
+                        }
+                        if (!is_array($field)) {
+                            $token = false;
+                            if (isset($old_user_forms[$key][$k]) && $old_user_forms[$key][$k] === $field) {
+                                unset($old_user_forms[$key][$k]);
+                                $token = true;
+                            }
+                            if ($token === false) {
+                                $time = new \yii\db\Expression('NOW()');
+                                $validate = $this->actionValidateForms($newForms, $key, $field);
+                                if (!$validate) {
+                                    $transaction->rollBack();
+                                    break 2;
+                                }
+                                $newArr[] = [Yii::$app->user->identity->id, $key, $k, $field, $time, $time];
+                            }
+                        } else {
+                            $token = false;
+                            foreach ($field as $i => $f) {
+                                if (isset($old_user_forms[$key][$k]) && is_array(isset($old_user_forms[$key][$k])) && in_array($f, $old_user_forms[$key][$k])) {
+                                    foreach ($old_user_forms[$key][$k] as $optKey => $opt) {
+                                        if ($opt == $f) {
+                                            unset($old_user_forms[$key][$k][$optKey]);
+                                        }
+                                    }
+                                    $token = true;
+                                }
+                                if ($token === false) {
+                                    $time = new \yii\db\Expression('NOW()');
+                                    $validate = $this->actionValidateForms($newForms, $key, $f);
+                                    if (!$validate) {
+                                        $transaction->rollBack();
+                                        break 2;
+                                    }
+                                    $newArr[] = [Yii::$app->user->identity->id, $key, $k, $f, $time, $time];
+                                }
+                            }
+                        }
+                        $r++;
+                    }
+                }
+
+
+                if ($validate === true) {
+                    $deleteFormId = [];
+                    $deleteIndex = [];
+                    $deleteValue = [];
+                    foreach ($old_user_forms as $key_old_user_form => $old_user_form) {
+                        if (is_array($old_user_form)) {
+                            foreach ($old_user_form as $key_ouf => $ouf) {
+                                if (!empty($ouf)) {
+                                    if (is_array($ouf)) {
+                                        foreach ($ouf as $o) {
+                                            $deleteFormId[] = $key_old_user_form;
+                                            $deleteIndex[] = $key_ouf;
+                                            $deleteValue[] = $o;
+                                        }
+                                    } else {
+                                        $deleteFormId[] = $key_old_user_form;
+                                        $deleteIndex[] = $key_ouf;
+                                        $deleteValue[] = $ouf;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $deleteUserId = Yii::$app->user->identity->id;
+                    $deleteFailed = false;
+                    foreach ($deleteFormId as $key => $del) {
+                        $sql = Yii::$app->db->createCommand("DELETE FROM `user_forms` WHERE `user_id` = :user_id AND `form_id`=:form_id AND `index`=:index AND `value`=:value ");
+                        $sql->bindParam(':user_id', $deleteUserId);
+                        $sql->bindParam(':form_id', $deleteFormId[$key]);
+                        $sql->bindParam(':index', $deleteIndex[$key]);
+                        $sql->bindParam(':value', $deleteValue[$key]);
+                        if (!$sql->execute()) {
+                            Yii::$app->getSession()->writeSession('updateError', 'Can\'t delete form(s), try again.');
+                            $deleteFailed = true;
+                            $transaction->rollBack();
+                            break;
+                        }
+                    }
+
+                    if (!empty($newArr) && !$deleteFailed) {
+                        if (Yii::$app->db->createCommand()->batchInsert('user_forms', ['user_id', 'form_id', 'index', 'value', 'created', 'modified'], $newArr)->execute()) {
+                            Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
+                            $transaction->commit();
+                            return $this->redirect('/users/profile');
+                        } else {
+                            Yii::$app->getSession()->writeSession('updateError', 'Can\'t insert form(s), try again.');
+                            $transaction->rollBack();
+                        }
+                    } else if (!$deleteFailed) {
+                        Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
+                        $transaction->commit();
+                        return $this->redirect('/users/profile');
+                    }
+                } else {
+                    Yii::$app->getSession()->writeSession('updateError', 'There are some error(s) in form(s), try again.');
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+            }
+        }
+
+        $sections = $connection->createCommand('SELECT '
+                        . ' sections.name as sectionName,'
+                        . 'sub_sections.name as subName,'
+                        . 'sub_sections.multiple as subMultiple,'
+                        . 'sub_sections.id as subId,'
+                        . 'forms.id as formId,'
+                        . 'forms.label as formLabel,'
+                        . 'forms.type as formType,'
+                        . 'forms.placeholder as formPlaceholder,'
+                        . 'forms.numeric as formNumeric,'
+                        . 'forms.options as formOptions '
+                        . 'FROM sections '
+                        . 'LEFT JOIN sub_sections '
+                        . 'ON sub_sections.section_id = sections.id '
+                        . 'LEFT JOIN forms '
+                        . 'ON forms.sub_section_id = sub_sections.id '
+                        . 'ORDER BY sections.id,sub_sections.id,forms.id ')->queryAll();
+
+        $new_user_forms = [];
+        foreach ($user_forms as $user_form) {
+            if (isset($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
+                if (!is_array($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
+                    $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = [$new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']]];
+                }
+                $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']][] = $user_form['value'];
+            } else {
+                $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = $user_form['value'];
+            }
+        }
+
+        $newSections = [];
+        foreach ($sections as $section) {
+
+            if (!isset($newSections[$section['sectionName']])) {
+                $newSections[$section['sectionName']] = [];
+            }
+
+            if (!isset($newSections[$section['sectionName']][$section['subName']])) {
+                $newSections[$section['sectionName']][$section['subName']] = [
+                    [
+                        'subMultiple' => $section['subMultiple'],
+                        'subId' => $section['subId']
+                    ],
+                    [
+                        'formId' => $section['formId'],
+                        'formLabel' => $section['formLabel'],
+                        'formType' => $section['formType'],
+                        'formPlaceholder' => $section['formPlaceholder'],
+                        'formNumeric' => $section['formNumeric'],
+                        'formOptions' => $section['formOptions']
+                    ]
+                ];
+            } else {
+                $newSections[$section['sectionName']][$section['subName']][] = [
+                    'formId' => $section['formId'],
+                    'formLabel' => $section['formLabel'],
+                    'formType' => $section['formType'],
+                    'formPlaceholder' => $section['formPlaceholder'],
+                    'formNumeric' => $section['formNumeric'],
+                    'formOptions' => $section['formOptions']
+                ];
+            }
+        }
+
+
+
+        return $this->render('/users/edit', [
+                    'user' => $user,
+                    'sections' => $newSections,
+                    'user_forms' => $new_user_forms
+        ]);
     }
 
     private function actionValidateForms($forms, $formId, $value) {
@@ -1039,27 +1044,27 @@ class UsersController extends \yii\web\Controller {
             }
         }
     }
-    
-    public function actionLoadColleagues(){
-       $this->layout = false;
-       if(!Yii::$app->request->isAjax){
+
+    public function actionLoadColleagues() {
+        $this->layout = false;
+        if (!Yii::$app->request->isAjax) {
             throw new \yii\web\NotFoundHttpException();
-       }
-       $colleagues  = Users::getColleagues($requestAccepted='Y');
-       $countQuery = clone $colleagues;
-       $pages = new Pagination(['totalCount' => $countQuery->count(),'pageSize'=>4]);
-       $pages->pageSizeParam = false;
-       $colleagues = $colleagues->offset($pages->offset)
-                        ->limit($pages->limit)
-                        ->all();
-       return $this->render('load-colleagues',['colleagues'=> $colleagues,
-                                               'pages'     => $pages
-                                              ]);
+        }
+        $colleagues = Users::getColleagues($requestAccepted = 'Y');
+        $countQuery = clone $colleagues;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 4]);
+        $pages->pageSizeParam = false;
+        $colleagues = $colleagues->offset($pages->offset)
+                ->limit($pages->limit)
+                ->all();
+        return $this->render('load-colleagues', ['colleagues' => $colleagues,
+                    'pages' => $pages
+        ]);
     }
-    
-    public function actionLoadNotifications(){
-       $this->layout = false;
-       if(!Yii::$app->request->isAjax){
+
+    public function actionLoadNotifications() {
+        $this->layout = false;
+        if (!Yii::$app->request->isAjax) {
             throw new \yii\web\NotFoundHttpException();
        }
        $returnParams = $this->getNotifications($pageSize = 6);

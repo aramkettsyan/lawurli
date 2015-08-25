@@ -1,7 +1,9 @@
-<?php 
+<?php
 
-    $this->title = 'Edit profile' 
-
+use yii\widgets\ActiveForm;
+?>
+<?php
+$this->title = 'Edit profile'
 ?>
 <div class="container mainContainer">
     <div class="profileL">
@@ -15,7 +17,7 @@
                 </div>
             </div>
 
-        <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
+            <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
         <?php } ?>
         <p style="color:green;display: none" id="imageUploadSuccess">Image uploaded successfully!</p>
         <p style="color:red;display: none" id="imageUploadError"></p>
@@ -49,10 +51,10 @@
             <?php $action = 'general' ?>
         <?php } ?>
         <?php if ($action === 'detailed') { ?>
-            <?php $layoutName = 'experience_edit.php'; ?>
+            <?php $layoutName = 'load-detailed.php'; ?>
         <?php } else { ?>
             <?php $action = 'general' ?>
-            <?php $layoutName = 'general_edit.php' ?>
+            <?php $layoutName = 'load-general.php' ?>
         <?php } ?>
 
         <div class="profileTabs">
@@ -70,7 +72,7 @@
                 <?php Yii::$app->view->params['user_forms'] = $user_forms; ?>
             <?php } ?>
             <?php Yii::$app->view->params['user'] = $user; ?>
-            <?php $this->beginContent('@app/views/layouts/' . $layoutName); ?>
+            <?php $this->beginContent('@app/views/users/' . $layoutName); ?>
 
             <?php $this->endContent(); ?>
         </div>
