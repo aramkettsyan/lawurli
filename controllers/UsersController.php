@@ -43,12 +43,16 @@ class UsersController extends \yii\web\Controller {
                                 'reset-password',
                                 'reset-password-notifications',
                                 'reset',
-                                'profile'
+                                'profile',
+                                'error'
                             ],
                             'allow' => true,
                             'roles' => ['?']
                         ],
-                    ]
+                    ],
+                    'denyCallback' => function($rule, $action) {
+                return $this->redirect('/users/error');
+            }
             ]];
         } else {
             $access = [
@@ -57,11 +61,14 @@ class UsersController extends \yii\web\Controller {
                     'user' => 'admin',
                     'rules' => [
                         [
-                            'actions' => ['index', 'edit'],
+                            'actions' => ['index', 'edit', 'profile', 'search', 'error'],
                             'allow' => true,
                             'roles' => ['@'],
                         ]
-                    ]
+                    ],
+                    'denyCallback' => function($rule, $action) {
+                return $this->redirect('/users/error');
+            }
                 ]
             ];
         }
@@ -508,7 +515,7 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionError() {
-        throw new \yii\web\NotFoundHttpException();
+        return $this->render('error');
     }
 
     public function actionLogout() {
@@ -782,7 +789,7 @@ class UsersController extends \yii\web\Controller {
 //        print_r($query);
 //        print_r($search);
 //        die();
-        if (!$query) {
+        if ($query === NULL) {
             throw new \yii\web\NotFoundHttpException();
         }
 
@@ -878,27 +885,31 @@ class UsersController extends \yii\web\Controller {
                         ->bindParam(':query', $query_array)
                         ->queryAll();
             } else {
-                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                        . 'WHERE (`first_name` LIKE :likeQuery '
-                                        . 'OR `last_name` LIKE :likeQuery) '
-                                        . $and
-                                        . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
-                                ->bindParam(':likeQuery', $likeQuery)
-                                ->bindParam(':query', $query_array)->queryAll();
+                if ($query !== '') {
+                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                            . 'WHERE (`first_name` LIKE :likeQuery '
+                                            . 'OR `last_name` LIKE :likeQuery) '
+                                            . $and
+                                            . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
+                                    ->bindParam(':likeQuery', $likeQuery)
+                                    ->bindParam(':query', $query_array)->queryAll();
 
-                $pages = new Pagination(['totalCount' => count($q), 'pageSize' => 6]);
+                    $pages = new Pagination(['totalCount' => count($q), 'pageSize' => 10]);
 
-                $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                . 'WHERE (`first_name` LIKE :likeQuery '
-                                . 'OR `last_name` LIKE :likeQuery) '
-                                . $and
-                                . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC '
-                                . 'LIMIT ' . $pages->limit . ' '
-                                . 'OFFSET ' . $pages->offset)
-                        ->bindParam(':likeQuery', $likeQuery)
-                        ->bindParam(':query', $query_array)
-                        ->queryAll();
-                $models['pages'] = $pages;
+                    $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeQuery '
+                                    . 'OR `last_name` LIKE :likeQuery) '
+                                    . $and
+                                    . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC '
+                                    . 'LIMIT ' . $pages->limit . ' '
+                                    . 'OFFSET ' . $pages->offset)
+                            ->bindParam(':likeQuery', $likeQuery)
+                            ->bindParam(':query', $query_array)
+                            ->queryAll();
+                    $models['pages'] = $pages;
+                } else {
+                    $search_result = [];
+                }
             }
         } else {
             $first_name = $query_array[0];
@@ -921,36 +932,40 @@ class UsersController extends \yii\web\Controller {
                         ->bindParam(':lastName', $last_name)
                         ->queryAll();
             } else {
-                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                        . 'WHERE (`first_name` LIKE :likeFirstName '
-                                        . 'OR `last_name` LIKE :likeFirstName '
-                                        . 'OR `first_name` LIKE :likeLastName '
-                                        . 'OR `last_name` LIKE :likeLastName) '
-                                        . $and
-                                        . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
-                                        . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
-                                ->bindParam(':likeFirstName', $like_first_name)
-                                ->bindParam(':likeLastName', $like_last_name)
-                                ->bindParam(':firstName', $first_name)
-                                ->bindParam(':lastName', $last_name)->queryAll();
+                if ($query !== '') {
+                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                            . 'WHERE (`first_name` LIKE :likeFirstName '
+                                            . 'OR `last_name` LIKE :likeFirstName '
+                                            . 'OR `first_name` LIKE :likeLastName '
+                                            . 'OR `last_name` LIKE :likeLastName) '
+                                            . $and
+                                            . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
+                                            . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
+                                    ->bindParam(':likeFirstName', $like_first_name)
+                                    ->bindParam(':likeLastName', $like_last_name)
+                                    ->bindParam(':firstName', $first_name)
+                                    ->bindParam(':lastName', $last_name)->queryAll();
 
 
-                $pages = new Pagination(['totalCount' => count($q), 'pageSize' => 6]);
+                    $pages = new Pagination(['totalCount' => count($q), 'pageSize' => 10]);
 
-                $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                . 'WHERE (`first_name` LIKE :likeFirstName '
-                                . 'OR `last_name` LIKE :likeFirstName '
-                                . 'OR `first_name` LIKE :likeLastName '
-                                . 'OR `last_name` LIKE :likeLastName) '
-                                . $and
-                                . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
-                                . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC LIMIT ' . $pages->limit . ' OFFSET ' . $pages->offset)
-                        ->bindParam(':likeFirstName', $like_first_name)
-                        ->bindParam(':likeLastName', $like_last_name)
-                        ->bindParam(':firstName', $first_name)
-                        ->bindParam(':lastName', $last_name)
-                        ->queryAll();
-                $models['pages'] = $pages;
+                    $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeFirstName '
+                                    . 'OR `last_name` LIKE :likeFirstName '
+                                    . 'OR `first_name` LIKE :likeLastName '
+                                    . 'OR `last_name` LIKE :likeLastName) '
+                                    . $and
+                                    . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
+                                    . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC LIMIT ' . $pages->limit . ' OFFSET ' . $pages->offset)
+                            ->bindParam(':likeFirstName', $like_first_name)
+                            ->bindParam(':likeLastName', $like_last_name)
+                            ->bindParam(':firstName', $first_name)
+                            ->bindParam(':lastName', $last_name)
+                            ->queryAll();
+                    $models['pages'] = $pages;
+                } else {
+                    $search_result = [];
+                }
             }
         }
         $models['search'] = $search_result;
@@ -967,15 +982,6 @@ class UsersController extends \yii\web\Controller {
                 $models['query_response'] = Yii::$app->request->get('advanced');
                 $user_ids = '';
                 $i = 1;
-                foreach ($search_result as $user) {
-                    if (count($search_result) === $i) {
-                        $quote = '';
-                    } else {
-                        $quote = ',';
-                    }
-                    $user_ids .= $user['id'] . $quote;
-                    $i++;
-                }
                 $sqlIf = '';
                 $sqlIfValue = '';
                 $j = false;
@@ -1010,16 +1016,14 @@ class UsersController extends \yii\web\Controller {
                     $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
                             . 'FROM users '
                             . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
-                            . 'WHERE users.id IN(' . $user_ids . ') '
                             . 'GROUP BY user_forms.user_id '
                             . 'HAVING is_result=1 '
                             . $and;
                     $query = Users::findBySql($sql)->all();
-                    $pages = new Pagination(['totalCount' => count($query), 'pageSize' => 6]);
+                    $pages = new Pagination(['totalCount' => count($query), 'pageSize' => 10]);
                     $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
                             . 'FROM users '
                             . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
-                            . 'WHERE users.id IN(' . $user_ids . ') '
                             . 'GROUP BY user_forms.user_id '
                             . 'HAVING is_result=1 '
                             . $and

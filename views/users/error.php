@@ -1,14 +1,5 @@
-<?php
-
-use yii\helpers\Html;
-
-/* @var $this yii\web\View */
-/* @var $name string */
-/* @var $message string */
-/* @var $exception Exception */
-
-
-?>
-<div class="site-error">
-
-</div>
+<?php if ($exception->statusCode === 404): ?>
+    <?= $this->render('_404'); ?>
+<?php else: ?>
+    <!-- other error goes here -->
+<?php endif; ?>
