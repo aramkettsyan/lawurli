@@ -64,7 +64,7 @@ UserAsset::register($this);
                                 <div class="headerDrDn dropDn">
                                     <a href="#" class="dropDnBtn">
                                         <div class="udImg">
-                                            <img src="images/user-image.png" alt="">
+                                            <img src="/images/user-image.png" alt="">
                                             <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $this->params['user']->image; ?>')"></span>
                                         </div>
 

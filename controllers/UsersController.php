@@ -33,6 +33,8 @@ class UsersController extends \yii\web\Controller {
                                 'connect',
                                 'accetpt',
                                 'decline',
+                                'load-detailed',
+                                'load-general',
                                 'load-colleagues',
                                 'load-notifications',
                             ],
@@ -91,9 +93,15 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function beforeAction($action) {
+        if (!Yii::$app->user->isGuest) {
+            $id = Yii::$app->user->identity->id;
+            $user = Users::findOne(['id' => $id]);
+            \Yii::$app->view->params['user'] = $user;
+        }
+
         \Yii::$app->view->params['logo'] = $this->getLogo();
         $this->enableCsrfValidation = false;
-        if(!\Yii::$app->user->isGuest){
+        if (!\Yii::$app->user->isGuest) {
             Yii::$app->view->params['notify'] = $this->getNotifications($pageSize = 4)[1];
         }
         return parent::beforeAction($action);
@@ -135,9 +143,9 @@ class UsersController extends \yii\web\Controller {
     public function actionEdit($action = 'general', $id = false) {
         if ($id === false && !\Yii::$app->user->isGuest) {
             if ($action === 'detailed') {
-                
+                return $this->actionLoadDetailedEdit();
             } else {
-                
+                return $this->actionLoadGeneralEdit();
             }
         } else {
             throw new \yii\web\NotFoundHttpException();
@@ -145,9 +153,6 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionLoadGeneralEdit() {
-        if (!Yii::$app->request->isAjax) {
-            throw new \yii\web\NotFoundHttpException;
-        }
 
         $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
 
@@ -175,8 +180,13 @@ class UsersController extends \yii\web\Controller {
             }
         }
 
+        \Yii::$app->view->params['user'] = $user;
+        if (Yii::$app->request->isAjax) {
+            $this->layout = false;
+            return $this->render('load-general', ['user' => $user]);
+        }
 
-        return $this->render('load-general', ['user' => $user]);
+        return $this->render('/users/edit', ['user' => $user]);
     }
 
     public function actionLoadDetailedEdit() {
@@ -324,7 +334,6 @@ class UsersController extends \yii\web\Controller {
                 $transaction->rollBack();
             }
         }
-
         $sections = $connection->createCommand('SELECT '
                         . ' sections.name as sectionName,'
                         . 'sub_sections.name as subName,'
@@ -388,8 +397,20 @@ class UsersController extends \yii\web\Controller {
                 ];
             }
         }
+        
+        
+            \Yii::$app->view->params['user'] = $user;
+            \Yii::$app->view->params['sections'] = $newSections;
+            \Yii::$app->view->params['user_forms'] = $new_user_forms;
 
-
+        if (Yii::$app->request->isAjax) {
+            $this->layout = false;
+            return $this->render('/users/load-detailed', [
+                        'user' => $user,
+                        'sections' => $newSections,
+                        'user_forms' => $new_user_forms
+            ]);
+        }
 
         return $this->render('/users/edit', [
                     'user' => $user,
@@ -1070,29 +1091,29 @@ class UsersController extends \yii\web\Controller {
         $this->layout = false;
         if (!Yii::$app->request->isAjax) {
             throw new \yii\web\NotFoundHttpException();
-       }
-       $returnParams = $this->getNotifications($pageSize = 6);
-       $pages = $returnParams[0];
-       $notifications = $returnParams[1];
-       return $this->render('load-notifications',['notifications'=> $notifications,
-                                                  'pages'        => $pages
-                                                 ]);
+        }
+        $returnParams = $this->getNotifications($pageSize = 6);
+        $pages = $returnParams[0];
+        $notifications = $returnParams[1];
+        return $this->render('load-notifications', ['notifications' => $notifications,
+                    'pages' => $pages
+        ]);
     }
-    
+
     /**
      * 
      * @param int $pageSize
      * @return array
      */
-    protected function getNotifications($pageSize){
-       $notifications = Users::getColleagues($requestAccepted='N');
-       $countQuery = clone $notifications;
-       $pages = new Pagination(['totalCount' => $countQuery->count(),'pageSize'=>6]);
-       $pages->pageSizeParam = false;
-       $notifications = $notifications->offset($pages->offset)
-                            ->limit($pages->limit)
-                            ->all();
-       return [$pages,$notifications];
+    protected function getNotifications($pageSize) {
+        $notifications = Users::getColleagues($requestAccepted = 'N');
+        $countQuery = clone $notifications;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 6]);
+        $pages->pageSizeParam = false;
+        $notifications = $notifications->offset($pages->offset)
+                ->limit($pages->limit)
+                ->all();
+        return [$pages, $notifications];
     }
 
 }
