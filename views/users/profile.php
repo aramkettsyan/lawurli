@@ -53,7 +53,7 @@ use yii\widgets\ActiveForm;
         <div class="profileTabs">
             <ul class="clearAfter">
                 <li class="active"><a href="<?= \yii\helpers\Url::to(['users/profile']) ?>"><i class="icon-card-user-2"></i>Profile</a></li>
-                <li><a href="#"><i class="icon-contacts"></i>Colleagues</a></li>
+                <li><a href="#" id="colleag"><i class="icon-contacts"></i>Colleagues</a></li>
                 <li><a href="#"><i class="icon-bell-two"></i>Notifications</a></li>
             </ul>
         </div>

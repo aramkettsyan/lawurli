@@ -1060,8 +1060,8 @@ class UsersController extends \yii\web\Controller {
             $request = Request::findOne(['user_from_id' => $user->id, 'user_to_id' => Yii::$app->user->identity->id]);
             if ($request) {
                 $request->request_accepted = 'Y';
-                $request->request_seen = 'Y';
-                $requestModel->request_modified = $dateNow;
+                $request->request_seen     = 'Y';
+                $request->request_modified = $dateNow;
                 $request->save(false);
                 return $this->redirect(Yii::$app->request->referrer);
             } else {
