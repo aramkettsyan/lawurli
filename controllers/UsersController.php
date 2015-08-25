@@ -502,6 +502,8 @@ class UsersController extends \yii\web\Controller {
     public function actionIndex($action = false, $id = false, $key = false) {
 
         $resetModel = new Users();
+        $model = new LoginForm();
+        $registrationModel = new Users();
         if (\Yii::$app->user->isGuest) {
             $user = new Users();
         } else {
@@ -653,6 +655,8 @@ class UsersController extends \yii\web\Controller {
         if (\Yii::$app->user->isGuest) {
             $resetModel = new Users();
             $user_reset = new Users();
+            $registrationModel = new Users();
+            $model = new LoginForm();
             if ($action === 'reset_password') {
                 if (Yii::$app->request->post('Users')) {
                     \Yii::$app->getSession()->writeSession('resetPassword', true);
