@@ -1,3 +1,8 @@
+<?php 
+
+    $this->title = 'Edit profile' 
+
+?>
 <div class="container mainContainer">
     <div class="profileL">
         <div class="userImage">

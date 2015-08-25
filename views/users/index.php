@@ -1,4 +1,3 @@
-
 <?php
 
 use yii\helpers\Html;
@@ -7,6 +6,9 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\Users */
 /* @var $form ActiveForm */
+?>
+<?php
+$this->title = 'Home'
 ?>
 <?php Yii::$app->view->params['user'] = $user; ?>
 <div class="homeTop <?= !Yii::$app->user->isGuest ? 'homeTopUser' : '' ?> clearAfter">

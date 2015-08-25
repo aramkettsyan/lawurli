@@ -309,7 +309,7 @@ class AdminsController extends \yii\web\Controller {
             \Yii::$app->getSession()->setFlash('deleteSuccess', 'Sub section deleted successfully!');
             $this->redirect('/admins/user-settings');
         } else {
-            $this->redirect('admins/index');
+            $this->redirect('/admins/index');
         }
     }
 
@@ -387,7 +387,7 @@ class AdminsController extends \yii\web\Controller {
     public function actionLogin() {
         $model = new AdminLoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect('admins/index');
+            return $this->redirect('/admins/index');
         } else {
             return $this->render('login', ['model' => $model]);
         }

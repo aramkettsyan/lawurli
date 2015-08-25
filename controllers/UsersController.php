@@ -15,6 +15,8 @@ use Yii;
 
 class UsersController extends \yii\web\Controller {
 
+    public $pageSize = 10;
+
     public function behaviors() {
         if (!\Yii::$app->admin->identity) {
             $access = ['access' => [
@@ -40,7 +42,6 @@ class UsersController extends \yii\web\Controller {
                         [
                             'actions' => ['index',
                                 'search',
-                                'email-confirmation',
                                 'confirm',
                                 'reset-password',
                                 'reset-password-notifications',
@@ -93,6 +94,39 @@ class UsersController extends \yii\web\Controller {
         \Yii::$app->view->params['logo'] = $this->getLogo();
         $this->enableCsrfValidation = false;
         return parent::beforeAction($action);
+    }
+
+    public function actionLogin() {
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->redirect('/users/profile');
+        } else {
+            Yii::$app->getSession()->writeSession('showLogin', true);
+        }
+        return $model;
+    }
+
+    public function actionRegistration() {
+        $registrationModel = new Users();
+        $registrationModel->scenario = 'create';
+        if ($registrationModel->load(Yii::$app->request->post()) && $registrationModel->save()) {
+            $email = \Yii::$app->mailer->compose('confirmEmail', ['user' => $registrationModel])
+                    ->setTo($registrationModel->email)
+                    ->setFrom(['admin@email.com' => \Yii::$app->name])
+                    ->setSubject('E-mail confirmation')
+                    ->send();
+
+            if ($email) {
+                Yii::$app->getSession()->setFlash('registrationSuccess', 'Please check your mail inbox (spam) folder for account activation.');
+                $registrationModel = new Users();
+            } else {
+                Yii::$app->getSession()->setFlash('registrationWarning', 'Error,please try again!');
+                $registrationModel->password = '';
+                $registrationModel->confirm_password = '';
+            }
+        }
+
+        return $registrationModel;
     }
 
     public function actionEdit($action = 'general', $id = false) {
@@ -471,41 +505,16 @@ class UsersController extends \yii\web\Controller {
                 $resetModel = $this->actionResetPassword($id, $key, 'users/index');
             }
         }
-
         if ($action === 'reset') {
             $user = $this->actionReset($id, $key);
             if ($user === true) {
                 return $this->redirect('/users/index#loginTab');
             }
         }
-
-
-        $registrationModel = new Users();
-        $model = new LoginForm();
-        $registrationModel->scenario = 'create';
         if ($action !== 'reset' && $action !== 'reset_password' && Yii::$app->request->post('Users')) {
-            if ($registrationModel->load(Yii::$app->request->post()) && $registrationModel->save()) {
-                $email = \Yii::$app->mailer->compose('confirmEmail', ['user' => $registrationModel])
-                        ->setTo($registrationModel->email)
-                        ->setFrom(['admin@email.com' => \Yii::$app->name])
-                        ->setSubject('E-mail confirmation')
-                        ->send();
-
-                if ($email) {
-                    Yii::$app->getSession()->setFlash('registrationSuccess', 'Please check your mail inbox (spam) folder for account activation.');
-                    $registrationModel = new Users();
-                } else {
-                    Yii::$app->getSession()->setFlash('registrationWarning', 'Error,please try again!');
-                    $registrationModel->password = '';
-                    $registrationModel->confirm_password = '';
-                }
-            }
+            $registrationModel = $this->actionRegistration();
         } else if (Yii::$app->request->post('LoginForm')) {
-            if ($model->load(Yii::$app->request->post()) && $model->login()) {
-                return $this->redirect('/users/profile');
-            } else {
-                Yii::$app->getSession()->writeSession('showLogin', true);
-            }
+            $model = $this->actionLogin();
         }
 
         return $this->render('index', [
@@ -522,15 +531,7 @@ class UsersController extends \yii\web\Controller {
 
     public function actionLogout() {
         Yii::$app->user->logout();
-        return $this->refresh();
-    }
-
-    public function actionEmailConfirmation($email = false) {
-        if ($email) {
-            return $this->render('/users/emailConfirmation', ['email' => $email]);
-        } else {
-            throw new \yii\web\NotFoundHttpException();
-        }
+        return $this->redirect('/users/index');
     }
 
     public function actionConfirm($id, $key) {
@@ -637,7 +638,7 @@ class UsersController extends \yii\web\Controller {
             $id = Yii::$app->user->identity->id;
             $user = Users::findOne(['id' => $id]);
         } else {
-            throw new \yii\web\NotFoundHttpException();
+            return $this->redirect('/users/index');
         }
 
 
@@ -660,34 +661,10 @@ class UsersController extends \yii\web\Controller {
             }
 
 
-            $registrationModel = new Users();
-            $model = new LoginForm();
-            $registrationModel->scenario = 'create';
             if ($action !== 'reset' && $action !== 'reset_password' && Yii::$app->request->post('Users')) {
-                if ($registrationModel->load(Yii::$app->request->post()) && $registrationModel->save()) {
-                    $email = \Yii::$app->mailer->compose('confirmEmail', ['user' => $registrationModel])
-                            ->setTo($registrationModel->email)
-                            ->setFrom(['admin@email.com' => \Yii::$app->name])
-                            ->setSubject('E-mail confirmation')
-                            ->send();
-
-                    if ($email) {
-                        Yii::$app->getSession()->setFlash('registrationSuccess', 'Please check your email address!');
-                        $registrationModel = new Users();
-                    } else {
-                        Yii::$app->getSession()->setFlash('registrationWarning', 'Error,please try again!');
-                        $registrationModel->password = '';
-                        $registrationModel->confirm_password = '';
-                    }
-                } else {
-                    Yii::$app->getSession()->writeSession('showRegistration', true);
-                }
+                $registrationModel = $this->actionRegistration();
             } else if (Yii::$app->request->post('LoginForm')) {
-                if ($model->load(Yii::$app->request->post()) && $model->login()) {
-                    return $this->refresh();
-                } else {
-                    Yii::$app->getSession()->writeSession('showLogin', true);
-                }
+                $model = $this->actionLogin();
             }
             $models = [
                 'registrationModel' => $registrationModel,
@@ -787,19 +764,14 @@ class UsersController extends \yii\web\Controller {
     public function actionSearch($action = false, $id = false, $key = false) {
         $query = \Yii::$app->request->get('query');
         $search = \Yii::$app->request->get('search') ? \Yii::$app->request->get('search') : 'basic';
-//        $advanced = \Yii::$app->request->get('advanced');
-//        print_r($query);
-//        print_r($search);
-//        die();
         if ($query === NULL) {
             throw new \yii\web\NotFoundHttpException();
         }
-
-
-
         if (\Yii::$app->user->isGuest) {
             $resetModel = new Users();
             $user_reset = new Users();
+            $registrationModel = new Users();
+            $model = new LoginForm();
             if ($action === 'reset_password') {
                 if (Yii::$app->request->post('Users')) {
                     \Yii::$app->getSession()->writeSession('resetPassword', true);
@@ -816,34 +788,10 @@ class UsersController extends \yii\web\Controller {
             }
 
 
-            $registrationModel = new Users();
-            $model = new LoginForm();
-            $registrationModel->scenario = 'create';
             if ($action !== 'reset' && $action !== 'reset_password' && Yii::$app->request->post('Users')) {
-                if ($registrationModel->load(Yii::$app->request->post()) && $registrationModel->save()) {
-                    $email = \Yii::$app->mailer->compose('confirmEmail', ['user' => $registrationModel])
-                            ->setTo($registrationModel->email)
-                            ->setFrom(['admin@email.com' => \Yii::$app->name])
-                            ->setSubject('E-mail confirmation')
-                            ->send();
-
-                    if ($email) {
-                        Yii::$app->getSession()->setFlash('registrationSuccess', 'Please check your email address!');
-                        $registrationModel = new Users();
-                    } else {
-                        Yii::$app->getSession()->setFlash('registrationWarning', 'Error,please try again!');
-                        $registrationModel->password = '';
-                        $registrationModel->confirm_password = '';
-                    }
-                } else {
-                    Yii::$app->getSession()->writeSession('showRegistration', true);
-                }
+                $registrationModel = $this->actionRegistration();
             } else if (Yii::$app->request->post('LoginForm')) {
-                if ($model->load(Yii::$app->request->post()) && $model->login()) {
-                    return $this->refresh();
-                } else {
-                    Yii::$app->getSession()->writeSession('showLogin', true);
-                }
+                $model = $this->actionLogin();
             }
             $models = [
                 'registrationModel' => $registrationModel,
@@ -857,6 +805,7 @@ class UsersController extends \yii\web\Controller {
         }
         $models['contacts'] = [];
         $models['query_response'] = [];
+        $search_result = [];
 
 
 
@@ -877,41 +826,30 @@ class UsersController extends \yii\web\Controller {
             $likeQuery = '%' . $query_array[0] . '%';
             $query_array = $query_array[0];
             $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
+            $limit = '';
+            $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                            . 'WHERE (`first_name` LIKE :likeQuery '
+                            . 'OR `last_name` LIKE :likeQuery) '
+                            . $and
+                            . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC ' . $limit)
+                    ->bindParam(':likeQuery', $likeQuery)
+                    ->bindParam(':query', $query_array);
+
             if ($search === 'advanced') {
-                $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                $search_result = $q->queryAll();
+            } else {
+                $count = $q->queryAll();
+                $pages = new Pagination(['totalCount' => count($count), 'pageSize' => $this->pageSize]);
+                $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
+                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
                                 . 'WHERE (`first_name` LIKE :likeQuery '
                                 . 'OR `last_name` LIKE :likeQuery) '
                                 . $and
-                                . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
+                                . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC ' . $limit)
                         ->bindParam(':likeQuery', $likeQuery)
-                        ->bindParam(':query', $query_array)
-                        ->queryAll();
-            } else {
-                if ($query !== '') {
-                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                            . 'WHERE (`first_name` LIKE :likeQuery '
-                                            . 'OR `last_name` LIKE :likeQuery) '
-                                            . $and
-                                            . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC')
-                                    ->bindParam(':likeQuery', $likeQuery)
-                                    ->bindParam(':query', $query_array)->queryAll();
-
-                    $pages = new Pagination(['totalCount' => count($q), 'pageSize' => 10]);
-
-                    $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                    . 'WHERE (`first_name` LIKE :likeQuery '
-                                    . 'OR `last_name` LIKE :likeQuery) '
-                                    . $and
-                                    . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC '
-                                    . 'LIMIT ' . $pages->limit . ' '
-                                    . 'OFFSET ' . $pages->offset)
-                            ->bindParam(':likeQuery', $likeQuery)
-                            ->bindParam(':query', $query_array)
-                            ->queryAll();
-                    $models['pages'] = $pages;
-                } else {
-                    $search_result = [];
-                }
+                        ->bindParam(':query', $query_array);
+                $search_result = $q->queryAll();
+                $models['pages'] = $pages;
             }
         } else {
             $first_name = $query_array[0];
@@ -919,59 +857,42 @@ class UsersController extends \yii\web\Controller {
             $like_first_name = '%' . $query_array[0] . '%';
             $like_last_name = '%' . $query_array[1] . '%';
             $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
+            $limit = '';
+            $command = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                            . 'WHERE (`first_name` LIKE :likeFirstName '
+                            . 'OR `last_name` LIKE :likeFirstName '
+                            . 'OR `first_name` LIKE :likeLastName '
+                            . 'OR `last_name` LIKE :likeLastName) '
+                            . $and
+                            . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
+                            . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC ' . $limit)
+                    ->bindParam(':likeFirstName', $like_first_name)
+                    ->bindParam(':likeLastName', $like_last_name)
+                    ->bindParam(':firstName', $first_name)
+                    ->bindParam(':lastName', $last_name);
             if ($search === 'advanced') {
-                $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                $search_result = $command->queryAll();
+            } else {
+                $q = $command->queryAll();
+                $pages = new Pagination(['totalCount' => count($q), 'pageSize' => $this->pageSize]);
+                $limit = 'LIMIT ' . $pages->limit . ' OFFSET ' . $pages->offset;
+                $command = \Yii::$app->db->createCommand('SELECT * FROM `users` '
                                 . 'WHERE (`first_name` LIKE :likeFirstName '
                                 . 'OR `last_name` LIKE :likeFirstName '
                                 . 'OR `first_name` LIKE :likeLastName '
                                 . 'OR `last_name` LIKE :likeLastName) '
                                 . $and
                                 . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
-                                . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
+                                . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC ' . $limit)
                         ->bindParam(':likeFirstName', $like_first_name)
                         ->bindParam(':likeLastName', $like_last_name)
                         ->bindParam(':firstName', $first_name)
-                        ->bindParam(':lastName', $last_name)
-                        ->queryAll();
-            } else {
-                if ($query !== '') {
-                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                            . 'WHERE (`first_name` LIKE :likeFirstName '
-                                            . 'OR `last_name` LIKE :likeFirstName '
-                                            . 'OR `first_name` LIKE :likeLastName '
-                                            . 'OR `last_name` LIKE :likeLastName) '
-                                            . $and
-                                            . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
-                                            . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC')
-                                    ->bindParam(':likeFirstName', $like_first_name)
-                                    ->bindParam(':likeLastName', $like_last_name)
-                                    ->bindParam(':firstName', $first_name)
-                                    ->bindParam(':lastName', $last_name)->queryAll();
-
-
-                    $pages = new Pagination(['totalCount' => count($q), 'pageSize' => 10]);
-
-                    $search_result = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                    . 'WHERE (`first_name` LIKE :likeFirstName '
-                                    . 'OR `last_name` LIKE :likeFirstName '
-                                    . 'OR `first_name` LIKE :likeLastName '
-                                    . 'OR `last_name` LIKE :likeLastName) '
-                                    . $and
-                                    . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
-                                    . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC LIMIT ' . $pages->limit . ' OFFSET ' . $pages->offset)
-                            ->bindParam(':likeFirstName', $like_first_name)
-                            ->bindParam(':likeLastName', $like_last_name)
-                            ->bindParam(':firstName', $first_name)
-                            ->bindParam(':lastName', $last_name)
-                            ->queryAll();
-                    $models['pages'] = $pages;
-                } else {
-                    $search_result = [];
-                }
+                        ->bindParam(':lastName', $last_name);
+                $search_result = $command->queryAll();
+                $models['pages'] = $pages;
             }
         }
         $models['search'] = $search_result;
-//                $models['query'] = $query;
         \Yii::$app->view->params['query'] = $query;
 
 
@@ -984,6 +905,15 @@ class UsersController extends \yii\web\Controller {
                 $models['query_response'] = Yii::$app->request->get('advanced');
                 $user_ids = '';
                 $i = 1;
+                foreach ($search_result as $user) {
+                    if (count($search_result) === $i) {
+                        $quote = '';
+                    } else {
+                        $quote = ',';
+                    }
+                    $user_ids .= $user['id'] . $quote;
+                    $i++;
+                }
                 $sqlIf = '';
                 $sqlIfValue = '';
                 $j = false;
@@ -1014,23 +944,25 @@ class UsersController extends \yii\web\Controller {
                     }
                 }
                 if ($j) {
-                    $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
+                    $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : ' ';
+                    $limit = '';
                     $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
                             . 'FROM users '
                             . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
+                            . 'WHERE users.id IN(' . $user_ids . ') '
                             . 'GROUP BY user_forms.user_id '
                             . 'HAVING is_result=1 '
-                            . $and;
+                            . $and . $limit;
                     $query = Users::findBySql($sql)->all();
-                    $pages = new Pagination(['totalCount' => count($query), 'pageSize' => 10]);
+                    $pages = new Pagination(['totalCount' => count($query), 'pageSize' => $this->pageSize]);
+                    $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
                     $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
                             . 'FROM users '
                             . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
+                            . 'WHERE users.id IN(' . $user_ids . ') '
                             . 'GROUP BY user_forms.user_id '
                             . 'HAVING is_result=1 '
-                            . $and
-                            . 'LIMIT ' . $pages->limit . ' '
-                            . 'OFFSET ' . $pages->offset;
+                            . $and . $limit;
                     $count = Users::findBySql($sql);
 
                     $model = $count->all();
