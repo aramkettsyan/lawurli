@@ -11,7 +11,8 @@ use yii\helpers\Html;
         <?php foreach($colleagues as $colleague) : ?>
         <li>
             <div class="peopleListL">
-                <img src="/images/users_images/<?=$colleague['image']?>" alt="">
+                <img src="/images/default.png" alt="">
+                <span style="background-image: url('/images/users_images/<?=$colleague['image']?>')"></span>
             </div>
             <div class="peopleListR">
                 <a href="/users/profile/<?=$colleague['id']?>" class="plName"><?=$colleague['first_name'].' '.$colleague['last_name']?></a>
