@@ -1,7 +1,7 @@
 <div class="headerDrDn dropDn notifDrDn">
     <a href="#" class="dropDnBtn">
         <i class="icon-bell-two"></i>
-        <span class="notifCount">3</span>
+        <?= ($this->params['notifyCount'] ? '<span class="notifCount">'.$this->params['notifyCount'].'</span>' : '') ?>
     </a>
     <div class="dropDnSub">
         <ul>

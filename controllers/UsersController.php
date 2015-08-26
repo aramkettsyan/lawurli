@@ -163,7 +163,9 @@ class UsersController extends \yii\web\Controller {
         \Yii::$app->view->params['logo'] = $this->getLogo();
         $this->enableCsrfValidation = false;
         if (!\Yii::$app->user->isGuest) {
-            Yii::$app->view->params['notify'] = $this->getNotifications($pageSize = 4)[1];
+            $notify =  $this->getNotifications($pageSize = 6);
+            Yii::$app->view->params['notify'] = $notify[1];
+            Yii::$app->view->params['notifyCount'] = Users::getNotificationCount();
         }
         return parent::beforeAction($action);
     }
@@ -1087,6 +1089,11 @@ class UsersController extends \yii\web\Controller {
         $returnParams = $this->getNotifications($pageSize = 6);
         $pages = $returnParams[0];
         $notifications = $returnParams[1];
+        $seenIds = [];
+        foreach($notifications as $notification){
+            $seenIds[] = $notification['request_id'];
+        }
+        Request::updateAll(['request_seen' => "Y"], 'request_id IN('.  implode(',', $seenIds).')');
         return $this->render('load-notifications', ['notifications' => $notifications,
                     'pages' => $pages
         ]);
@@ -1105,7 +1112,7 @@ class UsersController extends \yii\web\Controller {
         $notifications = $notifications->offset($pages->offset)
                 ->limit($pages->limit)
                 ->all();
-        return [$pages, $notifications];
+        return [$pages, $notifications,$countQuery->count()];
     }
 
 }

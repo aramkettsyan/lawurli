@@ -339,7 +339,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
      */
     public function getColleagues($requestAccepted){
       $query = (new Query())
-                ->select('id,first_name,last_name,location,image,request_created')
+                ->select('id,first_name,last_name,location,image,request_created,request_id')
                 ->distinct()
                 ->from('contact_requests');
                 if($requestAccepted == "N"){
@@ -353,6 +353,14 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                             ' OR user_to_id = id AND id<>'.Yii::$app->user->identity->id);
                 $query = $query->orderBy('request_modified DESC');
                 return $query;
+    }
+    
+    public function getNotificationCount(){
+         return (new Query())
+                 ->select('request_id')
+                 ->from('contact_requests')
+                 ->where("user_to_id =".Yii::$app->user->identity->id." AND request_seen = 'N'")
+                 ->count();
     }
     
 
