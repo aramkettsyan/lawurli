@@ -1075,7 +1075,9 @@ class UsersController extends \yii\web\Controller {
         foreach($notifications as $notification){
             $seenIds[] = $notification['request_id'];
         }
-        Request::updateAll(['request_seen' => "Y"], 'request_id IN('.  implode(',', $seenIds).')');
+        if($seenIds){
+            Request::updateAll(['request_seen' => "Y"], 'request_id IN('.  implode(',', $seenIds).')');
+        }
         return $this->render('load-notifications', ['notifications' => $notifications,
                     'pages' => $pages
         ]);

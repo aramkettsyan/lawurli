@@ -8,8 +8,8 @@ use yii\helpers\Html;
 ?>
 
 <div class="peopleList">
+    <?php if($colleagues) : ?>
     <ul>
-        <?php if($colleagues) : ?>
         <?php foreach($colleagues as $colleague) : ?>
         <li>
             <div class="peopleListL">
@@ -27,12 +27,10 @@ use yii\helpers\Html;
             </div>
         </li>
         <?php endforeach; ?>
-
-        </ul>
-    <?php else : ?>
-        <div> No Colleagues </div>
+    </ul>
+   <?php else : ?>
+<div> No Colleagues </div>
 <?php endif; ?>
-
 </div>
 <div class="pagin colleagPage">
     <?php
