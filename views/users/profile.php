@@ -42,6 +42,11 @@ use yii\widgets\ActiveForm;
                     <p><?= $user->email ?></p>
                 </li>
             </ul>
+            <?php if ((Yii::$app->controller->actionParams['id'] != Yii::$app->user->id && Yii::$app->controller->actionParams['id'] )) { ?>
+                <div class="alignCenter">
+                    <a href="#" class="btn defBtn">Connect</a>
+                </div>
+            <?php } ?>
         </div>
         <?php if (!Yii::$app->user->isGuest && (Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'] )) { ?>
             <div class="alignCenter">
@@ -105,7 +110,7 @@ use yii\widgets\ActiveForm;
 
                                                     <?php if ($form['formType'] === 'input') { ?>
                                                         <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
                                                         <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'textarea') { ?>
@@ -177,231 +182,6 @@ use yii\widgets\ActiveForm;
     </div>
 </div>
 
-<?php if (Yii::$app->user->isGuest) { ?>
-    <!-- ###### -->
-    <!-- POPUPS -->
-    <!-- ###### -->
-
-    <!-- login popup -->
-    <div id="login-popup" class="popupWrap popupSmall mfp-hide">
-        <div class="popupTitle">
-            <h5>Login</h5>
-            <button class="mfp-close"></button>
-        </div>
-        <div class="popupCont">
-            <?php
-            echo \Yii::$app->getSession()->getFlash('success');
-            echo \Yii::$app->getSession()->getFlash('warning');
-            ?>
-            <?php
-            $form = ActiveForm::begin([
-                        'id' => 'login-form'
-            ]);
-            ?>
-
-
-
-            <?=
-            $form->field($model, 'email', [
-                'template' => "{input} <i class='icon-email-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
-            ?>
-
-            <?=
-            $form->field($model, 'password', [
-                'template' => "{input} <i class='icon-lock-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password']);
-            ?>
-
-            <div class="remMeForgPass clearAfter">
-                <?=
-                $form->field($model, 'rememberMe', ['options' => [
-                        'class' => 'checkbox'
-            ]])->checkbox(['label' => 'Remember me!'])
-                ?>
-                <div class="forgPass">
-                    <a class="textBtn popupBtn" href="#forgpass-popup" >Forgot password?</a>
-                </div>
-            </div>
-            <?= Html::submitButton('Login', ['class' => 'btn defBtn']) ?>
-            <?php ActiveForm::end(); ?>
-        </div>
-    </div>
-
-    <!-- sign up popup -->
-    <div id="signup-popup" class="popupWrap popupSmall mfp-hide">
-        <div class="popupTitle">
-            <h5>Sign up</h5>
-            <button class="mfp-close"></button>
-        </div>
-        <div class="popupCont">
-            <?php
-            echo \Yii::$app->getSession()->getFlash('registrationSuccess');
-            echo \Yii::$app->getSession()->getFlash('registrationWarning');
-            ?>
-            <?php
-            $f = ActiveForm::begin([
-                        'id' => 'registration-form'
-            ]);
-            ?>
-
-
-            <?=
-            $f->field($registrationModel, 'first_name', [
-                'template' => "{input}<i class='icon-man-streamline-user'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->textInput(['class' => 'formControl', 'placeholder' => 'Name'])->label(false);
-            ?>
-            <?=
-            $f->field($registrationModel, 'last_name', [
-                'template' => "{input} <i class='icon-man-streamline-user'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->textInput(['class' => 'formControl', 'placeholder' => 'Last name'])->label(false);
-            ?>
-            <?=
-            $f->field($registrationModel, 'email', [
-                'template' => "{input} <i class='icon-email-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email'])->label(false);
-            ?>
-            <?=
-            $f->field($registrationModel, 'password', [
-                'template' => "{input} <i class='icon-lock-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password'])->label(false);
-            ?>
-            <?=
-            $f->field($registrationModel, 'confirm_password', [
-                'template' => "{input} <i class='icon-lock-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Retype password'])->label(false);
-            ?>
-            <?=
-            $f->field($registrationModel, 'conditions', ['options' => [
-                    'class' => 'checkbox'
-        ]])->checkbox(['label' => 'Terms and conditions'])
-            ?>
-
-            <?= Html::submitButton('Register', ['class' => 'btn defBtn']) ?>
-
-
-            <?php ActiveForm::end(); ?>
-        </div>
-    </div>
-
-
-    <!-- forgot password -->
-    <div id="forgpass-popup" class="popupWrap popupSmall mfp-hide">
-
-
-        <div class="popupTitle">
-            <h5>Reset password</h5>
-            <button class="mfp-close"></button>
-        </div>
-
-        <?php
-        $resetPassForm = ActiveForm::begin([
-                    'id' => 'password-reset-form',
-                    'action' => \yii\helpers\Url::to(['users/profile', 'action' => 'reset_password', 'id' => $id]),
-                    'options' => ['class' => '']
-        ]);
-        ?>
-
-        <div class="popupCont">
-            <?=
-            $resetPassForm->field($resetModel, 'email', [
-                'template' => "{input}{error} <i class='icon-email-streamline'></i>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
-            ?>
-            <p style="color:red">
-                <?php
-                echo \Yii::$app->getSession()->getFlash('resetWarning');
-                ?>
-            </p>
-            <p style="color:green">
-                <?php
-                echo \Yii::$app->getSession()->getFlash('resetSuccess');
-                ?>
-            </p>
-
-            <?= Html::submitButton('Send Email', ['id' => 'password-reset-form_submit', 'class' => 'btn defBtn']) ?>
-        </div>
-
-        <?php ActiveForm::end(); ?>
-    </div>
-
-    <!-- forgot password 2 -->
-    <div id="forgpass-popup-2" class="popupWrap popupSmall mfp-hide">
-        <div class="popupTitle">
-            <h5>Reset password</h5>
-            <button class="mfp-close"></button>
-        </div>
-        <?php
-        $resetForm = ActiveForm::begin([
-                    'id' => 'password-reset-form',
-        ]);
-        ?>
-
-
-        <div class="popupCont">
-            <?=
-            $resetForm->field($user_reset, 'password', [
-                'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'New password']);
-            ?>
-            <?=
-            $resetForm->field($user_reset, 'confirm_password', [
-                'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
-                'options' => [
-                    'class' => 'formRow frIconLeft'
-        ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Confirm password']);
-            ?>
-            <?= Html::submitButton('Confirm', ['id' => 'password-reset-form_submit', 'class' => 'btn defBtn']) ?>
-        </div>
-        <?php ActiveForm::end(); ?>
-    </div>
-<?php } ?>
 
 
 <script type="text/javascript">
@@ -411,7 +191,7 @@ use yii\widgets\ActiveForm;
                 results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
-    var colleaguesTab    = getParameterByName('colleaguesTab');
+    var colleaguesTab = getParameterByName('colleaguesTab');
     var notificationsTab = getParameterByName('notificationsTab');
 
     $(document).ready(function () {

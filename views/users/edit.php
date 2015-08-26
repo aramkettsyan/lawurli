@@ -17,7 +17,7 @@ $this->title = 'Edit profile'
                 </div>
             </div>
 
-            <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
+                <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
         <?php } ?>
         <p style="color:red;display: none" id="imageUploadError"></p>
 
@@ -27,14 +27,18 @@ $this->title = 'Edit profile'
                             <span class="userProff">Bandit</span> 
                         </div>-->
             <ul class="listWithIcons">
-                <li>
-                    <i class="icon-location"></i>
-                    <p><?= $user->location ? $user->location : 'Location undefined' ?></p>
-                </li>
-                <li>
-                    <i class="icon-smart-phone-2"></i>
-                    <p><?= $user->phone ?></p>
-                </li>
+                <?php if ($user->location) { ?>
+                    <li>
+                        <i class="icon-location"></i>
+                        <p><?= $user->location ?></p>
+                    </li>
+                <?php } ?>
+                <?php if ($user->phone) { ?>
+                    <li>
+                        <i class="icon-smart-phone-2"></i>
+                        <p><?= $user->phone ?></p>
+                    </li>
+                <?php } ?>
                 <li>
                     <i class="icon-letter-mail-1"></i>
                     <p><?= $user->email ?></p>
@@ -81,13 +85,13 @@ $this->title = 'Edit profile'
 <script type="text/javascript">
 
     $(document).ready(function () {
-        
-        $('#generalInfo').on('click',function(){
+
+        $('#generalInfo').on('click', function () {
             $('#detailedInfo').removeClass('active');
             $(this).addClass('active');
             $('.tabsContent').load('/users/edit?action=general');
         });
-        $('#detailedInfo').on('click',function(){
+        $('#detailedInfo').on('click', function () {
             $('#generalInfo').removeClass('active');
             $(this).addClass('active');
             $('.tabsContent').load('/users/edit?action=detailed');

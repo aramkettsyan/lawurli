@@ -1,6 +1,8 @@
 <?php
+
 use yii\widgets\LinkPager;
 use yii\helpers\Html;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
 ?>
@@ -25,17 +27,18 @@ use yii\helpers\Html;
             </div>
         </li>
         <?php endforeach; ?>
-        
-        <?php else : ?>
+
+        </ul>
+    <?php else : ?>
         <div> No Colleagues </div>
-        <?php endif; ?>
-    </ul>
-   
+<?php endif; ?>
+
 </div>
- <div class="pagin colleagPage">
-    <?php // display pagination
-           echo LinkPager::widget([
-               'pagination' => $pages,
-           ]);
+<div class="pagin colleagPage">
+    <?php
+    // display pagination
+    echo LinkPager::widget([
+        'pagination' => $pages,
+    ]);
     ?>
 </div>

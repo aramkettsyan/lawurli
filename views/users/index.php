@@ -10,7 +10,6 @@ use yii\widgets\ActiveForm;
 <?php
 $this->title = 'Home'
 ?>
-<?php Yii::$app->view->params['user'] = $user; ?>
 <div class="homeTop <?= !Yii::$app->user->isGuest ? 'homeTopUser' : '' ?> clearAfter">
     <div class="container">
         <div class="homeTopText">
@@ -189,81 +188,6 @@ $this->title = 'Home'
         </div>
     </div>
 </section>
-
-<!-- forgot password -->
-<div id="forgpass-popup" class="popupWrap popupSmall mfp-hide">
-
-
-    <div class="popupTitle">
-        <h5>Reset password</h5>
-        <button class="mfp-close"></button>
-    </div>
-
-    <?php
-    $resetPassForm = ActiveForm::begin([
-                'id' => 'password-reset-form',
-                'action' => \yii\helpers\Url::to(['users/index', 'action' => 'reset_password']),
-                'options' => ['class' => '']
-    ]);
-    ?>
-
-    <div class="popupCont">
-        <?=
-        $resetPassForm->field($resetModel, 'email', [
-            'template' => "{input}{error} <i class='icon-email-streamline'></i>",
-            'options' => [
-                'class' => 'formRow frIconLeft'
-    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
-        ?>
-        <p style="color:red">
-            <?php
-            echo \Yii::$app->getSession()->getFlash('resetWarning');
-            ?>
-        </p>
-        <p style="color:green">
-            <?php
-            echo \Yii::$app->getSession()->getFlash('resetSuccess');
-            ?>
-        </p>
-
-        <?= Html::submitButton('Send Email', ['id' => 'password-reset-form_submit', 'class' => 'btn defBtn']) ?>
-    </div>
-
-    <?php ActiveForm::end(); ?>
-</div>
-
-<!-- forgot password 2 -->
-<div id="forgpass-popup-2" class="popupWrap popupSmall mfp-hide">
-    <div class="popupTitle">
-        <h5>Reset password</h5>
-        <button class="mfp-close"></button>
-    </div>
-    <?php
-    $resetForm = ActiveForm::begin([
-                'id' => 'password-reset-form',
-    ]);
-    ?>
-
-
-    <div class="popupCont">
-        <?=
-        $resetForm->field($user, 'password', [
-            'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
-            'options' => [
-                'class' => 'formRow frIconLeft'
-    ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'New password']);
-        ?>
-        <?=
-        $resetForm->field($user, 'confirm_password', [
-            'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
-            'options' => [
-                'class' => 'formRow frIconLeft'
-    ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Confirm password']);
-        ?>
-        <?= Html::submitButton('Confirm', ['id' => 'password-reset-form_submit', 'class' => 'btn defBtn']) ?>
-    </div>
-    <?php ActiveForm::end(); ?>
-</div>
 
 
 <script type="text/javascript">
