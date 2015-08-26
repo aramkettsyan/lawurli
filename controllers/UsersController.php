@@ -167,7 +167,6 @@ class UsersController extends \yii\web\Controller {
                 $user->old_password = $user->password;
                 $user->scenario = 'update';
                 if ($user->load($post) && $user->save()) {
-                    Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
                     $transaction->commit();
                     return $this->redirect('/users/profile');
                 } else {
@@ -196,7 +195,6 @@ class UsersController extends \yii\web\Controller {
                         . "WHERE user_id =" . Yii::$app->user->identity->id)->queryAll();
 
         if (Yii::$app->request->post()) {
-
             $transaction = \Yii::$app->db->beginTransaction();
             try {
                 $post = Yii::$app->request->post();
@@ -226,7 +224,8 @@ class UsersController extends \yii\web\Controller {
                 $r = 0;
                 $validate = true;
                 foreach ($custom_fields as $key => $custom_field) {
-                    foreach ($custom_field as $k => $field) {
+                    $k = 0;
+                    foreach ($custom_field as $field) {
                         if (empty($field)) {
                             continue;
                         }
@@ -267,6 +266,7 @@ class UsersController extends \yii\web\Controller {
                                 }
                             }
                         }
+                        $k++;
                         $r++;
                     }
                 }
@@ -313,7 +313,6 @@ class UsersController extends \yii\web\Controller {
 
                     if (!empty($newArr) && !$deleteFailed) {
                         if (Yii::$app->db->createCommand()->batchInsert('user_forms', ['user_id', 'form_id', 'index', 'value', 'created', 'modified'], $newArr)->execute()) {
-                            Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
                             $transaction->commit();
                             return $this->redirect('/users/profile');
                         } else {
@@ -321,7 +320,6 @@ class UsersController extends \yii\web\Controller {
                             $transaction->rollBack();
                         }
                     } else if (!$deleteFailed) {
-                        Yii::$app->getSession()->writeSession('updateSuccess', 'Your profile updated successfully!');
                         $transaction->commit();
                         return $this->redirect('/users/profile');
                     }
@@ -395,11 +393,11 @@ class UsersController extends \yii\web\Controller {
                 ];
             }
         }
-        
-        
-            \Yii::$app->view->params['user'] = $user;
-            \Yii::$app->view->params['sections'] = $newSections;
-            \Yii::$app->view->params['user_forms'] = $new_user_forms;
+
+
+        \Yii::$app->view->params['user'] = $user;
+        \Yii::$app->view->params['sections'] = $newSections;
+        \Yii::$app->view->params['user_forms'] = $new_user_forms;
 
         if (Yii::$app->request->isAjax) {
             $this->layout = false;
@@ -433,7 +431,6 @@ class UsersController extends \yii\web\Controller {
                 }
                 break;
             case 'textarea':
-                print_r('textarea');
                 break;
             case 'select':
                 if (!in_array($value, $optionsArray)) {
@@ -610,7 +607,7 @@ class UsersController extends \yii\web\Controller {
                         ->send();
                 if ($email) {
                     Yii::$app->getSession()->writeSession('emailTimeout', time());
-                    Yii::$app->getSession()->setFlash('resetSuccess', 'Please check your email address.');
+                    Yii::$app->getSession()->setFlash('resetSuccess', 'Please check your mail inbox (spam) folder.');
                     return $model;
                 } else {
                     Yii::$app->getSession()->setFlash('resetWarning', 'Failed,please contact to Admin.');
@@ -638,7 +635,6 @@ class UsersController extends \yii\web\Controller {
                 $user->password_reset_token = null;
                 $user->scenario = 'resetPassword';
                 if ($user->save()) {
-                    \Yii::$app->getSession()->setFlash('success', 'Your new password successfully saved.');
                     return true;
                 } else {
                     \Yii::$app->getSession()->writeSession('newPassword', true);
@@ -734,15 +730,20 @@ class UsersController extends \yii\web\Controller {
                             . 'ON forms.sub_section_id = sub_sections.id '
                             . 'ORDER BY sections.id,sub_sections.id,forms.id ')->queryAll();
 
+
             $new_user_forms = [];
             foreach ($user_forms as $user_form) {
-                if (isset($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
-                    if (!is_array($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
-                        $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = [$new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']]];
+                $subId = $user_form['subSectionId'];
+                $formId = $user_form['form_id'];
+                $index = $user_form['index'];
+
+                if (isset($new_user_forms[$subId][$index][$formId])) {
+                    if (!is_array($new_user_forms[$subId][$index][$formId])) {
+                        $new_user_forms[$subId][$index][$formId] = [$new_user_forms[$subId][$index][$formId]];
                     }
-                    $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']][] = $user_form['value'];
+                    $new_user_forms[$subId][$index][$formId][] = $user_form['value'];
                 } else {
-                    $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = $user_form['value'];
+                    $new_user_forms[$subId][$index][$formId] = $user_form['value'];
                 }
             }
 
