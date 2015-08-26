@@ -46,16 +46,16 @@ $this->title = 'Search';
                                     <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="btn lineDefBtn sBtn">View Profile</a>
                                     <?php if(isset($contacts[$user['id']])) : ?>
                                         <?php if($contacts[$user['id']]['user_to_id'] == $user['id'] && $contacts[$user['id']]['request_accepted']== 'N') : ?>
-                                            <a href="<?= \yii\helpers\Url::to(['users/decline','id' => $user['id']]) ?>" class="btn greyBtn sBtn"><i class="icon-cross-mark"></i>Request is sent</a>
+                                            <a href="<?= \yii\helpers\Url::to(['users/decline','id' => $user['id']]) ?>" class="btn greyBtn sBtn cdBtn"><i class="icon-cross-mark"></i>Request is sent</a>
                                         <?php elseif ($contacts[$user['id']]['user_to_id'] == $user['id'] && $contacts[$user['id']]['request_accepted']== 'Y') : ?>
-                                            <a href="<?= \yii\helpers\Url::to(['users/decline', 'id' => $user['id']]) ?>" class="btn greyBtn sBtn"><i class="icon-cross-mark"></i>Disconnect</a>
+                                            <a href="<?= \yii\helpers\Url::to(['users/decline', 'id' => $user['id']]) ?>" class="btn greyBtn sBtn cdBtn"><i class="icon-cross-mark"></i>Disconnect</a>
                                         <?php elseif ($contacts[$user['id']]['user_from_id'] == $user['id'] && $contacts[$user['id']]['request_accepted']== 'Y') : ?>
-                                           <a href="<?= \yii\helpers\Url::to(['users/decline', 'id' => $user['id']]) ?>" class="btn greyBtn sBtn"><i class="icon-cross-mark"></i>Disconnect</a>
+                                           <a href="<?= \yii\helpers\Url::to(['users/decline', 'id' => $user['id']]) ?>" class="btn greyBtn sBtn cdBtn"><i class="icon-cross-mark"></i>Disconnect</a>
                                         <?php elseif ($contacts[$user['id']]['user_from_id'] == $user['id'] && $contacts[$user['id']]['request_accepted']== 'N') : ?>
-                                           <a href="<?= \yii\helpers\Url::to(['users/accetpt', 'id' => $user['id']]) ?>" class="btn defBtn sBtn"><i class="icon-check-1"></i>Accept</a>
+                                           <a href="<?= \yii\helpers\Url::to(['users/accetpt', 'id' => $user['id']]) ?>" class="btn defBtn sBtn cdBtn"><i class="icon-check-1"></i>Accept</a>
                                         <?php endif; ?>
                                     <?php else : ?>    
-                                        <a href="<?= \yii\helpers\Url::to(['users/connect', 'id' => $user['id']]) ?>" class="btn lineDefBtn sBtn">Connect</a>
+                                        <a href="<?= \yii\helpers\Url::to(['users/connect', 'id' => $user['id']]) ?>" class="btn lineDefBtn sBtn cdBtn">Connect</a>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -464,6 +464,15 @@ $this->title = 'Search';
         $('.disabledBtn').click(function (e) {
             e.preventDefault();
         });
+        
+        <?php if(Yii::$app->user->isGuest) : ?>
+                $(".cdBtn").each(function(element){
+                   $(this).attr("href", "#login-popup");
+                   $(this).addClass("popupBtn");
+                });
+        <?php endif; ?>
+            
+        $('.popupBtn').magnificPopup();
 
         $('.hideSection').parent().hide();
         $('.hideSubSection').parent().hide();
@@ -518,6 +527,6 @@ $this->title = 'Search';
                 items: {src: '#forgpass-popup'}, type: 'inline'
             }, 0);
         }
-
     });
+   
 </script>

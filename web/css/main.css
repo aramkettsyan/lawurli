@@ -752,6 +752,23 @@ header {
     overflow: hidden;
     white-space: nowrap;
 }
+.hdrNotifC p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.notifSeeAll {
+    padding: 0!important;
+}
+.notifSeeAll>* {
+    text-align: center;
+    background: #1F1F1F;
+    color: #BFBFBF;
+    padding: 3px 5px;
+}
+.notifSeeAll>*:hover {
+    opacity: .7;
+}
 
 
 /* click drop down styles */
@@ -1549,6 +1566,12 @@ header {
 .texts404 .btn {
     color: #DA8213;
     box-shadow: inset 0 0 0 1px #DA8213;
+}
+.poweredBy {
+    border-top: solid 1px #737373;
+    margin-top: 40px;
+    padding-top: 30px;
+    text-align: center;
 }
 
 

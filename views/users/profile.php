@@ -411,7 +411,8 @@ use yii\widgets\ActiveForm;
                 results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
-    var colleaguesTab = getParameterByName('colleaguesTab');
+    var colleaguesTab    = getParameterByName('colleaguesTab');
+    var notificationsTab = getParameterByName('notificationsTab');
 
     $(document).ready(function () {
 
@@ -474,6 +475,12 @@ use yii\widgets\ActiveForm;
             $("#colleag").parent().addClass("active");
             $("#colleag").parent().siblings().removeClass("active");
             $("#tabContent").load("/users/load-colleagues");
+        }
+        if (notificationsTab == 'open') {
+            $("#profileInfo").hide();
+            $("#profiletabNot").parent().addClass("active");
+            $("#profiletabNot").parent().siblings().removeClass("active");
+            $("#tabContent").load("/users/load-notifications");
         }
 
         $(document).on("click", "#colleag", function (event) {

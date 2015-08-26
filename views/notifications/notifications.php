@@ -18,33 +18,9 @@
                     </div>
                 </li>
             <?php endforeach; ?>
-            
-            
-
-<!--            <li>
-                <div class="hdrNotifL">
-                    <img src="<?= \Yii::getAlias('@web') . '/images/user-2.png'; ?>" alt="">
-                </div>
-                <div class="hdrNotifC">
-                    Blah blah text
-                </div>
-                <div class="hdrNotifR">
-                    <button><i class="icon-check-1"></i></button>
-                    <button><i class="icon-cross-mark"></i></button>
-                </div>
+            <li class="notifSeeAll">
+                <a href="/users/profile?notificationsTab=open">See All</a>
             </li>
-            <li>
-                <div class="hdrNotifL">
-                    <img src="<?= \Yii::getAlias('@web') . '/images/user-1.png'; ?>" alt="">
-                </div>
-                <div class="hdrNotifC">
-                    lorem ipsum dolor sit
-                </div>
-                <div class="hdrNotifR">
-                    <button><i class="icon-check-1"></i></button>
-                    <button><i class="icon-cross-mark"></i></button>
-                </div>
-            </li>-->
         </ul>
     </div>
 </div>
