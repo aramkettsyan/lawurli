@@ -89,8 +89,6 @@ $fm = ActiveForm::begin([
             var place = autocomplete.getPlace();
             document.getElementById('autocomplete').value = place.name;
             document.getElementById('latlng').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
-//            alert("This function is working!");
-            alert(document.getElementById('latlng').value);
         });
     }
     initialize();

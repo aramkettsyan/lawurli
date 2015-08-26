@@ -95,18 +95,17 @@ class UsersController extends \yii\web\Controller {
     public function beforeAction($action) {
 
         $action_id = \Yii::$app->controller->action->id;
-        
+
         //404 error
-        
-        if($action_id === 'error'){
+
+        if ($action_id === 'error') {
             $this->layout = 'error';
         }
-        
-        //end 404 error
 
+        //end 404 error
         //login and registration
 
-        
+
         $actions = [
             'profile',
             'search'
@@ -198,6 +197,7 @@ class UsersController extends \yii\web\Controller {
                 $registrationModel->confirm_password = '';
             }
         }
+        Yii::$app->getSession()->writeSession('showRegistration', true);
 
         return $registrationModel;
     }
@@ -213,8 +213,8 @@ class UsersController extends \yii\web\Controller {
             throw new \yii\web\NotFoundHttpException();
         }
     }
-    
-    public function actionError(){
+
+    public function actionError() {
         return $this->render('error');
     }
 
