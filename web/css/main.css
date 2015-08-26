@@ -705,12 +705,20 @@ header {
 .notifDrDn .dropDnBtn {
     height: 35px;
     margin-top: 4px;
+    position: relative;
 }
 .hdrNotifL {
     width: 30px;
     height: 30px;
     position: absolute;
     left: 0;
+}
+.hdrNotifL>span {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
 }
 .hdrNotifL img {
     width: 100%;
@@ -753,8 +761,8 @@ header {
     white-space: nowrap;
 }
 .hdrNotifC p {
-    overflow: hidden;
     text-overflow: ellipsis;
+    overflow: hidden;
     white-space: nowrap;
 }
 .notifSeeAll {
@@ -768,6 +776,19 @@ header {
 }
 .notifSeeAll>*:hover {
     opacity: .7;
+}
+.notifCount {
+    min-width: 15px;
+    height: 15px;
+    border-radius: 100px;
+    position: absolute;
+    top: 3px;
+    right: -14px;
+    background-color: #DA8213;
+    color: #fff;
+    padding: 0 2px;
+    text-align: center;
+    font-size: 10px;
 }
 
 
@@ -984,7 +1005,24 @@ header {
     width: 140px;
     float: left;
     padding: 5px;
+    position: relative; 
     border: solid 1px #E0E0E0;
+}
+
+.peopleListL>img {
+    opacity: 0;
+}
+.peopleListL>span {
+    width: 140px;
+    height: 140px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    display: block;
 }
 .peopleList ul:after,
 .peopleList ul li:after {
@@ -1568,9 +1606,9 @@ header {
     box-shadow: inset 0 0 0 1px #DA8213;
 }
 .poweredBy {
-    border-top: solid 1px #737373;
+  /*  border-top: solid 1px #737373;
     margin-top: 40px;
-    padding-top: 30px;
+    padding-top: 30px;*/
     text-align: center;
 }
 
@@ -1609,8 +1647,9 @@ footer h4 {
     /*width: 30%; */
     /*padding: 0 30px;*/
     border-top: solid 1px #737373;
-    margin-top: 40px;
-    padding-top: 40px;
+    border-bottom: solid 1px #737373;
+    margin: 25px 0;
+    padding: 25px 0;
 }
 .footerNav {
     text-align: center;

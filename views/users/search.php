@@ -34,7 +34,9 @@ $this->title = 'Search';
                     <?php foreach ($search as $user) { ?>
                         <li>
                             <div class="peopleListL">
-                                <img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user['image']; ?>" alt="">
+                                <img src="/images/user-1.png" alt="">
+                                <img src="<?php // echo \Yii::getAlias('@web') . '/images/users_images/' . $user['image']; ?>" alt="">
+                                <span style='background-image: url("<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user['image']; ?>")'></span>
                             </div>
                             <div class="peopleListR">
                                 <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="plName"><?= $user['first_name'] ?> <?= $user['last_name'] ?></a>

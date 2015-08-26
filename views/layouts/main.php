@@ -157,6 +157,7 @@ UserAsset::register($this);
                         <li><a href="#" data-hover="Something else">Something else</a></li>
                     </ul>
                 </div>
+                <p class="poweredBy">Powered by <a href="http://st-dev.com" target="_blank">STDev</a></p>
             </div>
         </footer>
         <?php $this->endBody() ?>
