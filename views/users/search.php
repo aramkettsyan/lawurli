@@ -46,7 +46,7 @@ $this->title = 'Search';
                                     <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="btn lineDefBtn sBtn">View Profile</a>
                                     <?php if(isset($contacts[$user['id']])) : ?>
                                         <?php if($contacts[$user['id']]['user_to_id'] == $user['id'] && $contacts[$user['id']]['request_accepted']== 'N') : ?>
-                                            <a href="<?= \yii\helpers\Url::to(['users/decline']) ?>" class="btn greyBtn sBtn"><i class="icon-cross-mark"></i>Request is sent</a>
+                                            <a href="<?= \yii\helpers\Url::to(['users/decline','id' => $user['id']]) ?>" class="btn greyBtn sBtn"><i class="icon-cross-mark"></i>Request is sent</a>
                                         <?php elseif ($contacts[$user['id']]['user_to_id'] == $user['id'] && $contacts[$user['id']]['request_accepted']== 'Y') : ?>
                                             <a href="<?= \yii\helpers\Url::to(['users/decline', 'id' => $user['id']]) ?>" class="btn greyBtn sBtn"><i class="icon-cross-mark"></i>Disconnect</a>
                                         <?php elseif ($contacts[$user['id']]['user_from_id'] == $user['id'] && $contacts[$user['id']]['request_accepted']== 'Y') : ?>
