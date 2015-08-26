@@ -36,6 +36,7 @@ class UsersController extends \yii\web\Controller {
                                 'load-general',
                                 'load-colleagues',
                                 'load-notifications',
+                                'error'
                             ],
                             'allow' => true,
                             'roles' => ['@'],
@@ -211,6 +212,10 @@ class UsersController extends \yii\web\Controller {
         } else {
             throw new \yii\web\NotFoundHttpException();
         }
+    }
+    
+    public function actionError(){
+        return $this->render('error');
     }
 
     public function actionLoadGeneralEdit() {
