@@ -19,7 +19,6 @@ $this->title = 'Edit profile'
 
             <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
         <?php } ?>
-        <p style="color:green;display: none" id="imageUploadSuccess">Image uploaded successfully!</p>
         <p style="color:red;display: none" id="imageUploadError"></p>
 
         <div class="userDetails">
@@ -108,11 +107,9 @@ $this->title = 'Edit profile'
 
             if (responseJSON.success) {
                 $('.profileImage').css('background-image', 'url(/images/users_images/' + responseJSON.fileName + ')');
-                $('#imageUploadSuccess').show();
                 $('#imageUploadError').hide();
             }
             if (responseJSON.error) {
-                $('#imageUploadSuccess').hide();
                 $('#imageUploadError').html(responseJSON.error);
                 $('#imageUploadError').show();
 

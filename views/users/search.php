@@ -68,7 +68,7 @@ $this->title = 'Search';
                 </ul>
             </div>
         </div>
-        <?php if (isset($pages)) { ?>
+        <?php if (isset($pages) && !empty($pages)) { ?>
             <div class="pagin">
                 <?php
                 echo LinkPager::widget([
