@@ -14,6 +14,7 @@ use Yii;
 class UsersController extends \yii\web\Controller {
 
     public $pageSize = 10;
+    public $models;
 
     public function behaviors() {
         if (!\Yii::$app->admin->identity) {
@@ -91,6 +92,68 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function beforeAction($action) {
+
+        $action_id = \Yii::$app->controller->action->id;
+        
+        //404 error
+        
+        if($action_id === 'error'){
+            $this->layout = 'error';
+        }
+        
+        //end 404 error
+
+        //login and registration
+
+        
+        $actions = [
+            'profile',
+            'search'
+        ];
+
+        if (in_array($action_id, $actions) && \Yii::$app->user->isGuest) {
+            $id = false;
+            if (isset($_GET['id'])) {
+                $id = $_GET['id'];
+            }
+            $resetModel = new Users();
+            $user_reset = new Users();
+            $registrationModel = new Users();
+            $model = new LoginForm();
+            if ($action === 'reset_password') {
+                if (Yii::$app->request->post('Users')) {
+                    \Yii::$app->getSession()->writeSession('resetPassword', true);
+                    $resetModel = $this->actionResetPassword($id, $key, 'users/profile');
+                }
+            }
+
+            if ($action === 'reset') {
+                $u = $this->actionReset($id, $key);
+                if ($u === true) {
+                    Yii::$app->getSession()->writeSession('showLogin', true);
+                    return $this->redirect('/users/profile/' . $id);
+                }
+            }
+
+
+            if ($action !== 'reset' && $action !== 'reset_password' && Yii::$app->request->post('Users')) {
+                $registrationModel = $this->actionRegistration();
+            } else if (Yii::$app->request->post('LoginForm')) {
+                $model = $this->actionLogin();
+            }
+            $this->models = [
+                'registrationModel' => $registrationModel,
+                'resetModel' => $resetModel,
+                'user_reset' => $user_reset,
+                'model' => $model,
+                'id' => $id,
+            ];
+        } else {
+            $this->models = [];
+        }
+
+        //end login and registration
+
         if (!Yii::$app->user->isGuest) {
             $id = Yii::$app->user->identity->id;
             $user = Users::findOne(['id' => $id]);
@@ -551,10 +614,6 @@ class UsersController extends \yii\web\Controller {
         ]);
     }
 
-    public function actionError() {
-        return $this->render('error');
-    }
-
     public function actionLogout() {
         Yii::$app->user->logout();
         return $this->redirect('/users/index');
@@ -657,6 +716,8 @@ class UsersController extends \yii\web\Controller {
 
     public function actionProfile($action = false, $id = false, $key = false) {
 
+        $models = $this->models;
+
         if ($id) {
             $user = Users::findOne(['id' => (int) $id]);
         } else if (!Yii::$app->user->isGuest) {
@@ -664,44 +725,6 @@ class UsersController extends \yii\web\Controller {
             $user = Users::findOne(['id' => $id]);
         } else {
             return $this->redirect('/users/index');
-        }
-
-
-        if (\Yii::$app->user->isGuest) {
-            $resetModel = new Users();
-            $user_reset = new Users();
-            $registrationModel = new Users();
-            $model = new LoginForm();
-            if ($action === 'reset_password') {
-                if (Yii::$app->request->post('Users')) {
-                    \Yii::$app->getSession()->writeSession('resetPassword', true);
-                    $resetModel = $this->actionResetPassword($id, $key, 'users/profile');
-                }
-            }
-
-            if ($action === 'reset') {
-                $u = $this->actionReset($id, $key);
-                if ($u === true) {
-                    Yii::$app->getSession()->writeSession('showLogin', true);
-                    return $this->redirect('/users/profile/' . $id);
-                }
-            }
-
-
-            if ($action !== 'reset' && $action !== 'reset_password' && Yii::$app->request->post('Users')) {
-                $registrationModel = $this->actionRegistration();
-            } else if (Yii::$app->request->post('LoginForm')) {
-                $model = $this->actionLogin();
-            }
-            $models = [
-                'registrationModel' => $registrationModel,
-                'resetModel' => $resetModel,
-                'user_reset' => $user_reset,
-                'model' => $model,
-                'id' => $id,
-            ];
-        } else {
-            $models = [];
         }
 
 
@@ -799,42 +822,7 @@ class UsersController extends \yii\web\Controller {
         if ($query === NULL) {
             throw new \yii\web\NotFoundHttpException();
         }
-        if (\Yii::$app->user->isGuest) {
-            $resetModel = new Users();
-            $user_reset = new Users();
-            $registrationModel = new Users();
-            $model = new LoginForm();
-            if ($action === 'reset_password') {
-                if (Yii::$app->request->post('Users')) {
-                    \Yii::$app->getSession()->writeSession('resetPassword', true);
-                    $resetModel = $this->actionResetPassword($id, $key, 'users/search');
-                }
-            }
-
-            if ($action === 'reset') {
-                $u = $this->actionReset($id, $key);
-                if ($u === true) {
-                    Yii::$app->getSession()->writeSession('showLogin', true);
-                    return $this->redirect('/users/search/' . $id);
-                }
-            }
-
-
-            if ($action !== 'reset' && $action !== 'reset_password' && Yii::$app->request->post('Users')) {
-                $registrationModel = $this->actionRegistration();
-            } else if (Yii::$app->request->post('LoginForm')) {
-                $model = $this->actionLogin();
-            }
-            $models = [
-                'registrationModel' => $registrationModel,
-                'resetModel' => $resetModel,
-                'user_reset' => $user_reset,
-                'model' => $model,
-                'id' => $id,
-            ];
-        } else {
-            $models = [];
-        }
+        $models = $this->models;
         $models['contacts'] = [];
         $models['query_response'] = [];
         $search_result = [];
