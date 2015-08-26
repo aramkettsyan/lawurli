@@ -927,6 +927,7 @@ header {
     border: solid 1px #E0E0E0;
     border-bottom-color: transparent;
     color: #BDBDBD;
+    cursor: pointer;
 }
 .profileTabs ul li.active a {
     background-color: #FFFFFF;
@@ -1509,13 +1510,46 @@ header {
     border: solid 2px #DA8213;
     color: #DA8213;
 }
-.addMWrapper {
-    text-align: center;
+.mainWrap404 {
+    background: url('../images/404-bg.jpg') no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 100%;
 }
-.addMWrapper>div {
+.mainWrap404 .container {
+    position: relative;
+    height: 100%;
+}
+.texts404 {
+    text-align: right;
+    position: absolute;
+    bottom: 40px;
+    right: 0;
+}
+.texts404 h3 {
+    font-size: 105px;
     display: inline-block;
+    background-color: #DA8213;
+    color: #fff;
+    padding: 0 20px;
+    margin-top: 25px;
+    line-height: 105px;
 }
-
+.texts404 h5 {
+    font-size: 25px;
+    display: inline-block;
+    background-color: #DA8213;
+    color: #fff;
+    padding: 5px 15px;
+    margin-top: 15px;
+    line-height: 30px;   
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.texts404 .btn {
+    color: #DA8213;
+    box-shadow: inset 0 0 0 1px #DA8213;
+}
 
 
 /* footer */

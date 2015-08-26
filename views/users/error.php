@@ -1,6 +1,6 @@
 <?php 
 
-    $this->title = 'Error' 
+    $this->title = 'Error' ;
 
 ?>
 <?php if ($exception->statusCode === 404): ?>
