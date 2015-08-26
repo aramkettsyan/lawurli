@@ -97,8 +97,10 @@ $fm = ActiveForm::begin([
                             <?php $i++; ?>
                         <?php } ?>
                         <?php if ($subSection['0']['subMultiple'] === '1') { ?>
-                            <div class="add-item addMoreBtn">
-                                <button type="button" ><i class="icon-plus"></i></button>
+                            <div class="addMWrapper">
+                                <div class="add-item addMoreBtn">
+                                    <button type="button" ><i class="icon-plus"></i></button>
+                                </div>
                             </div>
                         <?php } ?>
                     </ul>
@@ -197,8 +199,8 @@ $fm = ActiveForm::begin([
             }
         });
         $('.add-item').on('click', function () {
-            $(this).parent().find('.deleteForm').removeClass('singleForm');
-            var parent = $(this).parent();
+            $(this).parent().parent().find('.deleteForm').removeClass('singleForm');
+            var parent = $(this).parent().parent();
             var item = parent.find('.formSecRep:last').clone();
             item.find('.textInput').val('');
             item.find('.inputTextarea').val('');
@@ -222,7 +224,7 @@ $fm = ActiveForm::begin([
             item.find('.inputRadio').attr('form-id', formId);
             item.find('.inputRadio').attr('index', index);
             item.appendTo(parent);
-            $(this).appendTo(parent);
+            $(this).parent().appendTo(parent);
             resetDelete();
 //            parent.find('.formSecRep:last input').val('');
 //            parent.find('.formSecRep:last input:checked').removeAttr('checked');

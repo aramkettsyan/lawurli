@@ -25,21 +25,25 @@ use yii\widgets\ActiveForm;
                             <span class="userProff">Bandit</span> 
                         </div>-->
             <ul class="listWithIcons">
-                <li>
-                    <i class="icon-location"></i>
-                    <p><?= $user->location ? $user->location : 'Location undefined' ?></p>
-                </li>
-                <li>
-                    <i class="icon-smart-phone-2"></i>
-                    <p><?= $user->phone?$user->phone:'No phone number' ?></p>
-                </li>
+                <?php if ($user->location) { ?>
+                    <li>
+                        <i class="icon-location"></i>
+                        <p><?= $user->location ?></p>
+                    </li>
+                <?php } ?>
+                <?php if ($user->phone) { ?>
+                    <li>
+                        <i class="icon-smart-phone-2"></i>
+                        <p><?= $user->phone ?></p>
+                    </li>
+                <?php } ?>
                 <li>
                     <i class="icon-letter-mail-1"></i>
                     <p><?= $user->email ?></p>
                 </li>
             </ul>
         </div>
-        <?php if (!Yii::$app->user->isGuest) { ?>
+        <?php if (!Yii::$app->user->isGuest && (Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'] )) { ?>
             <div class="alignCenter">
                 <a href="<?= \yii\helpers\Url::to(['users/edit']) ?>" class="btn defBtn">Edit profile</a>
             </div>
@@ -60,107 +64,114 @@ use yii\widgets\ActiveForm;
         <div class="tabsContent">
             <div id="tabContent"></div>
             <div id="profileInfo">
-            <?php foreach ($this->params['sections'] as $sectionName => $section) { ?>
-                <?php $emptySectionToken = false; ?>
-                <div class="cvTimeline">
-                    <h4><?= $sectionName ?></h4>
+                <?php $emptyProfile = false; ?>
+                <?php foreach ($this->params['sections'] as $sectionName => $section) { ?>
+                    <?php $emptySectionToken = false; ?>
+                    <div class="cvTimeline">
+                        <h4><?= $sectionName ?></h4>
 
-                    <?php foreach ($section as $subSectionName => $subSection) { ?>
-                        <?php $emptySubSectionToken = false; ?>
-                        <div class="cvSub sub_section">
-                            <?php if ($subSectionName) { ?>
-                                <div class="cvSubLabel">
-                                    <h5><?= $subSectionName ?></h5>
-                                </div>
-                            <?php } ?>
-                            <div class="cvSubCont">
-                                <ul>
-                                    <?php $subSectionId = $subSection['0']['subId']; ?>
-                                    <?php if (isset($this->params['user_forms'][$subSectionId])) { ?>
-                                        <?php $sub_sections_count = count($this->params['user_forms'][$subSectionId]); ?>
-                                    <?php } else { ?>
-                                        <?php $sub_sections_count = 1 ?>
-                                    <?php } ?>
-                                    <?php $i = 0; ?>
-                                    <?php for ($u = 0; $u < $sub_sections_count; $u++) { ?>
-                                        <li>
-                                            <?php foreach ($subSection as $key => $form) { ?>
-                                                <?php if ($key === 0) { ?>
-                                                    <?php continue; ?>
-                                                <?php } ?>
-                                                <?php $value = ''; ?>
-                                                <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
-                                                    <?php $value = $this->params['user_forms'][$subSectionId][$u][$form['formId']] ?>
-                                                <?php } ?>
-                                                <?php if (!empty($value)) { ?>
-                                                    <?php $emptySectionToken = true; ?>
-                                                    <?php $emptySubSectionToken = true; ?>
-                                                <?php } ?>
-
-                                                <?php if ($form['formType'] === 'input') { ?>
-                                                    <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                                                                                                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
-                                                    <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
-                                                <?php } ?>
-                                                <?php if ($form['formType'] === 'textarea') { ?>
-                                                    <!--<textarea class='inputTextarea formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>"><?= $value ?></textarea>-->
-                                                    <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
-                                                <?php } ?>
-                                                <?php if ($form['formType'] === 'select') { ?>
-                                                    <?php $options = str_replace('-,-', ',', $form['formOptions']); ?>
-                                                    <div class="labelValue">
-                                                        <label><?= $form['formLabel'] ?></label>
-                                                        <span><?= $value ?></span>
-                                                    </div>
-                                                <?php } ?>
-                                                <?php if ($form['formType'] === 'checkbox') { ?>
-                                                    <?php $options = explode('-,-', $form['formOptions']); ?>
-                                                    <?php $values = ''; ?>
-                                                    <?php foreach ($options as $option) { ?>
-                                                        <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
-                                                            <?php if (is_array($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
-                                                                <?php if (in_array($option, $this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
-                                                                    <?php $values .= $option . ' '; ?>
-                                                                <?php } ?>
-                                                            <?php } else { ?>
-                                                                <?php if ($option === $this->params['user_forms'][$subSectionId][$u][$form['formId']]) { ?>
-                                                                    <?php $values = $option; ?>
-                                                                <?php } ?>   
-                                                            <?php } ?>
-                                                        <?php } ?>
-
+                        <?php foreach ($section as $subSectionName => $subSection) { ?>
+                            <?php $emptySubSectionToken = false; ?>
+                            <div class="cvSub sub_section">
+                                <?php if ($subSectionName) { ?>
+                                    <div class="cvSubLabel">
+                                        <h5><?= $subSectionName ?></h5>
+                                    </div>
+                                <?php } ?>
+                                <div class="cvSubCont">
+                                    <ul>
+                                        <?php $subSectionId = $subSection['0']['subId']; ?>
+                                        <?php if (isset($this->params['user_forms'][$subSectionId])) { ?>
+                                            <?php $sub_sections_count = count($this->params['user_forms'][$subSectionId]); ?>
+                                        <?php } else { ?>
+                                            <?php $sub_sections_count = 1 ?>
+                                        <?php } ?>
+                                        <?php $i = 0; ?>
+                                        <?php for ($u = 0; $u < $sub_sections_count; $u++) { ?>
+                                            <li>
+                                                <?php foreach ($subSection as $key => $form) { ?>
+                                                    <?php if ($key === 0) { ?>
+                                                        <?php continue; ?>
                                                     <?php } ?>
-                                                    <div class="labelValue">
-                                                        <label><?= $form['formLabel'] ?></label>
-                                                        <span><?= $values ?></span>
-                                                    </div>
-                                                <?php } ?>
-                                                <?php if ($form['formType'] === 'radio') { ?>
-                                                    <div class="labelValue">
-                                                        <label><?= $form['formLabel'] ?></label>
-                                                        <span><?= $value ?></span>
-                                                    </div>
-                                                <?php } ?>
-                                                <p class="message"></p> 
-                                                <?php $value = ''; ?>
-                                            <?php } ?>
-                                        </li>
+                                                    <?php $value = ''; ?>
+                                                    <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
+                                                        <?php $value = $this->params['user_forms'][$subSectionId][$u][$form['formId']] ?>
+                                                    <?php } ?>
+                                                    <?php if (!empty($value)) { ?>
+                                                        <?php $emptyProfile = true; ?>
+                                                        <?php $emptySectionToken = true; ?>
+                                                        <?php $emptySubSectionToken = true; ?>
+                                                    <?php } ?>
 
-                                        <?php $i++; ?>
-                                    <?php } ?>
-                                </ul>
+                                                    <?php if ($form['formType'] === 'input') { ?>
+                                                        <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                        <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
+                                                    <?php } ?>
+                                                    <?php if ($form['formType'] === 'textarea') { ?>
+                                                        <!--<textarea class='inputTextarea formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>"><?= $value ?></textarea>-->
+                                                        <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
+                                                    <?php } ?>
+                                                    <?php if ($form['formType'] === 'select') { ?>
+                                                        <?php $options = str_replace('-,-', ',', $form['formOptions']); ?>
+                                                        <div class="labelValue">
+                                                            <label><?= $form['formLabel'] ?></label>
+                                                            <span><?= $value ?></span>
+                                                        </div>
+                                                    <?php } ?>
+                                                    <?php if ($form['formType'] === 'checkbox') { ?>
+                                                        <?php $options = explode('-,-', $form['formOptions']); ?>
+                                                        <?php $values = ''; ?>
+                                                        <?php foreach ($options as $option) { ?>
+                                                            <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
+                                                                <?php if (is_array($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
+                                                                    <?php if (in_array($option, $this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
+                                                                        <?php $values .= $option . ' '; ?>
+                                                                    <?php } ?>
+                                                                <?php } else { ?>
+                                                                    <?php if ($option === $this->params['user_forms'][$subSectionId][$u][$form['formId']]) { ?>
+                                                                        <?php $values = $option; ?>
+                                                                    <?php } ?>   
+                                                                <?php } ?>
+                                                            <?php } ?>
 
+                                                        <?php } ?>
+                                                        <div class="labelValue">
+                                                            <label><?= $form['formLabel'] ?></label>
+                                                            <span><?= $values ?></span>
+                                                        </div>
+                                                    <?php } ?>
+                                                    <?php if ($form['formType'] === 'radio') { ?>
+                                                        <div class="labelValue">
+                                                            <label><?= $form['formLabel'] ?></label>
+                                                            <span><?= $value ?></span>
+                                                        </div>
+                                                    <?php } ?>
+                                                    <p class="message"></p> 
+                                                    <?php $value = ''; ?>
+                                                <?php } ?>
+                                            </li>
+
+                                            <?php $i++; ?>
+                                        <?php } ?>
+                                    </ul>
+
+                                </div>
+                                <?php if (!$emptySubSectionToken) { ?>
+                                    <span class="hideSubSection"></span>
+                                <?php } ?>
                             </div>
-                            <?php if (!$emptySubSectionToken) { ?>
-                                <span class="hideSubSection"></span>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
-                    <?php if (!$emptySectionToken) { ?>
-                        <span class="hideSection"></span>
-                    <?php } ?>
-                </div>
-            <?php } ?>
+                        <?php } ?>
+                        <?php if (!$emptySectionToken) { ?>
+                            <span class="hideSection"></span>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
+                <?php if (!$emptyProfile) { ?>
+                    <div class="cvTimeline">
+                        No Information
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </div>
@@ -395,10 +406,10 @@ use yii\widgets\ActiveForm;
 
 <script type="text/javascript">
     function getParameterByName(name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
     var colleaguesTab = getParameterByName('colleaguesTab');
 
@@ -457,61 +468,61 @@ use yii\widgets\ActiveForm;
                 items: {src: '#forgpass-popup'}, type: 'inline'
             }, 0);
         }
-      
-      if(colleaguesTab == 'open'){
-           $( "#profileInfo" ).hide();
-           $( "#colleag" ).parent().addClass("active");
-           $( "#colleag" ).parent().siblings().removeClass("active");
-           $( "#tabContent" ).load( "/users/load-colleagues");
-      }
-      
-      $(document).on("click","#colleag", function(event){
-           event.preventDefault();
-           $( "#profileInfo" ).hide();
-           $(this).parent().addClass("active");
-           $(this).parent().siblings().removeClass("active");
-           $( "#tabContent" ).load( "/users/load-colleagues");
-      });
-      
-      $(document).on("click","#profiletab", function(event){
-           event.preventDefault();
-           $( "#profileInfo" ).show();
-           $( "#tabContent" ).html('');
-           $(this).parent().addClass("active");
-           $(this).parent().siblings().removeClass("active");
-      });  
-      
-      $(document).on("click",".colleagPage li a", function(event){
-           event.preventDefault();
-           var pageString  = $(this).attr('data-page');
-           var pageInt = parseInt(pageString) + 1;
-           $( "#profileInfo" ).hide();
-           $(this).parent().addClass("active");
-           $(this).parent().siblings().removeClass("active");
-           $( "#tabContent" ).load( "/users/load-colleagues?page="+pageInt);
-           
-      });  
 
-      $(document).on("click","#profiletabNot", function(event){
-           event.preventDefault();
-           $( "#profileInfo" ).hide();
-           $(this).parent().addClass("active");
-           $(this).parent().siblings().removeClass("active");
-           $( "#tabContent" ).load( "/users/load-notifications");
-      });
-        
-      $(document).on("click",".notifyPage li a", function(event){
-           event.preventDefault();
-           var pageString  = $(this).attr('data-page');
-           var pageInt = parseInt(pageString) + 1;
-           $( "#profileInfo" ).hide();
-           $(this).parent().addClass("active");
-           $(this).parent().siblings().removeClass("active");
-           $( "#tabContent" ).load( "/users/load-notifications?page="+pageInt);
-           
-      });    
-        
-        
+        if (colleaguesTab == 'open') {
+            $("#profileInfo").hide();
+            $("#colleag").parent().addClass("active");
+            $("#colleag").parent().siblings().removeClass("active");
+            $("#tabContent").load("/users/load-colleagues");
+        }
+
+        $(document).on("click", "#colleag", function (event) {
+            event.preventDefault();
+            $("#profileInfo").hide();
+            $(this).parent().addClass("active");
+            $(this).parent().siblings().removeClass("active");
+            $("#tabContent").load("/users/load-colleagues");
+        });
+
+        $(document).on("click", "#profiletab", function (event) {
+            event.preventDefault();
+            $("#profileInfo").show();
+            $("#tabContent").html('');
+            $(this).parent().addClass("active");
+            $(this).parent().siblings().removeClass("active");
+        });
+
+        $(document).on("click", ".colleagPage li a", function (event) {
+            event.preventDefault();
+            var pageString = $(this).attr('data-page');
+            var pageInt = parseInt(pageString) + 1;
+            $("#profileInfo").hide();
+            $(this).parent().addClass("active");
+            $(this).parent().siblings().removeClass("active");
+            $("#tabContent").load("/users/load-colleagues?page=" + pageInt);
+
+        });
+
+        $(document).on("click", "#profiletabNot", function (event) {
+            event.preventDefault();
+            $("#profileInfo").hide();
+            $(this).parent().addClass("active");
+            $(this).parent().siblings().removeClass("active");
+            $("#tabContent").load("/users/load-notifications");
+        });
+
+        $(document).on("click", ".notifyPage li a", function (event) {
+            event.preventDefault();
+            var pageString = $(this).attr('data-page');
+            var pageInt = parseInt(pageString) + 1;
+            $("#profileInfo").hide();
+            $(this).parent().addClass("active");
+            $(this).parent().siblings().removeClass("active");
+            $("#tabContent").load("/users/load-notifications?page=" + pageInt);
+
+        });
+
+
 
     });
 </script>

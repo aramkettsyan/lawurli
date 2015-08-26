@@ -934,7 +934,7 @@ header {
 }
 .tabsContent {
     padding-left: 20px;
-    min-height: 445px;
+    /*min-height: 445px;*/
 }
 .labelValue {
     position: relative;
@@ -1509,6 +1509,13 @@ header {
     border: solid 2px #DA8213;
     color: #DA8213;
 }
+.addMWrapper {
+    text-align: center;
+}
+.addMWrapper>div {
+    display: inline-block;
+}
+
 
 
 /* footer */
