@@ -29,6 +29,7 @@ use yii\helpers\Html;
             <div> No Requests </div>
     <?php endif; ?>
 </div>
+<?php if($notifications) : ?>
 <div class="pagin notifyPage">
     <?php
     // display pagination
@@ -37,3 +38,4 @@ use yii\helpers\Html;
     ]);
     ?>
 </div>
+<?php endif; ?>

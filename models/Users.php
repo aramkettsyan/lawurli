@@ -335,9 +335,10 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
     /**
      * $requestAccepted ENUM Y/N
      * @param string $requestAccepted
+     * @param int $userId
      * @return object
      */
-    public function getColleagues($requestAccepted){
+    public function getColleagues($requestAccepted,$userId = null){
       $query = (new Query())
                 ->select('id,first_name,last_name,location,image,request_created,request_id')
                 ->distinct()
@@ -345,16 +346,29 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                 if($requestAccepted == "N"){
                     $query->where("user_to_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'");
                 }else{
-                    $query->where("user_from_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'")
-                          ->orWhere("user_to_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'");
+                    if($userId){
+                        $query->where("user_from_id =".$userId." AND request_accepted = '$requestAccepted'")
+                              ->orWhere("user_to_id =".$userId." AND request_accepted = '$requestAccepted'");
+                    }else{
+                        $query->where("user_from_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'")
+                              ->orWhere("user_to_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'");
+                    }
+                }
+                if($userId){
+                    $query->innerJoin('users','user_from_id = id AND id<>'.$userId.
+                            ' OR user_to_id = id AND id<>'.$userId);
+                }else{
+                    $query->innerJoin('users','user_from_id = id AND id<>'.Yii::$app->user->identity->id.
+                            ' OR user_to_id = id AND id<>'.Yii::$app->user->identity->id);
                 }
                 
-                $query->innerJoin('users','user_from_id = id AND id<>'.Yii::$app->user->identity->id.
-                            ' OR user_to_id = id AND id<>'.Yii::$app->user->identity->id);
                 $query = $query->orderBy('request_modified DESC');
                 return $query;
     }
-    
+    /**
+     * 
+     * @return int
+     */
     public function getNotificationCount(){
          return (new Query())
                  ->select('request_id')

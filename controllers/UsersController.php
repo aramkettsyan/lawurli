@@ -1213,7 +1213,9 @@ class UsersController extends \yii\web\Controller {
         if (!Yii::$app->request->isAjax) {
             throw new \yii\web\NotFoundHttpException();
         }
-        $colleagues = Users::getColleagues($requestAccepted = 'Y');
+        $userId =  Yii::$app->request->get('userId');
+        $colleagues = Users::getColleagues($requestAccepted = 'Y',$userId);
+        $contacts = ($userId ? Users::GetContactIds() : null);
         $countQuery = clone $colleagues;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 4]);
         $pages->pageSizeParam = false;
@@ -1221,7 +1223,9 @@ class UsersController extends \yii\web\Controller {
                 ->limit($pages->limit)
                 ->all();
         return $this->render('load-colleagues', ['colleagues' => $colleagues,
-                    'pages' => $pages
+                                                 'pages'      => $pages,
+                                                 'userId'     => $userId,
+                                                 'contacts'   => $contacts,
         ]);
     }
 
