@@ -21,6 +21,7 @@ use yii\helpers\Html;
                 <div class="plDets">
                    <?= ($colleague['location'] ?  '<p class="plAddress"><i class="icon-location"></i>'.$colleague['location'].'</p>'  : '' )?>
                 </div>
+                <?php if($colleague['id'] <> Yii::$app->user->identity->id) : ?>
                 <div class="plActions">
                     <?php if($userId) : ?>
                         <?php if (isset($contacts[$colleague['id']])) : ?>
@@ -40,6 +41,7 @@ use yii\helpers\Html;
                             <a href="/users/decline/<?=$colleague['id']?>" class="btn lineDefBtn sBtn">Disconnect</a>
                     <?php endif; ?>        
                 </div>
+                <?php endif; ?>
             </div>
         </li>
         <?php endforeach; ?>

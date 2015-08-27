@@ -182,14 +182,12 @@ class UsersController extends \yii\web\Controller {
         \Yii::$app->view->params['logo'] = $this->getLogo();
         $this->enableCsrfValidation = false;
         if (!\Yii::$app->user->isGuest) {
+            if(Yii::$app->controller->module->requestedRoute = 'users/profile' && Yii::$app->request->get('notificationsTab') == "open"){
+               Users::updateSeenRows();
+            }
             $notify = $this->getNotifications($pageSize = 6);
             Yii::$app->view->params['notify'] = $notify[1];
-            if(Yii::$app->controller->module->requestedRoute = 'users/profile' && Yii::$app->request->get('notificationsTab') == "open"){
-                Yii::$app->view->params['notifyCount'] = (Users::getNotificationCount() >=6 ? Users::getNotificationCount() - 6 : 0 );
-            }else{
-                Yii::$app->view->params['notifyCount'] = Users::getNotificationCount();
-            }
-            
+            Yii::$app->view->params['notifyCount'] = Users::getNotificationCount();
         }
         return parent::beforeAction($action);
     }
@@ -1283,5 +1281,6 @@ class UsersController extends \yii\web\Controller {
                 ->all();
         return [$pages, $notifications, $countQuery->count()];
     }
+    
 
 }

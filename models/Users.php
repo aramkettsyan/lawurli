@@ -391,5 +391,19 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                  ->one();
     }
     
+    /**
+     * void
+     */
+    public function updateSeenRows(){
+         $seenIds = (new Query())
+                    ->select('GROUP_CONCAT(request_id) as requestIds')
+                    ->from('contact_requests')
+                    ->where("user_to_id =".Yii::$app->user->identity->id)
+                    ->orderBy('request_created DESC')
+                    ->limit(6)
+                    ->one();
+         Request::updateAll(['request_seen' => "Y"], 'request_id IN(' .$seenIds['requestIds']. ')');
+    }
+    
 
 }
