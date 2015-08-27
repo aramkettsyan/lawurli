@@ -396,7 +396,7 @@ em {
     background: rgba(255,255,255,.7);
 }
 .homeSignInUp>div .ui-tabs-panel {
-    min-height: 350px;
+    min-height: 370px;
 }
 li.ui-tabs-active a {
     background: rgba(255,255,255, .4);
