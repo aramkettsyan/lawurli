@@ -131,7 +131,7 @@ class UsersController extends \yii\web\Controller {
             $model = new LoginForm();
             if ($act === 'reset_password') {
                 if (Yii::$app->request->post('Users')) {
-                    $reset_action = 'users/'.$action_id;
+                    $reset_action = 'users/' . $action_id;
                     \Yii::$app->getSession()->writeSession('resetPassword', true);
                     $resetModel = $this->actionResetPassword($id, $key, $reset_action);
                 }
@@ -178,7 +178,7 @@ class UsersController extends \yii\web\Controller {
         \Yii::$app->view->params['logo'] = $this->getLogo();
         $this->enableCsrfValidation = false;
         if (!\Yii::$app->user->isGuest) {
-            $notify =  $this->getNotifications($pageSize = 6);
+            $notify = $this->getNotifications($pageSize = 6);
             Yii::$app->view->params['notify'] = $notify[1];
             Yii::$app->view->params['notifyCount'] = Users::getNotificationCount();
         }
@@ -807,6 +807,7 @@ class UsersController extends \yii\web\Controller {
 
     public function actionSearch($action = false, $id = false, $key = false) {
         $query = \Yii::$app->request->get('query');
+        $first_last = \Yii::$app->request->get('first_last');
         $search = \Yii::$app->request->get('search') ? \Yii::$app->request->get('search') : 'basic';
         if ($query === NULL) {
             throw new \yii\web\NotFoundHttpException();
@@ -830,26 +831,134 @@ class UsersController extends \yii\web\Controller {
 
 
         $query_array = explode(' ', $query, 2);
-
-        if (!isset($query_array[1]) || empty($query_array[1])) {
-            $likeQuery = '%' . $query_array[0] . '%';
-            $query_array = $query_array[0];
-            $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
-            $limit = '';
-            $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                            . 'WHERE (`first_name` LIKE :likeQuery '
-                            . 'OR `last_name` LIKE :likeQuery) '
-                            . $and
-                            . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC ' . $limit)
-                    ->bindParam(':likeQuery', $likeQuery)
-                    ->bindParam(':query', $query_array);
-
-            if ($search === 'advanced') {
-                $search_result = $q->queryAll();
-            } else {
+        if ($first_last) {
+            if (empty($query_array[0]) && (isset($query_array[1]) && empty($query_array[1]) || !isset($query_array[1]))) {
+                $and = !Yii::$app->user->isGuest ? 'id <> ' . Yii::$app->user->id . ' ' : '';
+                $limit = '';
+                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                        . 'WHERE '
+                        . $and
+                        . 'ORDER BY first_name ' . $limit);
                 $count = $q->queryAll();
                 $pages = new Pagination(['totalCount' => count($count), 'pageSize' => $this->pageSize]);
                 $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
+                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                . 'WHERE '
+                                . $and
+                                . 'ORDER BY first_name ' . $limit);
+                $search_result = $q->queryAll();
+                $models['pages'] = $pages;
+            } else if (!isset($query_array[1]) || empty($query_array[1])) {
+                $likeQuery = '%' . $query_array[0] . '%';
+                $query_array = $query_array[0];
+                $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
+                $limit = '';
+                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                . 'WHERE (`first_name` LIKE :likeQuery) '
+                                . $and
+                                . 'ORDER BY (first_name=:query) DESC ' . $limit)
+                        ->bindParam(':likeQuery', $likeQuery)
+                        ->bindParam(':query', $query_array);
+
+                if ($search === 'advanced') {
+                    $search_result = $q->queryAll();
+                } else {
+                    $count = $q->queryAll();
+                    $pages = new Pagination(['totalCount' => count($count), 'pageSize' => $this->pageSize]);
+                    $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
+                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeQuery) '
+                                    . $and
+                                    . 'ORDER BY (first_name=:query) DESC ' . $limit)
+                            ->bindParam(':likeQuery', $likeQuery)
+                            ->bindParam(':query', $query_array);
+                    $search_result = $q->queryAll();
+                    $models['pages'] = $pages;
+                }
+            } else if (!empty($query_array[1]) && !empty($query_array[0])) {
+                $first_name = $query_array[0];
+                $last_name = $query_array[1];
+                $like_first_name = '%' . $query_array[0] . '%';
+                $like_last_name = '%' . $query_array[1] . '%';
+                $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
+                $limit = '';
+                $command = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                . 'WHERE (`first_name` LIKE :likeFirstName '
+                                . 'AND `last_name` LIKE :likeLastName) '
+                                . $and
+                                . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)) DESC ' . $limit)
+                        ->bindParam(':likeFirstName', $like_first_name)
+                        ->bindParam(':likeLastName', $like_last_name)
+                        ->bindParam(':firstName', $first_name)
+                        ->bindParam(':lastName', $last_name);
+                if ($search === 'advanced') {
+                    $search_result = $command->queryAll();
+                } else {
+                    $q = $command->queryAll();
+                    $pages = new Pagination(['totalCount' => count($q), 'pageSize' => $this->pageSize]);
+                    $limit = 'LIMIT ' . $pages->limit . ' OFFSET ' . $pages->offset;
+                    $command = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeFirstName '
+                                    . 'AND `last_name` LIKE :likeLastName) '
+                                    . $and
+                                    . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)) DESC ' . $limit)
+                            ->bindParam(':likeFirstName', $like_first_name)
+                            ->bindParam(':likeLastName', $like_last_name)
+                            ->bindParam(':firstName', $first_name)
+                            ->bindParam(':lastName', $last_name);
+                    $search_result = $command->queryAll();
+                    $models['pages'] = $pages;
+                }
+            } else {
+                $likeQuery = '%' . $query_array[1] . '%';
+                $query_array = $query_array[1];
+                $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
+                $limit = '';
+                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                . 'WHERE (`last_name` LIKE :likeQuery) '
+                                . $and
+                                . 'ORDER BY (last_name=:query) DESC ' . $limit)
+                        ->bindParam(':likeQuery', $likeQuery)
+                        ->bindParam(':query', $query_array);
+
+                if ($search === 'advanced') {
+                    $search_result = $q->queryAll();
+                } else {
+                    $count = $q->queryAll();
+                    $pages = new Pagination(['totalCount' => count($count), 'pageSize' => $this->pageSize]);
+                    $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
+                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`last_name` LIKE :likeQuery) '
+                                    . $and
+                                    . 'ORDER BY (last_name=:query) DESC ' . $limit)
+                            ->bindParam(':likeQuery', $likeQuery)
+                            ->bindParam(':query', $query_array);
+                    $search_result = $q->queryAll();
+                    $models['pages'] = $pages;
+                }
+            }
+        } else {
+            if (empty($query_array[0]) && (isset($query_array[1]) && empty($query_array[1]) || !isset($query_array[1]))) {
+                $and = !Yii::$app->user->isGuest ? 'id <> ' . Yii::$app->user->id . ' ' : '';
+                $limit = '';
+                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                        . 'WHERE '
+                        . $and
+                        . 'ORDER BY first_name ' . $limit);
+                $count = $q->queryAll();
+                $pages = new Pagination(['totalCount' => count($count), 'pageSize' => $this->pageSize]);
+                $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
+                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                . 'WHERE '
+                                . $and
+                                . 'ORDER BY first_name ' . $limit);
+                $search_result = $q->queryAll();
+                $models['pages'] = $pages;
+            }else if (!isset($query_array[1])) {
+                $likeQuery = '%' . $query_array[0] . '%';
+                $query_array = $query_array[0];
+                $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
+                $limit = '';
                 $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
                                 . 'WHERE (`first_name` LIKE :likeQuery '
                                 . 'OR `last_name` LIKE :likeQuery) '
@@ -857,48 +966,65 @@ class UsersController extends \yii\web\Controller {
                                 . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC ' . $limit)
                         ->bindParam(':likeQuery', $likeQuery)
                         ->bindParam(':query', $query_array);
-                $search_result = $q->queryAll();
-                $models['pages'] = $pages;
-            }
-        } else {
-            $first_name = $query_array[0];
-            $last_name = $query_array[1];
-            $like_first_name = '%' . $query_array[0] . '%';
-            $like_last_name = '%' . $query_array[1] . '%';
-            $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
-            $limit = '';
-            $command = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                            . 'WHERE (`first_name` LIKE :likeFirstName '
-                            . 'OR `last_name` LIKE :likeFirstName '
-                            . 'OR `first_name` LIKE :likeLastName '
-                            . 'OR `last_name` LIKE :likeLastName) '
-                            . $and
-                            . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
-                            . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC ' . $limit)
-                    ->bindParam(':likeFirstName', $like_first_name)
-                    ->bindParam(':likeLastName', $like_last_name)
-                    ->bindParam(':firstName', $first_name)
-                    ->bindParam(':lastName', $last_name);
-            if ($search === 'advanced') {
-                $search_result = $command->queryAll();
+
+                if ($search === 'advanced') {
+                    $search_result = $q->queryAll();
+                } else {
+                    $count = $q->queryAll();
+                    $pages = new Pagination(['totalCount' => count($count), 'pageSize' => $this->pageSize]);
+                    $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
+                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeQuery '
+                                    . 'OR `last_name` LIKE :likeQuery) '
+                                    . $and
+                                    . 'ORDER BY ((first_name=:query)+(last_name=:query)) DESC ' . $limit)
+                            ->bindParam(':likeQuery', $likeQuery)
+                            ->bindParam(':query', $query_array);
+                    $search_result = $q->queryAll();
+                    $models['pages'] = $pages;
+                }
             } else {
-                $q = $command->queryAll();
-                $pages = new Pagination(['totalCount' => count($q), 'pageSize' => $this->pageSize]);
-                $limit = 'LIMIT ' . $pages->limit . ' OFFSET ' . $pages->offset;
-                $command = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                                . 'WHERE (`first_name` LIKE :likeFirstName '
-                                . 'OR `last_name` LIKE :likeFirstName '
-                                . 'OR `first_name` LIKE :likeLastName '
-                                . 'OR `last_name` LIKE :likeLastName) '
-                                . $and
-                                . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
-                                . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC ' . $limit)
-                        ->bindParam(':likeFirstName', $like_first_name)
-                        ->bindParam(':likeLastName', $like_last_name)
-                        ->bindParam(':firstName', $first_name)
-                        ->bindParam(':lastName', $last_name);
-                $search_result = $command->queryAll();
-                $models['pages'] = $pages;
+                if (!empty($query_array[1]) && !empty($query_array[0])) {
+                    $first_name = $query_array[0];
+                    $last_name = $query_array[1];
+                    $like_first_name = '%' . $query_array[0] . '%';
+                    $like_last_name = '%' . $query_array[1] . '%';
+                    $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
+                    $limit = '';
+                    $command = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                    . 'WHERE (`first_name` LIKE :likeFirstName '
+                                    . 'OR `last_name` LIKE :likeFirstName '
+                                    . 'OR `first_name` LIKE :likeLastName '
+                                    . 'OR `last_name` LIKE :likeLastName) '
+                                    . $and
+                                    . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
+                                    . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC ' . $limit)
+                            ->bindParam(':likeFirstName', $like_first_name)
+                            ->bindParam(':likeLastName', $like_last_name)
+                            ->bindParam(':firstName', $first_name)
+                            ->bindParam(':lastName', $last_name);
+                    if ($search === 'advanced') {
+                        $search_result = $command->queryAll();
+                    } else {
+                        $q = $command->queryAll();
+                        $pages = new Pagination(['totalCount' => count($q), 'pageSize' => $this->pageSize]);
+                        $limit = 'LIMIT ' . $pages->limit . ' OFFSET ' . $pages->offset;
+                        $command = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                                        . 'WHERE (`first_name` LIKE :likeFirstName '
+                                        . 'OR `last_name` LIKE :likeFirstName '
+                                        . 'OR `first_name` LIKE :likeLastName '
+                                        . 'OR `last_name` LIKE :likeLastName) '
+                                        . $and
+                                        . 'ORDER BY ((first_name = :firstName)+(last_name = :lastName)+if(locate(:firstName,first_name),1,0)+if(locate(:lastName,last_name),1,0)'
+                                        . '+(first_name = :lastName)+(last_name = :firstName)+if(locate(:lastName,first_name),1,0)+if(locate(:firstName,last_name),1,0) ) DESC ' . $limit)
+                                ->bindParam(':likeFirstName', $like_first_name)
+                                ->bindParam(':likeLastName', $like_last_name)
+                                ->bindParam(':firstName', $first_name)
+                                ->bindParam(':lastName', $last_name);
+                        $search_result = $command->queryAll();
+                        $models['pages'] = $pages;
+                    }
+                }
             }
         }
         $models['search'] = $search_result;
@@ -909,79 +1035,85 @@ class UsersController extends \yii\web\Controller {
         $models['advanced'] = $advanced_search;
 
         if ($search === 'advanced') {
-            if (Yii::$app->request->get()) {
-                $advanced = Yii::$app->request->get('advanced');
-                $models['query_response'] = Yii::$app->request->get('advanced');
-                $user_ids = '';
-                $i = 1;
-                foreach ($search_result as $user) {
-                    if (count($search_result) === $i) {
-                        $quote = '';
-                    } else {
-                        $quote = ',';
-                    }
-                    $user_ids .= $user['id'] . $quote;
-                    $i++;
-                }
-                $sqlIf = '';
-                $sqlIfValue = '';
-                $j = false;
-                foreach ($advanced as $key => $input) {
-                    if (!empty($input)) {
-                        $formId = $key;
-                        if (!is_array($input)) {
-                            $j = true;
-                            if (empty($sqlIf)) {
-                                $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
-                                $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
-                            } else {
-                                $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
-                                $sqlIfValue .= " ,GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
-                            }
+            if (!empty($search_result)) {
+                if (Yii::$app->request->get()) {
+                    $advanced = Yii::$app->request->get('advanced');
+                    $models['query_response'] = Yii::$app->request->get('advanced');
+                    $user_ids = '';
+                    $i = 1;
+                    foreach ($search_result as $user) {
+                        if (count($search_result) === $i) {
+                            $quote = '';
                         } else {
-                            foreach ($input as $k => $i) {
+                            $quote = ',';
+                        }
+                        $user_ids .= $user['id'] . $quote;
+                        $i++;
+                    }
+                    $sqlIf = '';
+                    $sqlIfValue = '';
+                    $j = false;
+                    foreach ($advanced as $key => $input) {
+                        if (!empty($input)) {
+                            $formId = $key;
+                            if (!is_array($input)) {
                                 $j = true;
                                 if (empty($sqlIf)) {
-                                    $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.form_id,NULL))";
-                                    $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                    $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
+                                    $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
                                 } else {
-                                    $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.form_id,NULL))";
-                                    $sqlIfValue .= ", GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                    $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
+                                    $sqlIfValue .= " ,GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                }
+                            } else {
+                                foreach ($input as $k => $i) {
+                                    $j = true;
+                                    if (empty($sqlIf)) {
+                                        $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.form_id,NULL))";
+                                        $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                    } else {
+                                        $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.form_id,NULL))";
+                                        $sqlIfValue .= ", GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                if ($j) {
-                    $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : ' ';
-                    $limit = '';
-                    $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
-                            . 'FROM users '
-                            . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
-                            . 'WHERE users.id IN(' . $user_ids . ') '
-                            . 'GROUP BY user_forms.user_id '
-                            . 'HAVING is_result=1 '
-                            . $and . $limit;
-                    $query = Users::findBySql($sql)->all();
-                    $pages = new Pagination(['totalCount' => count($query), 'pageSize' => $this->pageSize]);
-                    $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
-                    $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
-                            . 'FROM users '
-                            . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
-                            . 'WHERE users.id IN(' . $user_ids . ') '
-                            . 'GROUP BY user_forms.user_id '
-                            . 'HAVING is_result=1 '
-                            . $and . $limit;
-                    $count = Users::findBySql($sql);
+                    if ($j) {
+                        $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : ' ';
+                        $limit = '';
+                        $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
+                                . 'FROM users '
+                                . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
+                                . 'WHERE users.id IN(' . $user_ids . ') '
+                                . 'GROUP BY user_forms.user_id '
+                                . 'HAVING is_result=1 '
+                                . $and . $limit;
+                        $query = Users::findBySql($sql)->all();
+                        $pages = new Pagination(['totalCount' => count($query), 'pageSize' => $this->pageSize]);
+                        $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
+                        $sql = 'SELECT IF(' . $sqlIf . ',1,0) AS is_result,user_forms.user_id,users.*,' . $sqlIfValue . ' '
+                                . 'FROM users '
+                                . 'LEFT JOIN user_forms ON user_forms.user_id = users.id '
+                                . 'WHERE users.id IN(' . $user_ids . ') '
+                                . 'GROUP BY user_forms.user_id '
+                                . 'HAVING is_result=1 '
+                                . $and . $limit;
+                        $count = Users::findBySql($sql);
 
-                    $model = $count->all();
+                        $model = $count->all();
 
-                    $models['search'] = $model;
-                    $models['pages'] = $pages;
-                } else {
-                    $models['search'] = [];
-                    $models['pages'] = [];
+                        $models['search'] = $model;
+                        $models['pages'] = $pages;
+                    } else {
+                        $models['search'] = [];
+                        $models['pages'] = [];
+                    }
                 }
+            } else {
+                $models['query_response'] = Yii::$app->request->get('advanced');
+                $models['search'] = [];
+                $models['pages'] = [];
             }
         }
 
@@ -1072,11 +1204,11 @@ class UsersController extends \yii\web\Controller {
         $pages = $returnParams[0];
         $notifications = $returnParams[1];
         $seenIds = [];
-        foreach($notifications as $notification){
+        foreach ($notifications as $notification) {
             $seenIds[] = $notification['request_id'];
         }
-        if($seenIds){
-            Request::updateAll(['request_seen' => "Y"], 'request_id IN('.  implode(',', $seenIds).')');
+        if ($seenIds) {
+            Request::updateAll(['request_seen' => "Y"], 'request_id IN(' . implode(',', $seenIds) . ')');
         }
         return $this->render('load-notifications', ['notifications' => $notifications,
                     'pages' => $pages
@@ -1096,7 +1228,7 @@ class UsersController extends \yii\web\Controller {
         $notifications = $notifications->offset($pages->offset)
                 ->limit($pages->limit)
                 ->all();
-        return [$pages, $notifications,$countQuery->count()];
+        return [$pages, $notifications, $countQuery->count()];
     }
 
 }

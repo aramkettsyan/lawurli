@@ -14,6 +14,7 @@ $this->title = 'Search';
         <form id="first_last" method="GET" action="<?= \yii\helpers\Url::to(['users/search']) ?>">
             <div class="customScroll">
                 <div class="formRow">
+                    <input type="hidden" id="first_last" name="first_last" value="true" >
                     <input type="text" class="formControl sForm" value="<?= isset($query[0]) ? $query[0] : '' ?>" placeholder="First name">
                 </div>
                 <div class="formRow">
@@ -69,7 +70,7 @@ $this->title = 'Search';
                 </ul>
             </div>
         </div>
-        <?php if (isset($pages)) { ?>
+        <?php if (isset($pages) && !empty($pages)) { ?>
             <div class="pagin">
                 <?php
                 echo LinkPager::widget([
@@ -105,10 +106,15 @@ $this->title = 'Search';
                 <?php $i = 0; ?>
                 <div>
                     <input type="hidden" name="search" value="advanced" >
-                    <input type="hidden" name="query" value="<?= isset($query[1]) ? $query[0] . ' ' . $query[1] : $query[0] ?>" >
+                    <input type="hidden" id="query" name="query" value="" >
+                    <input type="hidden" id="first_last" name="first_last" value="true" >
                     <?php foreach ($advanced as $key => $input) { ?>
                         <?php if ($key != 0 && !($key % 2)) { ?>
                             <div class="formRow">
+                                <?php if ($key == 2) { ?>
+                                    <label class="customLbSt" for="first_name"> First name </label>
+                                    <?php echo Html::input('text', '', isset($query[0]) ? $query[0] : '', ['id' => 'first_name', 'class' => 'formControl sForm', 'placeholder' => 'First name']); ?>
+                                <?php } ?>
                                 <?php if ($input->type === 'input') { ?>
                                     <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"> <?php echo $input->label; ?> </label>
                                     <?php if ($input->numeric == '0') { ?>
@@ -163,6 +169,10 @@ $this->title = 'Search';
                     <?php foreach ($advanced as $key => $input) { ?>
                         <?php if ($key == 0 || $key % 2) { ?>
                             <div class="formRow">
+                                <?php if ($key === 0) { ?>
+                                    <label class="customLbSt" for="last_name"> Last name </label>
+                                    <?php echo Html::input('text', '', isset($query[1]) ? $query[1] : '', ['id' => 'last_name', 'class' => 'formControl sForm', 'placeholder' => 'Last name']); ?>
+                                <?php } ?>
                                 <?php if ($input->type === 'input') { ?>
                                     <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"> <?php echo $input->label; ?> </label>
                                     <?php if ($input->numeric == '0') { ?>
@@ -231,6 +241,12 @@ $this->title = 'Search';
             i++;
         });
         $(this).find('input[type="hidden"]').val(value);
+    });
+
+    $('#advanced-search-form').submit(function () {
+        var firstName = $('#first_name').val();
+        var lastName = $('#last_name').val();
+        $('#query').val(firstName + ' ' + lastName);
     });
 </script>
 
