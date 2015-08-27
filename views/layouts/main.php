@@ -286,7 +286,7 @@ UserAsset::register($this);
                     <?php
                     $resetPassForm = ActiveForm::begin([
                                 'id' => 'password-reset-form',
-                                'action' => \yii\helpers\Url::to(['users/profile', 'action' => 'reset_password', 'id' => $this->params['id']]),
+                                'action' => \yii\helpers\Url::to(['users/'.Yii::$app->controller->action->id, 'action' => 'reset_password', 'id' => $this->params['id']]),
                                 'options' => ['class' => '']
                     ]);
                     ?>
@@ -332,14 +332,14 @@ UserAsset::register($this);
                     <div class="popupCont">
                         <?=
                         $resetForm->field($this->params['user_reset'], 'password', [
-                            'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
+                            'template' => "{input} <i class='icon-lock-streamline'></i>{error}",
                             'options' => [
                                 'class' => 'formRow frIconLeft'
                     ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'New password']);
                         ?>
                         <?=
                         $resetForm->field($this->params['user_reset'], 'confirm_password', [
-                            'template' => "{input}{error} <i class='icon-lock-streamline'></i>",
+                            'template' => "{input} <i class='icon-lock-streamline'></i>{error}",
                             'options' => [
                                 'class' => 'formRow frIconLeft'
                     ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Confirm password']);

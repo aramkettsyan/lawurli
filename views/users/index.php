@@ -15,17 +15,18 @@ $this->title = 'Home'
         <div class="homeTopText">
             <h4 class="cd-headline zoom">
                 <span class="cd-words-wrapper">
-                <b class="is-visible">Lawurli.</b>              
+                    <b class="is-visible">Lawurli.</b>              
                 </span><br>
                 <span>Simple Solutions </span><br>
                 <span>To Complex Issues.</span><br>
-
-                <div class="homeSearch">
-                    <form method="GET" action="<?= \yii\helpers\Url::to(['users/search']) ?>">
-                        <input type="text" name="query" placeholder="Search for a colleague...">
-                        <button type="submit"><i class="icon-search"></i></button>
-                    </form>
-                </div>
+                <?php if (!Yii::$app->user->isGuest) { ?>
+                    <div class="homeSearch">
+                        <form method="GET" action="<?= \yii\helpers\Url::to(['users/search']) ?>">
+                            <input type="text" name="query" placeholder="Search for a colleague...">
+                            <button type="submit"><i class="icon-search"></i></button>
+                        </form>
+                    </div>
+                <?php } ?>
             </h4>
         </div>
         <?php if (Yii::$app->user->isGuest) { ?>

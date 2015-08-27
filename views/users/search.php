@@ -10,15 +10,24 @@ $this->title = 'Search';
 <div class="container mainContainer">
     <div class="sidebarL searcSidebar ">
         <h6 class="boxTitle">Refine search</h6>
-        <?php $query = explode(' ', $this->params['query'], 2); ?>
+        <?php if (!isset($this->params['first_name']) && !isset($this->params['last_name'])) { ?>
+            <?php $query = explode(' ', $this->params['query'], 2); ?>
+        <?php } else { ?>
+            <?php if (isset($this->params['first_name'])) { ?>
+                <?php $query[0] = $this->params['first_name'] ?>
+            <?php } ?>
+            <?php if (isset($this->params['last_name'])) { ?>
+                <?php $query[1] = $this->params['last_name'] ?>
+            <?php } ?>
+        <?php } ?>
         <form id="first_last" method="GET" action="<?= \yii\helpers\Url::to(['users/search']) ?>">
             <div class="customScroll">
                 <div class="formRow">
                     <input type="hidden" id="first_last" name="first_last" value="true" >
-                    <input type="text" class="formControl sForm" value="<?= isset($query[0]) ? $query[0] : '' ?>" placeholder="First name">
+                    <input type="text" class="formControl sForm" name="first_name" value="<?= isset($query[0]) && (isset($query[1])) ? $query[0] : '' ?>" placeholder="First name">
                 </div>
                 <div class="formRow">
-                    <input type="text" class="formControl sForm" value="<?= isset($query[1]) ? $query[1] : '' ?>" placeholder="Last name">
+                    <input type="text" class="formControl sForm" name="last_name" value="<?= isset($query[1]) ? $query[1] : '' ?>" placeholder="Last name">
                 </div>
                 <input type="hidden" name="query" >
             </div>
@@ -74,7 +83,7 @@ $this->title = 'Search';
                 </ul>
             </div>
         </div>
-        <?php if (isset($pages) && !empty($pages)) { ?>
+        <?php if (isset($pages) && !empty($pages) && $pages->totalCount > 10) { ?>
             <div class="pagin">
                 <?php
                 echo LinkPager::widget([
@@ -117,7 +126,7 @@ $this->title = 'Search';
                             <div class="formRow">
                                 <?php if ($key == 2) { ?>
                                     <label class="customLbSt" for="first_name"> First name </label>
-                                    <?php echo Html::input('text', '', isset($query[0]) ? $query[0] : '', ['id' => 'first_name', 'class' => 'formControl sForm', 'placeholder' => 'First name']); ?>
+                                    <?php echo Html::input('text', '', isset($query[0]) && (isset($query[1])) ? $query[0] : '', ['id' => 'first_name', 'class' => 'formControl sForm', 'placeholder' => 'First name']); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'input') { ?>
                                     <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"> <?php echo $input->label; ?> </label>
