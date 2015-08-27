@@ -796,13 +796,13 @@ class UsersController extends \yii\web\Controller {
                     ];
                 }
             }
-            
-            if($id){
+
+            if ($id) {
                 $relation = Users::checkRelationship($id);
-                if($relation && $relation['user_from_id'] == $id && $relation['request_seen'] == "N"){
-                    Request::updateAll(['request_seen' => "Y"], 'request_id ='.$relation['request_id']);
+                if ($relation && $relation['user_from_id'] == $id && $relation['request_seen'] == "N") {
+                    Request::updateAll(['request_seen' => "Y"], 'request_id =' . $relation['request_id']);
                 }
-            }else{
+            } else {
                 $relation = null;
             }
 
@@ -845,14 +845,17 @@ class UsersController extends \yii\web\Controller {
             $models['contacts'] = $contacts;
         }
 
-        if ($first_last) {
-            $query_array[0] = trim($first_name);
+        if ($first_last) {//If defined first name and last name
+            $first_name = trim($first_name);
             $query_array_response[0] = trim($first_name);
             if ($last_name !== null) {
-                $query_array[1] = trim($last_name);
+                $last_name = trim($last_name);
                 $query_array_response[1] = trim($last_name);
             }
-            if (empty($query_array[0]) && (isset($query_array[1]) && empty($query_array[1]) || !isset($query_array[1]))) {
+
+
+            if (empty($first_name) && (isset($last_name) && empty($last_name) || !isset($last_name))) {
+                //If first name and last name are empty 
                 $and = !Yii::$app->user->isGuest ? 'id <> ' . Yii::$app->user->id . ' ' : '';
                 $limit = '';
                 $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
@@ -868,9 +871,10 @@ class UsersController extends \yii\web\Controller {
                         . 'ORDER BY first_name,last_name ' . $limit);
                 $search_result = $q->queryAll();
                 $models['pages'] = $pages;
-            } else if (!isset($query_array[1]) || empty($query_array[1])) {
-                $likeQuery = $query_array[0] . '%';
-                $query_array = $query_array[0];
+            } else if (!isset($last_name) || empty($last_name)) {
+                //If last name is empty 
+                $likeQuery = $first_name . '%';
+                $query_array = $first_name;
                 $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
                 $limit = '';
                 $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
@@ -895,11 +899,12 @@ class UsersController extends \yii\web\Controller {
                     $search_result = $q->queryAll();
                     $models['pages'] = $pages;
                 }
-            } else if (!empty($query_array[1]) && !empty($query_array[0])) {
-                $first_name = $query_array[0];
-                $last_name = $query_array[1];
-                $like_first_name = $query_array[0] . '%';
-                $like_last_name = $query_array[1] . '%';
+            } else if (!empty($last_name) && !empty($first_name)) {
+                //If first name and last name are defined
+                $first_name = $first_name;
+                $last_name = $last_name;
+                $like_first_name = $first_name . '%';
+                $like_last_name = $last_name . '%';
                 $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
                 $limit = '';
                 $command = \Yii::$app->db->createCommand('SELECT * FROM `users` '
@@ -930,8 +935,9 @@ class UsersController extends \yii\web\Controller {
                     $models['pages'] = $pages;
                 }
             } else {
-                $likeQuery = $query_array[1] . '%';
-                $query_array = $query_array[1];
+                //If first name is empty 
+                $likeQuery = $last_name . '%';
+                $query_array = $last_name;
                 $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
                 $limit = '';
                 $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
@@ -958,12 +964,13 @@ class UsersController extends \yii\web\Controller {
                 }
             }
             \Yii::$app->view->params['first_name'] = $query_array_response[0];
-            if (isset($query_array[1])) {
+            if (isset($last_name)) {
                 \Yii::$app->view->params['last_name'] = $query_array_response[1];
             }
-        } else {
+        } else {//If first name and last name undefined
             $query_array = explode(' ', $query, 2);
             if (empty($query_array[0]) && (isset($query_array[1]) && empty($query_array[1]) || !isset($query_array[1]))) {
+                //If first name and last name are empty 
                 $and = !Yii::$app->user->isGuest ? 'id <> ' . Yii::$app->user->id . ' ' : '';
                 $limit = '';
                 $q = \Yii::$app->db->createCommand('SELECT COUNT(id) as count FROM `users` '
@@ -979,6 +986,7 @@ class UsersController extends \yii\web\Controller {
                 $search_result = $q->queryAll();
                 $models['pages'] = $pages;
             } else if (!isset($query_array[1]) || empty($query_array[1])) {
+                //If last name is empty 
                 $likeQuery = $query_array[0] . '%';
                 $query_array = $query_array[0];
                 $and = !Yii::$app->user->isGuest ? 'AND id <> ' . Yii::$app->user->id . ' ' : '';
@@ -1004,6 +1012,7 @@ class UsersController extends \yii\web\Controller {
                 $search_result = $q->queryAll();
                 $models['pages'] = $pages;
             } else {
+                //If first name and last name are defined
                 if (!empty($query_array[1]) && !empty($query_array[0])) {
                     $first_name = $query_array[0];
                     $last_name = $query_array[1];
@@ -1048,6 +1057,8 @@ class UsersController extends \yii\web\Controller {
         $advanced_search = Forms::find()->all();
         $models['advanced'] = $advanced_search;
 
+        
+        //Advanced search
         if ($search === 'advanced') {
             if (!empty($search_result)) {
                 if (Yii::$app->request->get()) {
@@ -1068,6 +1079,7 @@ class UsersController extends \yii\web\Controller {
                         }
                     }
                     if ($emptyToken === false) {
+                        //If advanced search is not empty 
                         $user_ids = '';
                         $i = 1;
                         foreach ($search_result as $user) {
@@ -1084,6 +1096,7 @@ class UsersController extends \yii\web\Controller {
                         $j = false;
                         foreach ($advanced as $key => $input) {
                             if (!empty($input)) {
+                                //If value is not empty
                                 $formId = $key;
                                 if (!is_array($input)) {
                                     $j = true;
@@ -1141,6 +1154,7 @@ class UsersController extends \yii\web\Controller {
                     }
                 }
             } else {
+                //If advanced search is empty 
                 $models['query_response'] = Yii::$app->request->get('advanced');
                 $models['search'] = [];
                 $models['pages'] = [];
