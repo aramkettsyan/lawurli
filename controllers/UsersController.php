@@ -184,7 +184,12 @@ class UsersController extends \yii\web\Controller {
         if (!\Yii::$app->user->isGuest) {
             $notify = $this->getNotifications($pageSize = 6);
             Yii::$app->view->params['notify'] = $notify[1];
-            Yii::$app->view->params['notifyCount'] = Users::getNotificationCount();
+            if(Yii::$app->controller->module->requestedRoute = 'users/profile' && Yii::$app->request->get('notificationsTab') == "open"){
+                Yii::$app->view->params['notifyCount'] = (Users::getNotificationCount() >=6 ? Users::getNotificationCount() - 6 : 0 );
+            }else{
+                Yii::$app->view->params['notifyCount'] = Users::getNotificationCount();
+            }
+            
         }
         return parent::beforeAction($action);
     }
