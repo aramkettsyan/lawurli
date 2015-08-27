@@ -11,9 +11,7 @@ use yii\helpers\Html;
     <ul>
         <?php foreach($notifications as $notification) : ?>
         <li>
-            <div class="notifL">
-                <img src="/images/users_images/<?=$notification['image']?>" alt="">
-            </div>
+            <div class="notifL" style="background-image: url('/images/users_images/<?=$notification['image']?>')"></div>
             <div class="notifC">
                 <p><?=$notification['first_name'].' '.$notification['last_name']?> sent you a connect request.</p>
                 <time><?=$notification['request_created']?></time>

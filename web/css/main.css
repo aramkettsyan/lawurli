@@ -701,6 +701,7 @@ header {
     padding-left: 35px;
     padding-right: 50px;
     position: relative;
+    min-height: 35px;
 }
 .notifDrDn .dropDnBtn {
     height: 35px;
@@ -764,6 +765,7 @@ header {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    line-height: 30px;
 }
 .notifSeeAll {
     padding: 0!important;
@@ -1273,6 +1275,8 @@ header {
     top: 0;
     width: 60px;
     height: 60px;
+    background-position: center;
+    background-size: cover; 
 }
 .notifList ul li .notifL img {
     width: 100%;
@@ -1524,6 +1528,7 @@ header {
     border-top: solid 1px #E0E0E0;
     padding-top: 20px;
     text-align: right;
+    margin-top: 20px;
 }
 .pagin ul {
     display: inline-block;
