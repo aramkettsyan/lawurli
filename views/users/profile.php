@@ -1,5 +1,5 @@
 <?php
-
+$this->title = $user->first_name.' '.$user->last_name;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 ?>
@@ -44,7 +44,17 @@ use yii\widgets\ActiveForm;
             </ul>
             <?php if ((Yii::$app->controller->actionParams['id'] != Yii::$app->user->id && Yii::$app->controller->actionParams['id'] )) { ?>
                 <div class="alignCenter">
-                    <a href="#" class="btn defBtn">Connect</a>
+                    <?php if($relation) : ?>
+                        <?php if($relation['request_accepted'] == "Y") :  ?>
+                            <a href="/users/decline/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Disconnect</a>
+                        <?php elseif($relation['request_accepted'] == "N" && $relation['user_from_id'] == Yii::$app->user->identity->id) :  ?>
+                            <a href="/users/decline/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Request is sent</a>
+                        <?php elseif($relation['request_accepted'] == "N" && $relation['user_to_id'] == Yii::$app->user->identity->id) :  ?>
+                            <a href="/users/accetpt/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Accetpt</a>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <a href="/users/connect/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Connect</a>
+                    <?php endif; ?>
                 </div>
             <?php } ?>
         </div>
@@ -63,7 +73,9 @@ use yii\widgets\ActiveForm;
             <ul class="clearAfter">
                 <li class="active"><a href="#" id="profiletab"><i class="icon-card-user-2"></i>Profile</a></li>
                 <li><a href="#" id="colleag"><i class="icon-contacts"></i>Colleagues</a></li>
+                <?php if((Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'] )) : ?>
                 <li><a href="#" id="profiletabNot"><i class="icon-bell-two"></i>Notifications</a></li>
+                <?php endif; ?>
             </ul>
         </div>
         <div class="tabsContent">
@@ -268,7 +280,8 @@ use yii\widgets\ActiveForm;
             $("#profileInfo").hide();
             $(this).parent().addClass("active");
             $(this).parent().siblings().removeClass("active");
-            $("#tabContent").load("/users/load-colleagues");
+            var userId = "<?=Yii::$app->controller->actionParams['id'] ?>";
+            $("#tabContent").load("/users/load-colleagues" + "?userId="+ userId);
         });
 
         $(document).on("click", "#profiletab", function (event) {
@@ -286,7 +299,8 @@ use yii\widgets\ActiveForm;
             $("#profileInfo").hide();
             $(this).parent().addClass("active");
             $(this).parent().siblings().removeClass("active");
-            $("#tabContent").load("/users/load-colleagues?page=" + pageInt);
+            var userId = "<?=Yii::$app->controller->actionParams['id'] ?>";
+            $("#tabContent").load("/users/load-colleagues?page=" + pageInt + "&userId="+ userId);
 
         });
 

@@ -363,5 +363,19 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                  ->count();
     }
     
+    /**
+     * 
+     * @param int $id
+     * @return array
+     */
+    public function checkRelationship($id){
+         return (new Query())
+                 ->select('request_id,request_accepted,request_seen,user_from_id,user_to_id')
+                 ->from('contact_requests')
+                 ->where("user_from_id =".$id." AND user_to_id = ".Yii::$app->user->identity->id)
+                 ->orWhere("user_to_id =".$id." AND user_from_id = ".Yii::$app->user->identity->id)
+                 ->one();
+    }
+    
 
 }

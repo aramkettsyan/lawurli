@@ -792,10 +792,20 @@ class UsersController extends \yii\web\Controller {
                     ];
                 }
             }
+            
+            if($id){
+                $relation = Users::checkRelationship($id);
+                if($relation && $relation['user_from_id'] == $id && $relation['request_seen'] == "N"){
+                    Request::updateAll(['request_seen' => "Y"], 'request_id ='.$relation['request_id']);
+                }
+            }else{
+                $relation = null;
+            }
 
             $models['user'] = $user;
             $models['user_forms'] = $new_user_forms;
             $models['sections'] = $newSections;
+            $models['relation'] = $relation;
 
 
 
