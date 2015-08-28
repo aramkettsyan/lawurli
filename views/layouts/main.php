@@ -383,7 +383,7 @@ UserAsset::register($this);
                         <li><a href="#" data-hover="Something else">Something else</a></li>
                     </ul>
                 </div>
-                <p class="poweredBy">© Lawurli 2015 <?= (date('Y',time()) == '2015' ? '' : '- '.date('Y',time())) ?> | Created by <a href="http://st-dev.com" target="_blank">STDev</a></p>
+                <p class="poweredBy">© 2015 <?= (date('Y',time()) == '2015' ? '' : '- '.date('Y',time())) ?> Lawurli | Created by <a href="http://st-dev.com" target="_blank">STDev</a></p>
             </div>
         </footer>
         <?php $this->endBody() ?>
