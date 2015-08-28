@@ -82,6 +82,7 @@ $this->title = 'Home'
                                 'class' => 'formRow frIconLeft'
                     ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email'])->label(false);
                         ?>
+                        <!-- disables autocomplete --><input type="text" style="display:none">
                         <?=
                         $f->field($registrationModel, 'password', [
                             'template' => "{input} <i class='icon-lock-streamline'></i>

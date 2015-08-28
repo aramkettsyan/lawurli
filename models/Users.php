@@ -58,7 +58,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             [['email', 'password_reset_token', 'activation_token'], 'unique', 'targetAttribute' => ['email', 'password_reset_token', 'activation_token'], 'message' => 'Email has already been taken.'],
             [['auth_key'], 'unique'],
             [['email'], 'unique','message'=>'Email has already been taken.'],
-            [['confirm_password'], 'validateConfirmPassword']
+            [['confirm_password'], 'validateConfirmPassword'],
+            [['phone'], 'validatePhoneNumber']
         ];
     }
 
@@ -179,7 +180,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
      *
      * @param string $attribute
      * @param string $params
-     * @return static|null
+     * @return true|false
      */
     public function validateConfirmPassword($attribute, $params) {
         if ($this->password !== $this->confirm_password) {
@@ -187,6 +188,25 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             $this->addError($attribute, 'Passwords do  not match');
             return false;
         }
+        return true;
+    }
+    
+    /**
+     * Validate phone number
+     *
+     * @param string $attribute
+     * @param string $params
+     * @return static|null
+     */
+    public function validatePhoneNumber($attribute, $params) {
+        $phone = $this->phone; 
+        $phone = str_replace(' ', '', $phone);
+        
+        if(!preg_match('/^\+{0,1}[0-9]+$/', $phone)){
+            $this->addError($attribute, 'The phone number you entered is not valid');
+            return false;
+        }
+        $this->phone = $phone;
         return true;
     }
 

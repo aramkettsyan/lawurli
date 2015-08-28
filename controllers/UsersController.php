@@ -23,7 +23,8 @@ class UsersController extends \yii\web\Controller {
                     'user' => 'user',
                     'rules' => [
                         [
-                            'actions' => ['logout',
+                            'actions' => [
+                                'logout',
                                 'search',
                                 'edit',
                                 'profile',
@@ -42,13 +43,15 @@ class UsersController extends \yii\web\Controller {
                             'roles' => ['@'],
                         ],
                         [
-                            'actions' => ['index',
-//                                'search',
+                            'actions' => [
+                                'logout',
+                                'index',
+                                'search',
                                 'confirm',
                                 'reset-password',
                                 'reset-password-notifications',
                                 'reset',
-//                                'profile',
+                                'profile',
                                 'error'
                             ],
                             'allow' => true,
@@ -93,7 +96,6 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function beforeAction($action) {
-
         $action_id = \Yii::$app->controller->action->id;
 
         //404 error
@@ -250,6 +252,10 @@ class UsersController extends \yii\web\Controller {
                 if (empty($post['Users']['password'])) {
                     unset($post['Users']['password']);
                     unset($post['Users']['confirm_password']);
+                }
+
+                if (empty($post['Users']['latlng'])) {
+                    $post['Users']['latlng'] = NULL;
                 }
 
                 $user->old_password = $user->password;
@@ -611,6 +617,9 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionLogout() {
+        if(Yii::$app->user->isGuest){
+            return $this->redirect('/users/index');
+        }
         Yii::$app->user->logout();
         return $this->redirect('/users/index');
     }
@@ -711,6 +720,10 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionProfile($action = false, $id = false, $key = false) {
+
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect('/users/index');
+        }
 
         $models = $this->models;
 
@@ -823,6 +836,11 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionSearch($action = false, $id = false, $key = false) {
+
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect('/users/index');
+        }
+
         $query = trim(\Yii::$app->request->get('query'));
         $first_name = trim(\Yii::$app->request->get('first_name'));
         $last_name = trim(\Yii::$app->request->get('last_name'));
@@ -1060,7 +1078,7 @@ class UsersController extends \yii\web\Controller {
         $advanced_search = Forms::find()->all();
         $models['advanced'] = $advanced_search;
 
-        
+
         //Advanced search
         if ($search === 'advanced') {
             if (!empty($search_result)) {
@@ -1230,8 +1248,8 @@ class UsersController extends \yii\web\Controller {
         if (!Yii::$app->request->isAjax) {
             throw new \yii\web\NotFoundHttpException();
         }
-        $userId =  Yii::$app->request->get('userId');
-        $colleagues = Users::getColleagues($requestAccepted = 'Y',$userId);
+        $userId = Yii::$app->request->get('userId');
+        $colleagues = Users::getColleagues($requestAccepted = 'Y', $userId);
         $contacts = ($userId ? Users::GetContactIds() : null);
         $countQuery = clone $colleagues;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 4]);
@@ -1240,9 +1258,9 @@ class UsersController extends \yii\web\Controller {
                 ->limit($pages->limit)
                 ->all();
         return $this->render('load-colleagues', ['colleagues' => $colleagues,
-                                                 'pages'      => $pages,
-                                                 'userId'     => $userId,
-                                                 'contacts'   => $contacts,
+                    'pages' => $pages,
+                    'userId' => $userId,
+                    'contacts' => $contacts,
         ]);
     }
 

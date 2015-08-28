@@ -886,14 +886,14 @@ header {
     opacity: 1;
     /*transform: scale(1,1);*/
 }
-.imgEditBtns button {
+.imgEditBtns div {
     /*padding: 5px 15px;*/
     color: #fff;
     font-size: 30px;
     text-transform: uppercase;
     margin-top: 70px;
 }
-.imgEditBtns button i {
+.imgEditBtns i {
     font-size: 50px;
     margin: 0;
     opacity: .95;

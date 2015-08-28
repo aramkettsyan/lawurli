@@ -13,11 +13,12 @@ $this->title = 'Edit profile'
                 <img src="/images/user-1.png">
                 <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>')"></span>
                 <div class="imgEditBtns">
-                    <button id="uploadImage"><i class="icon-pencil-square"></i></button>
+                    <!--<button id="uploadImage" type="button"><i class="icon-pencil-square"></i></button>-->
+                    <div id="uploadImage"><i class="icon-pencil-square"></i></div>
                 </div>
             </div>
 
-                <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
+                                <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
         <?php } ?>
         <p style="color:red;display: none" id="imageUploadError"></p>
 
@@ -83,9 +84,25 @@ $this->title = 'Edit profile'
     </div>
 </div>
 <script type="text/javascript">
-
     $(document).ready(function () {
+        new qq.FileUploaderBasic({
+            button: document.getElementById('uploadImage'),
+            action: '/users/upload-image',
+            multiple: false,
+            sizeLimit: 5242880,
+            allowedExtensions: ['png', 'jpg', 'jpeg', 'gif'],
+            onComplete: function (id, fileName, responseJSON) {
 
+                if (responseJSON.success) {
+                    $('.profileImage').css('background-image', 'url(/images/users_images/' + responseJSON.fileName + ')');
+                    $('#imageUploadError').hide();
+                }
+                if (responseJSON.error) {
+                    $('#imageUploadError').html(responseJSON.error);
+                    $('#imageUploadError').show();
+                }
+            }
+        });
         $('#generalInfo').on('click', function () {
             $('#detailedInfo').removeClass('active');
             $(this).addClass('active');
@@ -97,28 +114,6 @@ $this->title = 'Edit profile'
             $('.tabsContent').load('/users/edit?action=detailed');
         });
 
-    });
-</script>
-<script type="text/javascript">
-
-    new qq.FileUploaderBasic({
-        button: document.getElementById('uploadImage'),
-        action: '/users/upload-image',
-        multiple: false,
-        sizeLimit: 5242880,
-        allowedExtensions: ['png', 'jpg', 'jpeg', 'gif'],
-        onComplete: function (id, fileName, responseJSON) {
-
-            if (responseJSON.success) {
-                $('.profileImage').css('background-image', 'url(/images/users_images/' + responseJSON.fileName + ')');
-                $('#imageUploadError').hide();
-            }
-            if (responseJSON.error) {
-                $('#imageUploadError').html(responseJSON.error);
-                $('#imageUploadError').show();
-
-            }
-        }
     });
 </script>
 
