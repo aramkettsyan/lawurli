@@ -577,7 +577,7 @@ class UsersController extends \yii\web\Controller {
         }
 
         $explode = explode('.', $fileName);
-        $ext = end($explode);
+        $ext = strtolower(end($explode));
         $allowed = array('png', 'jpg', 'jpeg');
         if (!in_array($ext, $allowed)) {
             $response['success'] = false;
