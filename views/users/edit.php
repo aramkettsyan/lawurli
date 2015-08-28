@@ -8,41 +8,41 @@ $this->title = 'Edit profile'
 <div class="container mainContainer">
     <div class="profileL">
         <div class="userImage">
-            <?php $filename = \Yii::getAlias('@webroot') . '/images/users_images/' . $user->image; ?>
+            <?php $filename = \Yii::getAlias('@webroot') . '/images/users_images/' . $user_data['image']; ?>
             <?php if (is_file($filename)) { ?>
                 <img src="/images/user-1.png">
-                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>')"></span>
+                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user_data['image']; ?>')"></span>
                 <div class="imgEditBtns">
                     <!--<button id="uploadImage" type="button"><i class="icon-pencil-square"></i></button>-->
                     <div id="uploadImage"><i class="icon-pencil-square"></i></div>
                 </div>
             </div>
 
-                                <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>"  alt="User image" >-->
+                                <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user_data['image']; ?>"  alt="User image" >-->
         <?php } ?>
         <p style="color:red;display: none" id="imageUploadError"></p>
 
         <div class="userDetails">
-            <h3 class="userName"><?= $user->first_name ?> <?= $user->last_name ?></h3>
+            <h3 class="userName"><?= $user_data['first_name'] ?> <?= $user_data['last_name'] ?></h3>
             <!--            <div class="proffInfo">
                             <span class="userProff">Bandit</span> 
                         </div>-->
             <ul class="listWithIcons">
-                <?php if ($user->location) { ?>
+                <?php if ($user_data['location']) { ?>
                     <li>
                         <i class="icon-location"></i>
-                        <p><?= $user->location ?></p>
+                        <p><?= $user_data['location'] ?></p>
                     </li>
                 <?php } ?>
-                <?php if ($user->phone) { ?>
+                <?php if ($user_data['phone']) { ?>
                     <li>
                         <i class="icon-smart-phone-2"></i>
-                        <p><?= $user->phone ?></p>
+                        <p><?= $user_data['phone'] ?></p>
                     </li>
                 <?php } ?>
                 <li>
                     <i class="icon-letter-mail-1"></i>
-                    <p><?= $user->email ?></p>
+                    <p><?= $user_data['email'] ?></p>
                 </li>
             </ul>
         </div>
@@ -75,7 +75,6 @@ $this->title = 'Edit profile'
                 <?php Yii::$app->view->params['sections'] = $sections; ?>
                 <?php Yii::$app->view->params['user_forms'] = $user_forms; ?>
             <?php } ?>
-            <?php Yii::$app->view->params['user'] = $user; ?>
             <?php $this->beginContent('@app/views/users/' . $layoutName); ?>
 
             <?php $this->endContent(); ?>

@@ -293,37 +293,37 @@ $this->title = 'Search';
             $(this).find('.inputError').hide();
         });
 
-        var showRegistration = <?= Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false' ?>;
-<?php Yii::$app->getSession()->destroySession('showRegistration'); ?>
-        if (showRegistration) {
-            $.magnificPopup.open({
-                items: {src: '#signup-popup'}, type: 'inline'
-            }, 0);
-        }
-
-        var showLogin = <?= Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false' ?>;
-<?php Yii::$app->getSession()->destroySession('showLogin'); ?>
-        if (showLogin) {
-            $.magnificPopup.open({
-                items: {src: '#login-popup'}, type: 'inline'
-            }, 0);
-        }
-
-
-        var newPassword = <?= Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false' ?>;
-<?php Yii::$app->getSession()->destroySession('newPassword'); ?>
-        if (newPassword) {
-            $.magnificPopup.open({
-                items: {src: '#forgpass-popup-2'}, type: 'inline'
-            }, 0);
-        }
-        var resetPassword = <?= Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false' ?>;
-<?php Yii::$app->getSession()->destroySession('resetPassword'); ?>
-        if (resetPassword) {
-            $.magnificPopup.open({
-                items: {src: '#forgpass-popup'}, type: 'inline'
-            }, 0);
-        }
+//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false' ?>;
+//<?php //Yii::$app->getSession()->destroySession('showRegistration'); ?>
+//        if (showRegistration) {
+//            $.magnificPopup.open({
+//                items: {src: '#signup-popup'}, type: 'inline'
+//            }, 0);
+//        }
+//
+//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false' ?>;
+//<?php //Yii::$app->getSession()->destroySession('showLogin'); ?>
+//        if (showLogin) {
+//            $.magnificPopup.open({
+//                items: {src: '#login-popup'}, type: 'inline'
+//            }, 0);
+//        }
+//
+//
+//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false' ?>;
+//<?php // Yii::$app->getSession()->destroySession('newPassword'); ?>
+//        if (newPassword) {
+//            $.magnificPopup.open({
+//                items: {src: '#forgpass-popup-2'}, type: 'inline'
+//            }, 0);
+//        }
+//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false' ?>;
+//<?php // Yii::$app->getSession()->destroySession('resetPassword'); ?>
+//        if (resetPassword) {
+//            $.magnificPopup.open({
+//                items: {src: '#forgpass-popup'}, type: 'inline'
+//            }, 0);
+//        }
 
     });
 </script>

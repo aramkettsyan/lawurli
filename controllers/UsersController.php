@@ -203,7 +203,7 @@ class UsersController extends \yii\web\Controller {
     public function actionLogin() {
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->refresh();
+            return $this->redirect('/users/profile');
         } else {
             Yii::$app->getSession()->writeSession('showLogin', true);
         }
@@ -249,7 +249,8 @@ class UsersController extends \yii\web\Controller {
     public function actionLoadGeneralEdit() {
 
         $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
-
+        $user_data = $user->getAttributes();
+        $user->scenario = 'update';
         if (Yii::$app->request->post()) {
 
             $transaction = \Yii::$app->db->beginTransaction();
@@ -283,7 +284,7 @@ class UsersController extends \yii\web\Controller {
             return $this->render('load-general', ['user' => $user]);
         }
 
-        return $this->render('/users/edit', ['user' => $user]);
+        return $this->render('/users/edit', ['user_data'=>$user_data,'user' => $user]);
     }
 
     public function actionLoadDetailedEdit() {
