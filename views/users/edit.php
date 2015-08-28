@@ -8,41 +8,41 @@ $this->title = 'Edit profile'
 <div class="container mainContainer">
     <div class="profileL">
         <div class="userImage">
-            <?php $filename = \Yii::getAlias('@webroot') . '/images/users_images/' . $user_data['image']; ?>
+            <?php $filename = \Yii::getAlias('@webroot') . '/images/users_images/' . $this->params['current_user']->image; ?>
             <?php if (is_file($filename)) { ?>
                 <img src="/images/user-1.png">
-                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user_data['image']; ?>')"></span>
+                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $this->params['current_user']->image; ?>')"></span>
                 <div class="imgEditBtns">
                     <!--<button id="uploadImage" type="button"><i class="icon-pencil-square"></i></button>-->
                     <div id="uploadImage"><i class="icon-pencil-square"></i></div>
                 </div>
             </div>
 
-                                <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user_data['image']; ?>"  alt="User image" >-->
+                                <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $this->params['current_user']->image; ?>"  alt="User image" >-->
         <?php } ?>
         <p style="color:red;display: none" id="imageUploadError"></p>
 
         <div class="userDetails">
-            <h3 class="userName"><?= $user_data['first_name'] ?> <?= $user_data['last_name'] ?></h3>
+            <h3 class="userName"><?= $this->params['current_user']->first_name ?> <?= $this->params['current_user']->last_name ?></h3>
             <!--            <div class="proffInfo">
                             <span class="userProff">Bandit</span> 
                         </div>-->
             <ul class="listWithIcons">
-                <?php if ($user_data['location']) { ?>
+                <?php if ($this->params['current_user']->location) { ?>
                     <li>
                         <i class="icon-location"></i>
-                        <p><?= $user_data['location'] ?></p>
+                        <p><?= $this->params['current_user']->location ?></p>
                     </li>
                 <?php } ?>
-                <?php if ($user_data['phone']) { ?>
+                <?php if ($this->params['current_user']->phone) { ?>
                     <li>
                         <i class="icon-smart-phone-2"></i>
-                        <p><?= $user_data['phone'] ?></p>
+                        <p><?= $this->params['current_user']->phone ?></p>
                     </li>
                 <?php } ?>
                 <li>
                     <i class="icon-letter-mail-1"></i>
-                    <p><?= $user_data['email'] ?></p>
+                    <p><?= $this->params['current_user']->email ?></p>
                 </li>
             </ul>
         </div>

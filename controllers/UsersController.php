@@ -249,7 +249,6 @@ class UsersController extends \yii\web\Controller {
     public function actionLoadGeneralEdit() {
 
         $user = Users::findOne(['id' => Yii::$app->user->identity->id]);
-        $user_data = $user->getAttributes();
         $user->scenario = 'update';
         if (Yii::$app->request->post()) {
 
@@ -284,7 +283,7 @@ class UsersController extends \yii\web\Controller {
             return $this->render('load-general', ['user' => $user]);
         }
 
-        return $this->render('/users/edit', ['user_data'=>$user_data,'user' => $user]);
+        return $this->render('/users/edit', ['user' => $user]);
     }
 
     public function actionLoadDetailedEdit() {
