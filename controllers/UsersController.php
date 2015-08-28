@@ -46,13 +46,10 @@ class UsersController extends \yii\web\Controller {
                             'actions' => [
                                 'logout',
                                 'index',
-                                'search',
                                 'confirm',
                                 'reset-password',
                                 'reset-password-notifications',
                                 'reset',
-                                'profile',
-                                'edit',
                                 'error'
                             ],
                             'allow' => true,
@@ -581,7 +578,7 @@ class UsersController extends \yii\web\Controller {
 
         $explode = explode('.', $fileName);
         $ext = end($explode);
-        $allowed = array('png', 'jpg', 'jpeg', 'gif');
+        $allowed = array('png', 'jpg', 'jpeg');
         if (!in_array($ext, $allowed)) {
             $response['success'] = false;
             $response['error'] = "Not supported format";

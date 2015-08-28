@@ -90,7 +90,7 @@ $this->title = 'Edit profile'
             action: '/users/upload-image',
             multiple: false,
             sizeLimit: 5242880,
-            allowedExtensions: ['png', 'jpg', 'jpeg', 'gif'],
+            allowedExtensions: ['png', 'jpg', 'jpeg'],
             onComplete: function (id, fileName, responseJSON) {
 
                 if (responseJSON.success) {
