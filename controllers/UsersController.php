@@ -52,6 +52,7 @@ class UsersController extends \yii\web\Controller {
                                 'reset-password-notifications',
                                 'reset',
                                 'profile',
+                                'edit',
                                 'error'
                             ],
                             'allow' => true,
@@ -59,7 +60,7 @@ class UsersController extends \yii\web\Controller {
                         ],
                     ],
                     'denyCallback' => function($rule, $action) {
-                throw new \yii\web\NotFoundHttpException();
+                throw new \yii\web\ForbiddenHttpException();
             }
             ]];
         } else {
@@ -75,7 +76,7 @@ class UsersController extends \yii\web\Controller {
                         ]
                     ],
                     'denyCallback' => function($rule, $action) {
-                throw new \yii\web\NotFoundHttpException();
+                throw new \yii\web\ForbiddenHttpException();
             }
                 ]
             ];
@@ -85,9 +86,9 @@ class UsersController extends \yii\web\Controller {
 
     public function actions() {
         return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
+//            'error' => [
+//                'class' => 'yii\web\ErrorAction',
+//            ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
@@ -184,14 +185,22 @@ class UsersController extends \yii\web\Controller {
         \Yii::$app->view->params['logo'] = $this->getLogo();
         $this->enableCsrfValidation = false;
         if (!\Yii::$app->user->isGuest) {
-            if(Yii::$app->controller->module->requestedRoute = 'users/profile' && Yii::$app->request->get('notificationsTab') == "open"){
-               Users::updateSeenRows();
+            if (Yii::$app->controller->module->requestedRoute = 'users/profile' && Yii::$app->request->get('notificationsTab') == "open") {
+                Users::updateSeenRows();
             }
             $notify = $this->getNotifications($pageSize = 6);
             Yii::$app->view->params['notify'] = $notify[1];
             Yii::$app->view->params['notifyCount'] = Users::getNotificationCount();
         }
         return parent::beforeAction($action);
+    }
+
+    public function actionError() {
+        if (Yii::$app->errorHandler->exception->statusCode == 403) {
+            return $this->redirect('/users/index');
+        }
+
+        return $this->render('error');
     }
 
     public function actionLogin() {
@@ -236,7 +245,7 @@ class UsersController extends \yii\web\Controller {
                 return $this->actionLoadGeneralEdit();
             }
         } else {
-            throw new \yii\web\NotFoundHttpException();
+            return $this->redirect('/users/index');
         }
     }
 
@@ -313,13 +322,13 @@ class UsersController extends \yii\web\Controller {
                 }
                 $custom_fields = $post['Users']['custom_fields'];
                 $newArr = [];
-                $updateArr = [];
-                $user_forms_delete = $user_forms;
                 $r = 0;
+                $g = 0;
                 $validate = true;
+                $keys_array = [];
                 foreach ($custom_fields as $key => $custom_field) {
-                    $k = 0;
-                    foreach ($custom_field as $field) {
+                    foreach ($custom_field as $k => $field) {
+//                        var_dump($field . ' ' . $k);
                         if (empty($field)) {
                             continue;
                         }
@@ -360,10 +369,12 @@ class UsersController extends \yii\web\Controller {
                                 }
                             }
                         }
-                        $k++;
                         $r++;
                     }
+                    $g++;
                 }
+//                print_r($newArr);
+//                die;
 
 
                 if ($validate === true) {
@@ -444,13 +455,16 @@ class UsersController extends \yii\web\Controller {
 
         $new_user_forms = [];
         foreach ($user_forms as $user_form) {
-            if (isset($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
-                if (!is_array($new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']])) {
-                    $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = [$new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']]];
+            $subSectionId = $user_form['subSectionId'];
+            $index = $user_form['index'];
+            $form_id = $user_form['form_id'];
+            if (isset($new_user_forms[$subSectionId][$index][$form_id])) {
+                if (!is_array($new_user_forms[$subSectionId][$index][$form_id])) {
+                    $new_user_forms[$subSectionId][$index][$form_id] = [$new_user_forms[$subSectionId][$index][$form_id]];
                 }
-                $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']][] = $user_form['value'];
+                $new_user_forms[$subSectionId][$index][$form_id][] = $user_form['value'];
             } else {
-                $new_user_forms[$user_form['subSectionId']][$user_form['index']][$user_form['form_id']] = $user_form['value'];
+                $new_user_forms[$subSectionId][$index][$form_id] = $user_form['value'];
             }
         }
 
@@ -487,6 +501,12 @@ class UsersController extends \yii\web\Controller {
                 ];
             }
         }
+        foreach ($new_user_forms as $key => $uf) {
+            $new_user_forms[$key] = array_values($uf);
+        }
+
+//        print_r($new_user_forms);
+//        die;
 
 
         \Yii::$app->view->params['user'] = $user;
@@ -617,7 +637,7 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionLogout() {
-        if(Yii::$app->user->isGuest){
+        if (Yii::$app->user->isGuest) {
             return $this->redirect('/users/index');
         }
         Yii::$app->user->logout();
@@ -820,6 +840,10 @@ class UsersController extends \yii\web\Controller {
                 }
             } else {
                 $relation = null;
+            }
+
+            foreach ($new_user_forms as $key => $uf) {
+                $new_user_forms[$key] = array_values($uf);
             }
 
             $models['user'] = $user;
@@ -1299,6 +1323,5 @@ class UsersController extends \yii\web\Controller {
                 ->all();
         return [$pages, $notifications, $countQuery->count()];
     }
-    
 
 }
