@@ -402,7 +402,9 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                     ->orderBy('request_created DESC')
                     ->limit(6)
                     ->one();
-         Request::updateAll(['request_seen' => "Y"], 'request_id IN(' .$seenIds['requestIds']. ')');
+         if($seenIds['requestIds']){
+             Request::updateAll(['request_seen' => "Y"], 'request_id IN(' .$seenIds['requestIds']. ')');
+         }
     }
     
 

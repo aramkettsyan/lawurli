@@ -50,7 +50,7 @@ use yii\widgets\ActiveForm;
                         <?php elseif($relation['request_accepted'] == "N" && $relation['user_from_id'] == Yii::$app->user->identity->id) :  ?>
                             <a href="/users/decline/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Request is sent</a>
                         <?php elseif($relation['request_accepted'] == "N" && $relation['user_to_id'] == Yii::$app->user->identity->id) :  ?>
-                            <a href="/users/accetpt/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Accetpt</a>
+                            <a href="/users/accetpt/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Accept</a>
                         <?php endif; ?>
                     <?php else: ?>
                         <a href="/users/connect/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Connect</a>
@@ -230,37 +230,37 @@ use yii\widgets\ActiveForm;
             $(this).find('.inputError').hide();
         });
 
-        var showRegistration = <?= Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false' ?>;
-<?php Yii::$app->getSession()->destroySession('showRegistration'); ?>
-        if (showRegistration) {
-            $.magnificPopup.open({
-                items: {src: '#signup-popup'}, type: 'inline'
-            }, 0);
-        }
+//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false' ?>;
+//<?php // Yii::$app->getSession()->destroySession('showRegistration'); ?>
+//        if (showRegistration) {
+//            $.magnificPopup.open({
+//                items: {src: '#signup-popup'}, type: 'inline'
+//            }, 0);
+//        }
+//
+//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false' ?>;
+//<?php // Yii::$app->getSession()->destroySession('showLogin'); ?>
+//        if (showLogin) {
+//            $.magnificPopup.open({
+//                items: {src: '#login-popup'}, type: 'inline'
+//            }, 0);
+//        }
 
-        var showLogin = <?= Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false' ?>;
-<?php Yii::$app->getSession()->destroySession('showLogin'); ?>
-        if (showLogin) {
-            $.magnificPopup.open({
-                items: {src: '#login-popup'}, type: 'inline'
-            }, 0);
-        }
 
-
-        var newPassword = <?= Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false' ?>;
-<?php Yii::$app->getSession()->destroySession('newPassword'); ?>
-        if (newPassword) {
-            $.magnificPopup.open({
-                items: {src: '#forgpass-popup-2'}, type: 'inline'
-            }, 0);
-        }
-        var resetPassword = <?= Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false' ?>;
-<?php Yii::$app->getSession()->destroySession('resetPassword'); ?>
-        if (resetPassword) {
-            $.magnificPopup.open({
-                items: {src: '#forgpass-popup'}, type: 'inline'
-            }, 0);
-        }
+//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false' ?>;
+//<?php //Yii::$app->getSession()->destroySession('newPassword'); ?>
+//        if (newPassword) {
+//            $.magnificPopup.open({
+//                items: {src: '#forgpass-popup-2'}, type: 'inline'
+//            }, 0);
+//        }
+//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false' ?>;
+//<?php //Yii::$app->getSession()->destroySession('resetPassword'); ?>
+//        if (resetPassword) {
+//            $.magnificPopup.open({
+//                items: {src: '#forgpass-popup'}, type: 'inline'
+//            }, 0);
+//        }
 
         if (colleaguesTab == 'open') {
             $("#profileInfo").hide();
