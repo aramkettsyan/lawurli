@@ -863,8 +863,8 @@ class UsersController extends \yii\web\Controller {
         }
 
         $query = trim(\Yii::$app->request->get('query'));
-        $first_name = trim(\Yii::$app->request->get('first_name'));
-        $last_name = trim(\Yii::$app->request->get('last_name'));
+        $first_name = str_replace('_', '', str_replace('%', '', trim(\Yii::$app->request->get('first_name'))));
+        $last_name = str_replace('_', '', str_replace('%', '', trim(\Yii::$app->request->get('last_name'))));
         $first_last = \Yii::$app->request->get('first_last');
         $search = \Yii::$app->request->get('search') ? \Yii::$app->request->get('search') : 'basic';
         if ($query === NULL) {
@@ -1011,6 +1011,10 @@ class UsersController extends \yii\web\Controller {
             }
         } else {//If first name and last name undefined
             $query_array = explode(' ', $query, 2);
+            $query_array[0] = str_replace('_', '', str_replace('%', '', trim($query_array[0])));
+            if (isset($query_array[1])) {
+                $query_array[1] = str_replace('_', '', str_replace('%', '', trim($query_array[1])));
+            }
             if (empty($query_array[0]) && (isset($query_array[1]) && empty($query_array[1]) || !isset($query_array[1]))) {
                 //If first name and last name are empty 
                 $and = !Yii::$app->user->isGuest ? 'id <> ' . Yii::$app->user->id . ' ' : '';
@@ -1138,10 +1142,13 @@ class UsersController extends \yii\web\Controller {
                         $j = false;
                         foreach ($advanced as $key => $input) {
                             if (!empty($input)) {
+
                                 //If value is not empty
                                 $formId = $key;
                                 if (!is_array($input)) {
                                     $j = true;
+                                    $input = \Yii::$app->db->quoteValue($input);
+                                    $key = \Yii::$app->db->quoteValue($key);
                                     if (empty($sqlIf)) {
                                         $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
                                         $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
@@ -1152,6 +1159,8 @@ class UsersController extends \yii\web\Controller {
                                 } else {
                                     foreach ($input as $k => $i) {
                                         $j = true;
+                                        $i = \Yii::$app->db->quoteValue($i);
+                                        $key = \Yii::$app->db->quoteValue($key);
                                         if (empty($sqlIf)) {
                                             $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.form_id,NULL))";
                                             $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
