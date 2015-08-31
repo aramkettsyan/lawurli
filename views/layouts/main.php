@@ -66,10 +66,10 @@ UserAsset::register($this);
                                     <a href="#" class="dropDnBtn">
                                         <div class="udImg">
                                             <img src="/images/user-image.png" alt="">
-                                            <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $this->params['current_user']->image; ?>')"></span>
+                                            <span class="profileImage" style="background-image: url('<?php echo Html::encode(\Yii::getAlias('@web') . '/images/users_images/' . $this->params['current_user']->image); ?>')"></span>
                                         </div>
 
-                                        <span class="udUserName"><?= $this->params['current_user']->first_name ?> <?= $this->params['current_user']->last_name ?></span>
+                                        <span class="udUserName"><?= Html::encode($this->params['current_user']->first_name) ?> <?= Html::encode($this->params['current_user']->last_name) ?></span>
                                         <i class="icon-caret-down-two"></i>
                                         <span class="udArrow"></span>
                                     </a>
@@ -104,9 +104,9 @@ UserAsset::register($this);
                                 <a href="#" class="dropDnBtn">
                                     <div class="udImg">
                                         <img src="images/user-image.png" alt="">
-                                        <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $this->params['current_user']->image; ?>')"></span>
+                                        <span class="profileImage" style="background-image: url('<?php echo Html::encode(\Yii::getAlias('@web') . '/images/users_images/' . $this->params['current_user']->image); ?>')"></span>
                                     </div>
-                                    <span class="udUserName"><?= $this->params['current_user']->first_name ?> <?= $this->params['current_user']->last_name ?></span>
+                                    <span class="udUserName"><?= Html::encode($this->params['current_user']->first_name) ?> <?= Html::encode($this->params['current_user']->last_name) ?></span>
                                     <i class="icon-caret-down-two"></i>
                                     <span class="udArrow"></span>
                                 </a>

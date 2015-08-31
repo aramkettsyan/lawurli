@@ -1,7 +1,7 @@
 <?php
-$this->title = $user->first_name.' '.$user->last_name;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+$this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name);
 ?>
 
 <?php Yii::$app->view->params['user'] = $user; ?>
@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 <div class="container mainContainer">
     <div class="profileL">
         <div class="userImage">
-            <?php $filename = \Yii::getAlias('@webroot') . '/images/users_images/' . $user->image; ?>
+            <?php $filename = \Yii::getAlias('@webroot') . '/images/users_images/' . Html::encode($user->image); ?>
             <?php if (is_file($filename)) { ?>
                 <img src="/images/user-1.png">
                 <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>')"></span>
@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
         <p style="color:red;display: none" id="imageUploadError"></p>
 
         <div class="userDetails">
-            <h3 class="userName"><?= $user->first_name ?> <?= $user->last_name ?></h3>
+            <h3 class="userName"><?= Html::encode($user->first_name) ?> <?= Html::encode($user->last_name) ?></h3>
             <!--            <div class="proffInfo">
                             <span class="userProff">Bandit</span> 
                         </div>-->
@@ -28,18 +28,18 @@ use yii\widgets\ActiveForm;
                 <?php if ($user->location) { ?>
                     <li>
                         <i class="icon-location"></i>
-                        <p><?= $user->location ?></p>
+                        <p><?= Html::encode($user->location) ?></p>
                     </li>
                 <?php } ?>
                 <?php if ($user->phone) { ?>
                     <li>
                         <i class="icon-smart-phone-2"></i>
-                        <p><?= $user->phone ?></p>
+                        <p><?= Html::encode($user->phone) ?></p>
                     </li>
                 <?php } ?>
                 <li>
                     <i class="icon-letter-mail-1"></i>
-                    <p><?= $user->email ?></p>
+                    <p><?= Html::encode($user->email) ?></p>
                 </li>
             </ul>
             <?php if ((Yii::$app->controller->actionParams['id'] != Yii::$app->user->id && Yii::$app->controller->actionParams['id'] )) { ?>
@@ -112,7 +112,7 @@ use yii\widgets\ActiveForm;
                                                     <?php } ?>
                                                     <?php $value = ''; ?>
                                                     <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
-                                                        <?php $value = $this->params['user_forms'][$subSectionId][$u][$form['formId']] ?>
+                                                        <?php $value = Html::encode($this->params['user_forms'][$subSectionId][$u][$form['formId']]) ?>
                                                     <?php } ?>
                                                     <?php if (!empty($value)) { ?>
                                                         <?php $emptyProfile = true; ?>
@@ -126,13 +126,12 @@ use yii\widgets\ActiveForm;
                                                         <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'textarea') { ?>
-                                                        <!--<textarea class='inputTextarea formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>"><?= $value ?></textarea>-->
                                                         <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'select') { ?>
-                                                        <?php $options = str_replace('-,-', ',', $form['formOptions']); ?>
+                                                        <?php $options = Html::encode(str_replace('-,-', ',', $form['formOptions'])); ?>
                                                         <div class="labelValue">
-                                                            <label><?= $form['formLabel'] ?></label>
+                                                            <label><?= Html::encode($form['formLabel']) ?></label>
                                                             <span><?= $value ?></span>
                                                         </div>
                                                     <?php } ?>
@@ -154,13 +153,13 @@ use yii\widgets\ActiveForm;
 
                                                         <?php } ?>
                                                         <div class="labelValue">
-                                                            <label><?= $form['formLabel'] ?></label>
-                                                            <span><?= $values ?></span>
+                                                            <label><?= Html::encode($form['formLabel']) ?></label>
+                                                            <span><?= Html::encode($values) ?></span>
                                                         </div>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'radio') { ?>
                                                         <div class="labelValue">
-                                                            <label><?= $form['formLabel'] ?></label>
+                                                            <label><?= Html::encode($form['formLabel']) ?></label>
                                                             <span><?= $value ?></span>
                                                         </div>
                                                     <?php } ?>

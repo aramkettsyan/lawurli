@@ -1,5 +1,6 @@
-<?php 
-    use yii\widgets\ActiveForm;
+<?php
+
+use yii\widgets\ActiveForm;
 ?>
 
 <?php
@@ -83,11 +84,12 @@ $fm = ActiveForm::begin([
 
     function initialize() {
         autocomplete = new google.maps.places.Autocomplete(
-                /** @type {HTMLInputElement} */(document.getElementById('autocomplete')),
+                (document.getElementById('autocomplete')),
                 {types: ['geocode']});
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var place = autocomplete.getPlace();
-            document.getElementById('autocomplete').value = place.name;
+            console.log(place);
+            document.getElementById('autocomplete').value = place.formatted_address;
             document.getElementById('latlng').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
         });
     }

@@ -24,10 +24,10 @@ $this->title = 'Search';
             <div class="customScroll">
                 <div class="formRow">
                     <input type="hidden" id="first_last" name="first_last" value="true" >
-                    <input type="text" class="formControl sForm" name="first_name" value="<?= isset($query[0]) && (isset($query[1])) ? $query[0] : '' ?>" placeholder="First name">
+                    <input type="text" class="formControl sForm" name="first_name" value="<?= isset($query[0]) && (isset($query[1])) ? Html::encode($query[0]) : '' ?>" placeholder="First name">
                 </div>
                 <div class="formRow">
-                    <input type="text" class="formControl sForm" name="last_name" value="<?= isset($query[1]) ? $query[1] : '' ?>" placeholder="Last name">
+                    <input type="text" class="formControl sForm" name="last_name" value="<?= isset($query[1]) ? Html::encode($query[1]) : '' ?>" placeholder="Last name">
                 </div>
                 <input type="hidden" name="query" >
             </div>
@@ -45,17 +45,17 @@ $this->title = 'Search';
                         <li>
                             <div class="peopleListL">
                                 <img src="/images/user-1.png" alt="">
-                                <span style='background-image: url("<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user['image']; ?>")'></span>
+                                <span style='background-image: url("<?php echo Html::encode(\Yii::getAlias('@web') . '/images/users_images/' . $user['image']); ?>")'></span>
                             </div>
                             <div class="peopleListR">
-                                <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="plName"><?= $user['first_name'] ?> <?= $user['last_name'] ?></a>
+                                <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="plName"><?= Html::encode($user['first_name']) ?> <?= Html::encode($user['last_name']) ?></a>
                                 <div class="plDets">
                                     <!--<p>Plumber at "Clean House" Ltd</p>-->
-                                    <p class="plAddress"><i class="icon-location"></i><?= $user['location'] ?></p>
+                                    <p class="plAddress"><i class="icon-location"></i><?= Html::encode($user['location']) ?></p>
                                 </div>
                                 <div class="plActions">
                                     <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="btn lineDefBtn sBtn">View Profile</a>
-                                    <?php if(!Yii::$app->user->isGuest) : ?>
+                                    <?php if (!Yii::$app->user->isGuest) : ?>
                                         <?php if (isset($contacts[$user['id']])) : ?>
                                             <?php if ($contacts[$user['id']]['user_to_id'] == $user['id'] && $contacts[$user['id']]['request_accepted'] == 'N') : ?>
                                                 <a href="<?= \yii\helpers\Url::to(['users/decline', 'id' => $user['id']]) ?>" class="btn greyBtn sBtn"><i class="icon-cross-mark"></i>Request is sent</a>
@@ -70,8 +70,8 @@ $this->title = 'Search';
                                             <a href="<?= \yii\helpers\Url::to(['users/connect', 'id' => $user['id']]) ?>" class="btn lineDefBtn sBtn">Connect</a>
                                         <?php endif; ?>
                                     <?php else : ?>
-                                            <a class="popupBtn btn lineDefBtn sBtn"  href="#login-popup">Connect</a>
-                                    <?php  endif; ?>    
+                                        <a class="popupBtn btn lineDefBtn sBtn"  href="#login-popup">Connect</a>
+                                    <?php endif; ?>    
                                 </div>
                             </div>
                         </li>
@@ -126,48 +126,48 @@ $this->title = 'Search';
                             <div class="formRow">
                                 <?php if ($key == 2) { ?>
                                     <label class="customLbSt" for="first_name"> First name </label>
-                                    <?php echo Html::input('text', '', isset($query[0]) && (isset($query[1])) ? $query[0] : '', ['id' => 'first_name', 'class' => 'formControl sForm', 'placeholder' => 'First name']); ?>
+                                    <?php echo Html::input('text', '', isset($query[0]) && (isset($query[1])) ? Html::encode($query[0]) : '', ['id' => 'first_name', 'class' => 'formControl sForm', 'placeholder' => 'First name']); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'input') { ?>
-                                    <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"> <?php echo $input->label; ?> </label>
+                                    <label class="customLbSt" for="<?= Html::encode($input->label) . '_' . $i; ?>"> <?php echo Html::encode($input->label); ?> </label>
                                     <?php if ($input->numeric == '0') { ?>
-                                        <?php echo Html::input('text', 'advanced[' . $input->id . ']', isset($query_response[$input->id]) ? $query_response[$input->id] : '', ['id' => $input->label . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => $input->placeholder]); ?>
+                                        <?php echo Html::input('text', 'advanced[' . Html::encode($input->id) . ']', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', ['id' => Html::encode($input->label) . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => Html::encode($input->placeholder)]); ?>
                                     <?php } else { ?>
-                                        <?php echo Html::input('text', 'advanced[' . $input->id . ']', isset($query_response[$input->id]) ? $query_response[$input->id] : '', ['id' => $input->label . '_' . $i, 'class' => 'formControl sForm', 'type' => 'number', 'placeholder' => $input->placeholder]); ?>
+                                        <?php echo Html::input('text', 'advanced[' . Html::encode($input->id) . ']', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', ['id' => Html::encode($input->label) . '_' . $i, 'class' => 'formControl sForm', 'type' => 'number', 'placeholder' => Html::encode($input->placeholder)]); ?>
                                     <?php } ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'textarea') { ?>
-                                    <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"><?php echo $input->label; ?></label>
-                                    <?php echo Html::textarea('advanced[' . $input->id . ']', isset($query_response[$input->id]) ? $query_response[$input->id] : '', ['id' => $input->label . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => $input->placeholder]); ?>
+                                    <label class="customLbSt" for="<?= Html::encode($input->label) . '_' . $i; ?>"><?php echo Html::encode($input->label); ?></label>
+                                    <?php echo Html::textarea('advanced[' . Html::encode($input->id) . ']', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', ['id' => Html::encode($input->label) . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => Html::encode($input->placeholder)]); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'select') { ?>
-                                    <label class="customLbSt" for="<?= $input->label; ?>"><?php echo $input->label; ?></label> 
+                                    <label class="customLbSt" for="<?= Html::encode($input->label); ?>"><?php echo Html::encode($input->label); ?></label> 
                                     <?php $options = explode('-,-', $input->options); ?>
                                     <?php $newOptions = [] ?>
                                     <?php foreach ($options as $option) { ?>
-                                        <?php $newOptions[$option] = $option; ?>
+                                        <?php $newOptions[$option] = Html::encode($option); ?>
                                     <?php } ?>
-                                    <?php echo Html::dropDownList('advanced[' . $input->id . ']', isset($query_response[$input->id]) ? $query_response[$input->id] : '', $newOptions, ['prompt' => $input->placeholder ? $input->placeholder : 'Select', 'id' => $input->label, 'class' => 'formControl sForm']); ?>
+                                    <?php echo Html::dropDownList('advanced[' . Html::encode($input->id) . ']', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', $newOptions, ['prompt' => $input->placeholder ? Html::encode($input->placeholder) : 'Select', 'id' => Html::encode($input->label), 'class' => 'formControl sForm']); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'checkbox') { ?>
-                                    <label class="customLbSt"> <?php echo $input->label; ?></label>
+                                    <label class="customLbSt"> <?php echo Html::encode($input->label); ?></label>
                                     <div class="checkbox">
                                         <?php $options = explode('-,-', $input->options); ?>
                                         <?php
                                         echo Html::checkboxList('checkbox', null, $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input, $query_response) {
                                                 $check = isset($query_response[$input->id][$index]) ? 'checked' : '';
-                                                return '<label for="' . $value . '_' . $index . '"><input ' . $check . ' id="' . $value . '_' . $index . '" name="advanced[' . $input->id . '][' . $index . ']" type="checkbox"><span>' . $label . '</span></label> ';
+                                                return '<label for="' . Html::encode($value) . '_' . $index . '"><input ' . $check . ' id="' . Html::encode($value) . '_' . $index . '" name="advanced[' . Html::encode($input->id) . '][' . $index . ']" type="checkbox"><span>' . Html::encode($label) . '</span></label> ';
                                             }]);
                                         ?>
                                     </div>
                                 <?php } ?>
                                 <?php if ($input->type === 'radio') { ?>
-                                    <label><?php echo $input->label; ?></label>
+                                    <label><?php echo Html::encode($input->label); ?></label>
                                     <?php $items = explode('-,-', $input->options); ?>
                                     <div class="radio">
                                         <?php
                                         echo Html::radioList('radio', isset($query_response[$input->id]) ? $query_response[$input->id] : '', $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input) {
-                                                return '<label for="' . $value . '_' . $name . '"><input id="' . $value . '_' . $name . '" name="advanced[' . $input->id . ']" type="radio"><span>' . $label . '</span></label> ';
+                                                return '<label for="' . Html::encode($value) . '_' . $name . '"><input id="' . $value . '_' . $name . '" name="advanced[' . Html::encode($input->id) . ']" type="radio"><span>' . Html::encode($label) . '</span></label> ';
                                             }]);
                                         ?>
                                     </div>
@@ -184,43 +184,47 @@ $this->title = 'Search';
                             <div class="formRow">
                                 <?php if ($key === 0) { ?>
                                     <label class="customLbSt" for="last_name"> Last name </label>
-                                    <?php echo Html::input('text', '', isset($query[1]) ? $query[1] : '', ['id' => 'last_name', 'class' => 'formControl sForm', 'placeholder' => 'Last name']); ?>
+                                    <?php echo Html::input('text', '', isset($query[1]) ? Html::encode($query[1]) : '', ['id' => 'last_name', 'class' => 'formControl sForm', 'placeholder' => 'Last name']); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'input') { ?>
-                                    <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"> <?php echo $input->label; ?> </label>
+                                    <label class="customLbSt" for="<?= Html::encode($input->label) . '_' . $i; ?>"> <?php echo Html::encode($input->label); ?> </label>
                                     <?php if ($input->numeric == '0') { ?>
-                                        <?php echo Html::input('text', 'advanced[' . $input->id . ']', isset($query_response[$input->id]) ? $query_response[$input->id] : '', ['id' => $input->label . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => $input->placeholder]); ?>
+                                        <?php echo Html::input('text', 'advanced[' . Html::encode($input->id) . ']', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', ['id' => Html::encode($input->label) . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => Html::encode($input->placeholder)]); ?>
                                     <?php } else { ?>
-                                        <?php echo Html::input('text', 'advanced[' . $input->id . ']', isset($query_response[$input->id]) ? $query_response[$input->id] : '', ['id' => $input->label . '_' . $i, 'class' => 'formControl sForm', 'type' => 'number', 'placeholder' => $input->placeholder]); ?>
+                                        <?php echo Html::input('text', 'advanced[' . Html::encode($input->id) . ']', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', ['id' => Html::encode($input->label) . '_' . $i, 'class' => 'formControl sForm', 'type' => 'number', 'placeholder' => Html::encode($input->placeholder)]); ?>
                                     <?php } ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'textarea') { ?>
-                                    <label class="customLbSt" for="<?= $input->label . '_' . $i; ?>"><?php echo $input->label; ?></label>
-                                    <?php echo Html::textarea('advanced[' . $input->id . ']', isset($query_response[$input->id]) ? $query_response[$input->id] : '', ['id' => $input->label . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => $input->placeholder]); ?>
+                                    <label class="customLbSt" for="<?= Html::encode($input->label) . '_' . $i; ?>"><?php echo Html::encode($input->label); ?></label>
+                                    <?php echo Html::textarea('advanced[' . Html::encode($input->id) . ']', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', ['id' => Html::encode($input->label) . '_' . $i, 'class' => 'formControl sForm', 'placeholder' => Html::encode($input->placeholder)]); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'select') { ?>
-                                    <label class="customLbSt" for="<?= $input->label; ?>"><?php echo $input->label; ?></label> 
+                                    <label class="customLbSt" for="<?= Html::encode($input->label); ?>"><?php echo Html::encode($input->label); ?></label> 
                                     <?php $options = explode('-,-', $input->options); ?>
-                                    <?php echo Html::dropDownList('advanced[' . $input->id . ']', isset($query_response[$input->id]) ? $query_response[$input->id] : '', $options, ['prompt' => $input->placeholder ? $input->placeholder : 'Select', 'id' => $input->label, 'class' => 'formControl sForm']); ?>
+                                    <?php $newOptions = [] ?>
+                                    <?php foreach ($options as $option) { ?>
+                                        <?php $newOptions[$option] = Html::encode($option); ?>
+                                    <?php } ?>
+                                    <?php echo Html::dropDownList('advanced[' . Html::encode($input->id) . ']', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', $newOptions, ['prompt' => $input->placeholder ? Html::encode($input->placeholder) : 'Select', 'id' => Html::encode($input->label), 'class' => 'formControl sForm']); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'checkbox') { ?>
-                                    <label class="customLbSt"> <?php echo $input->label; ?></label>
+                                    <label class="customLbSt"> <?php echo Html::encode($input->label); ?></label>
                                     <div class="checkbox">
                                         <?php $options = explode('-,-', $input->options); ?>
                                         <?php
-                                        echo Html::checkboxList('checkbox', isset($query_response[$input->id]) ? $query_response[$input->id] : '', $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input) {
-                                                return '<label for="' . $value . '_' . $index . '"><input id="' . $value . '_' . $index . '" name="advanced[' . $input->id . '][]" type="checkbox"><span>' . $label . '</span></label> ';
+                                        echo Html::checkboxList('checkbox', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input) {
+                                                return '<label for="' . Html::encode($value) . '_' . $index . '"><input id="' . Html::encode($value) . '_' . $index . '" name="advanced[' . Html::encode($input->id) . '][]" type="checkbox"><span>' . Html::encode($label) . '</span></label> ';
                                             }]);
                                         ?>
                                     </div>
                                 <?php } ?>
                                 <?php if ($input->type === 'radio') { ?>
-                                    <label><?php echo $input->label; ?></label>
+                                    <label><?php echo Html::encode($input->label); ?></label>
                                     <?php $items = explode('-,-', $input->options); ?>
                                     <div class="radio">
                                         <?php
-                                        echo Html::radioList('radio', isset($query_response[$input->id]) ? $query_response[$input->id] : '', $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input) {
-                                                return '<label for="' . $value . '_' . $name . '"><input id="' . $value . '_' . $name . '" name="advanced[' . $input->id . ']" type="radio"><span>' . $label . '</span></label> ';
+                                        echo Html::radioList('radio', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input) {
+                                                return '<label for="' . Html::encode($value) . '_' . $name . '"><input id="' . Html::encode($value) . '_' . $name . '" name="advanced[' . Html::encode($input->id) . ']" type="radio"><span>' . Html::encode($label) . '</span></label> ';
                                             }]);
                                         ?>
                                     </div>
@@ -293,16 +297,16 @@ $this->title = 'Search';
             $(this).find('.inputError').hide();
         });
 
-//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false' ?>;
-//<?php //Yii::$app->getSession()->destroySession('showRegistration'); ?>
+//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'   ?>;
+//<?php //Yii::$app->getSession()->destroySession('showRegistration');   ?>
 //        if (showRegistration) {
 //            $.magnificPopup.open({
 //                items: {src: '#signup-popup'}, type: 'inline'
 //            }, 0);
 //        }
 //
-//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false' ?>;
-//<?php //Yii::$app->getSession()->destroySession('showLogin'); ?>
+//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'   ?>;
+//<?php //Yii::$app->getSession()->destroySession('showLogin');   ?>
 //        if (showLogin) {
 //            $.magnificPopup.open({
 //                items: {src: '#login-popup'}, type: 'inline'
@@ -310,15 +314,15 @@ $this->title = 'Search';
 //        }
 //
 //
-//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false' ?>;
-//<?php // Yii::$app->getSession()->destroySession('newPassword'); ?>
+//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'   ?>;
+//<?php // Yii::$app->getSession()->destroySession('newPassword');   ?>
 //        if (newPassword) {
 //            $.magnificPopup.open({
 //                items: {src: '#forgpass-popup-2'}, type: 'inline'
 //            }, 0);
 //        }
-//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false' ?>;
-//<?php // Yii::$app->getSession()->destroySession('resetPassword'); ?>
+//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'   ?>;
+//<?php // Yii::$app->getSession()->destroySession('resetPassword');   ?>
 //        if (resetPassword) {
 //            $.magnificPopup.open({
 //                items: {src: '#forgpass-popup'}, type: 'inline'

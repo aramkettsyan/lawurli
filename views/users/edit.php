@@ -1,6 +1,7 @@
 <?php
 
 use yii\widgets\ActiveForm;
+use yii\helpers\Html;
 ?>
 <?php
 $this->title = 'Edit profile'
@@ -23,7 +24,7 @@ $this->title = 'Edit profile'
         <p style="color:red;display: none" id="imageUploadError"></p>
 
         <div class="userDetails">
-            <h3 class="userName"><?= $this->params['current_user']->first_name ?> <?= $this->params['current_user']->last_name ?></h3>
+            <h3 class="userName"><?= Html::encode($this->params['current_user']->first_name) ?> <?= Html::encode($this->params['current_user']->last_name) ?></h3>
             <!--            <div class="proffInfo">
                             <span class="userProff">Bandit</span> 
                         </div>-->
@@ -31,18 +32,18 @@ $this->title = 'Edit profile'
                 <?php if ($this->params['current_user']->location) { ?>
                     <li>
                         <i class="icon-location"></i>
-                        <p><?= $this->params['current_user']->location ?></p>
+                        <p><?= Html::encode($this->params['current_user']->location) ?></p>
                     </li>
                 <?php } ?>
                 <?php if ($this->params['current_user']->phone) { ?>
                     <li>
                         <i class="icon-smart-phone-2"></i>
-                        <p><?= $this->params['current_user']->phone ?></p>
+                        <p><?= Html::encode($this->params['current_user']->phone) ?></p>
                     </li>
                 <?php } ?>
                 <li>
                     <i class="icon-letter-mail-1"></i>
-                    <p><?= $this->params['current_user']->email ?></p>
+                    <p><?= Html::encode($this->params['current_user']->email) ?></p>
                 </li>
             </ul>
         </div>

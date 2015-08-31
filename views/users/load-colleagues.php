@@ -14,10 +14,10 @@ use yii\helpers\Html;
         <li>
             <div class="peopleListL">
                 <img src="/images/default.png" alt="">
-                <span style="background-image: url('/images/users_images/<?=$colleague['image']?>')"></span>
+                <span style="background-image: url('/images/users_images/<?=Html::encode($colleague['image'])?>')"></span>
             </div>
             <div class="peopleListR">
-                <a href="/users/profile/<?=$colleague['id']?>" class="plName"><?=$colleague['first_name'].' '.$colleague['last_name']?></a>
+                <a href="/users/profile/<?=$colleague['id']?>" class="plName"><?=Html::encode($colleague['first_name']).' '.Html::encode($colleague['last_name'])?></a>
                 <div class="plDets">
                    <?= ($colleague['location'] ?  '<p class="plAddress"><i class="icon-location"></i>'.$colleague['location'].'</p>'  : '' )?>
                 </div>

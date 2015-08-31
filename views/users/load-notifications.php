@@ -11,10 +11,10 @@ use yii\helpers\Html;
     <ul>
         <?php foreach($notifications as $notification) : ?>
         <li>
-            <div class="notifL" style="background-image: url('/images/users_images/<?=$notification['image']?>')"></div>
+            <div class="notifL" style="background-image: url('/images/users_images/<?=Html::encode($notification['image'])?>')"></div>
             <div class="notifC">
-                <p><?=$notification['first_name'].' '.$notification['last_name']?> sent you a connect request.</p>
-                <time><?=$notification['request_created']?></time>
+                <p><?=Html::encode($notification['first_name']).' '.Html::encode($notification['last_name'])?> sent you a connect request.</p>
+                <time><?=Html::encode($notification['request_created'])?></time>
             </div>
             <div class="notifR">
                 <a href="<?= \yii\helpers\Url::to(['users/accetpt', 'id' => $notification['id']]) ?>" class="btn defBtn sBtn"><i class="icon-check-1"></i>Accept</a>
