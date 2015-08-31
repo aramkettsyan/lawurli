@@ -1,3 +1,7 @@
+<?php 
+    use yii\helpers\Html;
+?>
+
 <div class="headerDrDn dropDn notifDrDn">
     <a href="#" class="dropDnBtn">
         <i class="icon-bell-two"></i>
@@ -8,11 +12,11 @@
             <?php foreach ($this->params['notify'] as $notification) : ?>
                 <li>
                     <div class="hdrNotifL">
-                        <!--<img src="/images/users_images/<?=$notification['image']?>" alt="">-->
-                        <span style="background-image: url('/images/users_images/<?=$notification['image']?>')"></span>
+                        <!--<img src="/images/users_images/<?=Html::encode($notification['image'])?>" alt="">-->
+                        <span style="background-image: url('/images/users_images/<?=Html::encode($notification['image'])?>')"></span>
                     </div>
                     <div class="hdrNotifC">
-                       <p>Request from <?=$notification['first_name'].' '.$notification['last_name']?></p>
+                       <p>Request from <?=Html::encode($notification['first_name']).' '.Html::encode($notification['last_name'])?></p>
                     </div>
                     <div class="hdrNotifR">
                         <a href="<?= \yii\helpers\Url::to(['users/accetpt', 'id' => $notification['id']]) ?>"><i class="icon-check-1"></i></a>
