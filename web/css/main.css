@@ -1730,10 +1730,14 @@ footer h4 {
     position: absolute;
     right: 0;
     top: 0;
+    display: none;
 }
 .sideBarR .peopleList ul li button i {
     font-size: 12px;
     margin: 0;
+}
+.sideBarR .peopleList ul li:hover button {
+    display: block;
 }
 .sideBarR .peopleList ul li {
     width: 100%;
