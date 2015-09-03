@@ -37,6 +37,8 @@ class UsersController extends \yii\web\Controller {
                                 'load-general',
                                 'load-colleagues',
                                 'load-notifications',
+                                'get-rss',
+                                'get-not-connected-users',
                                 'error'
                             ],
                             'allow' => true,
@@ -96,6 +98,12 @@ class UsersController extends \yii\web\Controller {
     public function beforeAction($action) {
         $action_id = \Yii::$app->controller->action->id;
 
+        //Not Connected Users
+        if (!\Yii::$app->user->isGuest && !\Yii::$app->request->isAjax) {
+            $notConnectedUsers = $this->actionGetNotConnectedUsers();
+            \Yii::$app->view->params['notConnectedUsers'] = $notConnectedUsers;
+        }
+        //end Not Connected Users
         //404 error
 
         if ($action_id === 'error') {
@@ -1328,6 +1336,52 @@ class UsersController extends \yii\web\Controller {
                 ->limit($pages->limit)
                 ->all();
         return [$pages, $notifications, $countQuery->count()];
+    }
+
+    public function actionGetNotConnectedUsers() {
+        if (\Yii::$app->request->isAjax) {
+            $user_id = (int) \Yii::$app->request->post()['id'];
+            $allIds = \Yii::$app->request->post()['allIds'];
+            if ($user_id != \Yii::$app->request->post()['id']) {
+                echo false;
+                die;
+            }
+            if (isset(\Yii::$app->request->post()['add'])) {
+                $this->actionConnect($user_id);
+            } else {
+                Users::addNotColleaguesUser($user_id);
+            }
+            $limit = 1;
+            $users = Users::getNotConnectedUsers($limit,$allIds);
+            print_r(json_encode($users));
+            die;
+        } else {
+            $limit = 5;
+            $users = Users::getNotConnectedUsers($limit);
+            return $users;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function actionGetRss() {
+        $sites = array(
+            'http://feeds.feedburner.com/abovethelaw?format=xml',
+            'http://blogs.wsj.com/law/feed/',
+            'http://feeds.feedburner.com/abajournal/topstories?format=xml'
+        );
+
+        $array = [];
+
+        foreach ($sites as $site) {
+            $xml = simplexml_load_file('http://blogs.wsj.com/law/feed/');
+            foreach ($xml->channel->item as $item) {
+                $array[] = $item;
+            }
+        }
+        print_r($array);
+        die;
     }
 
 }

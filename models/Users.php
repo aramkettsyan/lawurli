@@ -50,7 +50,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             [['active'], 'integer'],
             [['email'], 'email'],
             [['created', 'modified'], 'safe'],
-            [['email', 'password','location','latlng', 'password_reset_token', 'activation_token', 'image'], 'string', 'max' => 255],
+            [['email', 'password', 'location', 'latlng', 'password_reset_token', 'activation_token', 'image'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'string', 'max' => 18],
             [['auth_key'], 'string', 'max' => 64],
             [['phone'], 'string', 'max' => 128],
@@ -58,7 +58,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             [['first_name', 'last_name'], 'string', 'min' => 2],
             [['email', 'password_reset_token', 'activation_token'], 'unique', 'targetAttribute' => ['email', 'password_reset_token', 'activation_token'], 'message' => 'Email has already been taken.'],
             [['auth_key'], 'unique'],
-            [['email'], 'unique','message'=>'Email has already been taken.'],
+            [['email'], 'unique', 'message' => 'Email has already been taken.'],
             [['confirm_password'], 'validateConfirmPassword'],
             [['phone'], 'validatePhoneNumber']
         ];
@@ -119,7 +119,6 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         }
         return false;
     }
-
 
     /**
      * @inheritdoc
@@ -191,7 +190,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         }
         return true;
     }
-    
+
     /**
      * Validate phone number
      *
@@ -200,10 +199,10 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
      * @return static|null
      */
     public function validatePhoneNumber($attribute, $params) {
-        $phone = $this->phone; 
+        $phone = $this->phone;
         $phone = str_replace(' ', '', $phone);
-        
-        if(!preg_match('/^\+{0,1}[0-9]+$/', $phone)){
+
+        if (!preg_match('/^\+{0,1}[0-9]+$/', $phone)) {
             $this->addError($attribute, 'The phone number you entered is not valid');
             return false;
         }
@@ -319,114 +318,177 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
     public function removeEmailActivationToken() {
         $this->email_confirm_token = null;
     }
-    
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserForms()
-    {
+    public function getUserForms() {
         return $this->hasMany(UserForms::className(), ['user_id' => 'id']);
     }
-    
+
     /**
      * 
      * @return array
      */
-    public function GetContactIds(){
-        $requests =  (new Query())
-                    ->select('user_to_id,user_from_id,request_accepted')
-                    ->distinct()
-                    ->from('contact_requests')
-                    ->where('user_from_id ='.Yii::$app->user->identity->id)
-                    ->orWhere('user_to_id ='.Yii::$app->user->identity->id)
-                    ->all();
-        
+    public function GetContactIds() {
+        $requests = (new Query())
+                ->select('user_to_id,user_from_id,request_accepted')
+                ->distinct()
+                ->from('contact_requests')
+                ->where('user_from_id =' . Yii::$app->user->identity->id)
+                ->orWhere('user_to_id =' . Yii::$app->user->identity->id)
+                ->all();
+
         $requestArr = [];
-        foreach($requests as $request){
-            if($request['user_to_id'] <> Yii::$app->user->identity->id){
+        foreach ($requests as $request) {
+            if ($request['user_to_id'] <> Yii::$app->user->identity->id) {
                 $requestArr[$request['user_to_id']] = $request;
-            }elseif ($request['user_from_id'] <> Yii::$app->user->identity->id) {
-                 $requestArr[$request['user_from_id']] = $request;
+            } elseif ($request['user_from_id'] <> Yii::$app->user->identity->id) {
+                $requestArr[$request['user_from_id']] = $request;
             }
         }
-       return $requestArr;
+        return $requestArr;
     }
-    
+
     /**
      * $requestAccepted ENUM Y/N
      * @param string $requestAccepted
      * @param int $userId
      * @return object
      */
-    public function getColleagues($requestAccepted,$userId = null){
-      $query = (new Query())
+    public function getColleagues($requestAccepted, $userId = null) {
+        $query = (new Query())
                 ->select('id,first_name,last_name,location,image,request_created,request_id')
                 ->distinct()
                 ->from('contact_requests');
-                if($requestAccepted == "N"){
-                    $query->where("user_to_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'");
-                }else{
-                    if($userId){
-                        $query->where("user_from_id =".$userId." AND request_accepted = '$requestAccepted'")
-                              ->orWhere("user_to_id =".$userId." AND request_accepted = '$requestAccepted'");
-                    }else{
-                        $query->where("user_from_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'")
-                              ->orWhere("user_to_id =".Yii::$app->user->identity->id." AND request_accepted = '$requestAccepted'");
-                    }
-                }
-                if($userId){
-                    $query->innerJoin('users','user_from_id = id AND id<>'.$userId.
-                            ' OR user_to_id = id AND id<>'.$userId);
-                }else{
-                    $query->innerJoin('users','user_from_id = id AND id<>'.Yii::$app->user->identity->id.
-                            ' OR user_to_id = id AND id<>'.Yii::$app->user->identity->id);
-                }
-                
-                $query = $query->orderBy('request_modified DESC');
-                return $query;
+        if ($requestAccepted == "N") {
+            $query->where("user_to_id =" . Yii::$app->user->identity->id . " AND request_accepted = '$requestAccepted'");
+        } else {
+            if ($userId) {
+                $query->where("user_from_id =" . $userId . " AND request_accepted = '$requestAccepted'")
+                        ->orWhere("user_to_id =" . $userId . " AND request_accepted = '$requestAccepted'");
+            } else {
+                $query->where("user_from_id =" . Yii::$app->user->identity->id . " AND request_accepted = '$requestAccepted'")
+                        ->orWhere("user_to_id =" . Yii::$app->user->identity->id . " AND request_accepted = '$requestAccepted'");
+            }
+        }
+        if ($userId) {
+            $query->innerJoin('users', 'user_from_id = id AND id<>' . $userId .
+                    ' OR user_to_id = id AND id<>' . $userId);
+        } else {
+            $query->innerJoin('users', 'user_from_id = id AND id<>' . Yii::$app->user->identity->id .
+                    ' OR user_to_id = id AND id<>' . Yii::$app->user->identity->id);
+        }
+
+        $query = $query->orderBy('request_modified DESC');
+        return $query;
     }
+
     /**
      * 
      * @return int
      */
-    public function getNotificationCount(){
-         return (new Query())
-                 ->select('request_id')
-                 ->from('contact_requests')
-                 ->where("user_to_id =".Yii::$app->user->identity->id." AND request_seen = 'N'")
-                 ->count();
+    public function getNotificationCount() {
+        return (new Query())
+                        ->select('request_id')
+                        ->from('contact_requests')
+                        ->where("user_to_id =" . Yii::$app->user->identity->id . " AND request_seen = 'N'")
+                        ->count();
     }
-    
+
     /**
      * 
      * @param int $id
      * @return array
      */
-    public function checkRelationship($id){
-         return (new Query())
-                 ->select('request_id,request_accepted,request_seen,user_from_id,user_to_id')
-                 ->from('contact_requests')
-                 ->where("user_from_id =".$id." AND user_to_id = ".Yii::$app->user->identity->id)
-                 ->orWhere("user_to_id =".$id." AND user_from_id = ".Yii::$app->user->identity->id)
-                 ->one();
+    public function checkRelationship($id) {
+        return (new Query())
+                        ->select('request_id,request_accepted,request_seen,user_from_id,user_to_id')
+                        ->from('contact_requests')
+                        ->where("user_from_id =" . $id . " AND user_to_id = " . Yii::$app->user->identity->id)
+                        ->orWhere("user_to_id =" . $id . " AND user_from_id = " . Yii::$app->user->identity->id)
+                        ->one();
     }
-    
+
     /**
      * void
      */
-    public function updateSeenRows(){
-         $seenIds = (new Query())
-                    ->select('GROUP_CONCAT(request_id) as requestIds')
-                    ->from('contact_requests')
-                    ->where("user_to_id =".Yii::$app->user->identity->id)
-                    ->orderBy('request_created DESC')
-                    ->limit(6)
-                    ->one();
-         if($seenIds['requestIds']){
-             Request::updateAll(['request_seen' => "Y"], 'request_id IN(' .$seenIds['requestIds']. ')');
-         }
+    public function updateSeenRows() {
+        $seenIds = (new Query())
+                ->select('GROUP_CONCAT(request_id) as requestIds')
+                ->from('contact_requests')
+                ->where("user_to_id =" . Yii::$app->user->identity->id)
+                ->orderBy('request_created DESC')
+                ->limit(6)
+                ->one();
+        if ($seenIds['requestIds']) {
+            Request::updateAll(['request_seen' => "Y"], 'request_id IN(' . $seenIds['requestIds'] . ')');
+        }
     }
-    
+
+    /**
+     * @return array
+     */
+    public function getNotConnectedUsers($limit = 5, $existsIds = false) {
+        $colleagues = self::getColleagues('Y');
+        $colleagues = $colleagues->all();
+        $ids = '';
+        foreach ($colleagues as $colleague) {
+            if (empty($ids)) {
+                $comma = '';
+            } else {
+                $comma = ',';
+            }
+            $ids.=$comma . $colleague['id'];
+        }
+        if (!$existsIds) {
+            $existsIds = '';
+        } else {
+            $existsIds = 'AND users.id NOT IN(' . $existsIds . ') ';
+        }
+
+        $users = (new Query())
+                ->select('GROUP_CONCAT(DISTINCT not_colleagues_users.not_colleague_id) as not_colleagues,'
+                        . 'GROUP_CONCAT(DISTINCT CONCAT(request_sent.user_from_id)) as request_sent,'
+                        . 'users.id,'
+                        . 'users.first_name,'
+                        . 'users.last_name,'
+                        . 'users.image,'
+                        . 'users.location'
+                )
+                ->from('users')
+                ->leftJoin('contact_requests', 'contact_requests.user_from_id IN(' . $ids . ') OR contact_requests.user_to_id IN(' . $ids . ') AND contact_requests.request_accepted = "Y"')
+                ->leftJoin('not_colleagues_users', 'not_colleagues_users.user_id = ' . \Yii::$app->user->id . ' AND not_colleagues_users.not_colleague_id = users.id')
+                ->leftJoin('contact_requests as request_sent', '(request_sent.user_from_id = ' . \Yii::$app->user->id . ' AND request_sent.user_to_id = users.id) OR (request_sent.user_to_id = ' . \Yii::$app->user->id.' AND request_sent.user_from_id = users.id)')
+                ->where('(users.id = contact_requests.user_from_id OR users.id = contact_requests.user_to_id) AND users.id NOT IN(' . $ids . ') AND users.id <> ' . \Yii::$app->user->id . $existsIds)
+                ->limit($limit)
+                ->orderBy('RAND()')
+                ->groupBy('users.id')
+                ->having('not_colleagues IS NULL AND request_sent IS NULL')
+                ->all();
+        return $users;
+    }
+
+    /**
+     * @return array
+     */
+    public function addNotColleaguesUser($id) {
+        if (!$id) {
+            return false;
+        }
+        $users = (new Query())->createCommand()
+                ->insert('not_colleagues_users', [
+                    'user_id' => \Yii::$app->user->id,
+                    'not_colleague_id' => $id,
+                    'created' => new Expression('NOW()'),
+                    'modified' => new Expression('NOW()')
+                ])
+                ->execute();
+        if ($users) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

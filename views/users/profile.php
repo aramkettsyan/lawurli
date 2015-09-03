@@ -1,7 +1,9 @@
 <?php
+
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-$this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name);
+
+$this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_name);
 ?>
 
 <?php Yii::$app->view->params['user'] = $user; ?>
@@ -42,18 +44,18 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
                     <p><?= Html::encode($user->email) ?></p>
                 </li>
             </ul>
-            <?php if ((Yii::$app->controller->actionParams['id'] != Yii::$app->user->id && Yii::$app->controller->actionParams['id'] )) { ?>
+            <?php if ((Yii::$app->controller->actionParams['id'] != Yii::$app->user->id && Yii::$app->controller->actionParams['id'])) { ?>
                 <div class="alignCenter">
-                    <?php if($relation) : ?>
-                        <?php if($relation['request_accepted'] == "Y") :  ?>
-                            <a href="/users/decline/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Disconnect</a>
-                        <?php elseif($relation['request_accepted'] == "N" && $relation['user_from_id'] == Yii::$app->user->identity->id) :  ?>
-                            <a href="/users/decline/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Request is sent</a>
-                        <?php elseif($relation['request_accepted'] == "N" && $relation['user_to_id'] == Yii::$app->user->identity->id) :  ?>
-                            <a href="/users/accetpt/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Accept</a>
+                    <?php if ($relation) : ?>
+                        <?php if ($relation['request_accepted'] == "Y") : ?>
+                            <a href="/users/decline/<?= Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Disconnect</a>
+                        <?php elseif ($relation['request_accepted'] == "N" && $relation['user_from_id'] == Yii::$app->user->identity->id) : ?>
+                            <a href="/users/decline/<?= Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Request is sent</a>
+                        <?php elseif ($relation['request_accepted'] == "N" && $relation['user_to_id'] == Yii::$app->user->identity->id) : ?>
+                            <a href="/users/accetpt/<?= Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Accept</a>
                         <?php endif; ?>
                     <?php else: ?>
-                        <a href="/users/connect/<?=Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Connect</a>
+                        <a href="/users/connect/<?= Yii::$app->controller->actionParams['id'] ?>" class="btn defBtn">Connect</a>
                     <?php endif; ?>
                 </div>
             <?php } ?>
@@ -123,7 +125,7 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
 
                                                     <?php if ($form['formType'] === 'input') { ?>
                                                         <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
                                                         <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'textarea') { ?>
@@ -249,6 +251,9 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
 
 
 <script type="text/javascript">
+
+    var imagesPath = '<?= \Yii::getAlias('@web') . '/images/users_images/' ?>';
+
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -258,7 +263,62 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
     var colleaguesTab = getParameterByName('colleaguesTab');
     var notificationsTab = getParameterByName('notificationsTab');
 
+    function notConnectedUsers() {
+        $('.skip,.connect').off();
+        $('.connect').on('click', function () {
+            $.ajax({
+                method: "POST",
+                url: "/users/get-not-connected-users",
+                data: {add: true, allIds: '<?= $ids ?>', id: $(this).attr('id')},
+                dataType: "json"
+            }).done(function (msg) {
+                console.log(msg)
+                for (var i = 0; i < Object.keys(msg).length; i++) {
+                    if (msg[0] !== undefined) {
+                        var user = $('.notConnectedUser:first').clone();
+                        user.find('p').html(msg[0].location);
+                        user.find('h6').html(msg[0].first_name + ' ' + msg[0].last_name);
+                        user.find('img').attr('src', imagesPath + msg[0].image);
+                        user.find('.skip').attr('id', msg[0].id);
+                        user.find('.connect').attr('id', msg[0].id);
+                        user.appendTo('#notConnectedUsers');
+                        notConnectedUsers();
+                    }
+                }
+
+            });
+            $(this).parent().remove();
+        });
+        $('.skip').on('click', function () {
+            $.ajax({
+                method: "POST",
+                url: "/users/get-not-connected-users",
+                data: {allIds: '<?= $ids ?>', id: $(this).attr('id')},
+                dataType: "json"
+            }).done(function (msg) {
+                for (var i = 0; i < Object.keys(msg).length; i++) {
+                    if (msg[0] !== undefined) {
+                        var user = $('.notConnectedUser:first').clone();
+                        user.find('p').html(msg[0].location);
+                        user.find('h6').html(msg[0].first_name + ' ' + msg[0].last_name);
+                        user.find('img').attr('src', imagesPath + msg[0].image);
+                        user.find('.skip').attr('id', msg[0].id);
+                        user.find('.connect').attr('id', msg[0].id);
+                        user.appendTo('#notConnectedUsers');
+                        notConnectedUsers();
+                    }
+                }
+
+            });
+            $(this).parent().remove();
+        });
+
+    }
+
     $(document).ready(function () {
+
+
+        notConnectedUsers();
 
         $('.hideSection').parent().hide();
         $('.hideSubSection').parent().hide();
@@ -282,16 +342,16 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
             $(this).find('.inputError').hide();
         });
 
-//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false' ?>;
-//<?php // Yii::$app->getSession()->destroySession('showRegistration'); ?>
+//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                  ?>;
+//<?php // Yii::$app->getSession()->destroySession('showRegistration');                  ?>
 //        if (showRegistration) {
 //            $.magnificPopup.open({
 //                items: {src: '#signup-popup'}, type: 'inline'
 //            }, 0);
 //        }
 //
-//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false' ?>;
-//<?php // Yii::$app->getSession()->destroySession('showLogin'); ?>
+//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                  ?>;
+//<?php // Yii::$app->getSession()->destroySession('showLogin');                  ?>
 //        if (showLogin) {
 //            $.magnificPopup.open({
 //                items: {src: '#login-popup'}, type: 'inline'
@@ -299,15 +359,15 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
 //        }
 
 
-//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false' ?>;
-//<?php //Yii::$app->getSession()->destroySession('newPassword'); ?>
+//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                  ?>;
+//<?php //Yii::$app->getSession()->destroySession('newPassword');                  ?>
 //        if (newPassword) {
 //            $.magnificPopup.open({
 //                items: {src: '#forgpass-popup-2'}, type: 'inline'
 //            }, 0);
 //        }
-//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false' ?>;
-//<?php //Yii::$app->getSession()->destroySession('resetPassword'); ?>
+//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                  ?>;
+//<?php //Yii::$app->getSession()->destroySession('resetPassword');                  ?>
 //        if (resetPassword) {
 //            $.magnificPopup.open({
 //                items: {src: '#forgpass-popup'}, type: 'inline'
@@ -332,8 +392,8 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
             $("#profileInfo").hide();
             $(this).parent().addClass("active");
             $(this).parent().siblings().removeClass("active");
-            var userId = "<?=Yii::$app->controller->actionParams['id'] ?>";
-            $("#tabContent").load("/users/load-colleagues" + "?userId="+ userId);
+            var userId = "<?= Yii::$app->controller->actionParams['id'] ?>";
+            $("#tabContent").load("/users/load-colleagues" + "?userId=" + userId);
         });
 
         $(document).on("click", "#profiletab", function (event) {
@@ -351,8 +411,8 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
             $("#profileInfo").hide();
             $(this).parent().addClass("active");
             $(this).parent().siblings().removeClass("active");
-            var userId = "<?=Yii::$app->controller->actionParams['id'] ?>";
-            $("#tabContent").load("/users/load-colleagues?page=" + pageInt + "&userId="+ userId);
+            var userId = "<?= Yii::$app->controller->actionParams['id'] ?>";
+            $("#tabContent").load("/users/load-colleagues?page=" + pageInt + "&userId=" + userId);
 
         });
 
