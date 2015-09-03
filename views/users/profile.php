@@ -7,7 +7,7 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
 <?php Yii::$app->view->params['user'] = $user; ?>
 <?php Yii::$app->view->params['sections'] = $sections; ?>
 <?php Yii::$app->view->params['user_forms'] = $user_forms; ?>
-<div class="container mainContainer">
+<div class="container mainContainer withSideBar">
     <div class="profileL">
         <div class="userImage">
             <?php $filename = \Yii::getAlias('@webroot') . '/images/users_images/' . Html::encode($user->image); ?>
@@ -75,6 +75,7 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
                 <li><a href="#" id="colleag"><i class="icon-contacts"></i>Colleagues</a></li>
                 <?php if((Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'] )) : ?>
                 <li><a href="#" id="profiletabNot"><i class="icon-bell-two"></i>Notifications</a></li>
+                <li><a href="#" id=""><i class="icon-bell-two"></i>News</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -147,7 +148,7 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
                                                                 <?php } else { ?>
                                                                     <?php if ($option === $this->params['user_forms'][$subSectionId][$u][$form['formId']]) { ?>
                                                                         <?php $values = $option; ?>
-                                                                    <?php } ?>   
+                                                                    <?php } ?>
                                                                 <?php } ?>
                                                             <?php } ?>
 
@@ -163,7 +164,7 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
                                                             <span><?= $value ?></span>
                                                         </div>
                                                     <?php } ?>
-                                                    <p class="message"></p> 
+                                                    <p class="message"></p>
                                                     <?php $value = ''; ?>
                                                 <?php } ?>
                                             </li>
@@ -189,6 +190,58 @@ $this->title = Html::encode($user->first_name).' '.Html::encode($user->last_name
                     </div>
                 <?php } ?>
             </div>
+        </div>
+    </div>
+    <div class="sideBarR">
+        <h6 class="boxTitle">People you may know</h6>
+        <div class="peopleList">
+            <ul>
+                <li>
+                    <div class="peopleListL">
+                        <img src="/images/user-1.png" alt="">
+                        <span style="background-image: url('/images/users_images/default.jpg')"></span>
+                    </div>
+                    <div class="peopleListR">
+                        <a href="/users/profile/256" class="plName">Ann Morrison</a>
+                        <div class="plDets">
+                            <p class="plAddress"><i class="icon-location"></i>15 Jackson Park</p>
+                        </div>
+                        <div class="plActions">
+                            <a href="/users/connect/256" class="textBtn">Connect</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="peopleListL">
+                        <img src="/images/user-1.png" alt="">
+                        <span style="background-image: url('/images/users_images/default.jpg')"></span>
+                    </div>
+                    <div class="peopleListR">
+                        <a href="/users/profile/256" class="plName">Ann Morrison</a>
+                        <div class="plDets">
+                            <p class="plAddress"><i class="icon-location"></i>15 Jackson Park</p>
+                        </div>
+                        <div class="plActions">
+                            <a href="/users/connect/256" class="textBtn">Connect</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="peopleListL">
+                        <img src="/images/user-1.png" alt="">
+                        <span style="background-image: url('/images/users_images/default.jpg')"></span>
+                    </div>
+                    <div class="peopleListR">
+                        <a href="/users/profile/256" class="plName">Ann Morrison</a>
+                        <div class="plDets">
+                            <p class="plAddress"><i class="icon-location"></i>15 Jackson Park</p>
+                        </div>
+                        <div class="plActions">
+                            <a href="/users/connect/256" class="textBtn">Connect</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

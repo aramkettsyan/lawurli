@@ -1068,6 +1068,7 @@ header {
     font-size: 18px;
     color: #DA8213;
     margin-bottom: 10px;
+    word-break: break-word;
 }
 .plName:hover {
     text-decoration: underline;
@@ -1683,9 +1684,77 @@ footer h4 {
     padding: 0 20px;
 }
 
-
-
-
+/* sidebar styles */
+.withSideBar .profileR {
+    width: 52%;
+    margin-right: 3%;
+}
+.sideBarR {
+    width: 20%;
+    float: left;
+    /*padding: 7px 10px;*/
+    background-color: #fff;
+    border: solid 1px #E0E0E0;
+}
+.sideBarR .boxTitle {
+    /*border-bottom: solid 1px #212121;*/
+    color: #ECECEC;
+    padding: 8px;
+    margin-bottom: 0;
+    background-color: #303030;
+}
+.sideBarR .peopleList {
+    padding: 8px;
+}
+.sideBarR .peopleList .peopleListL {
+    width: 55px;
+    padding: 2px;
+    border: none;
+    /*background-color: #212121;
+    border: none;*/
+}
+.sideBarR .peopleListL>span {
+    left: 2px;
+    top: 2px;
+    bottom: 2px;
+    right: 2px;
+}
+.sideBarR .peopleList .peopleListR {
+    padding-left: 62px;
+}
+.sideBarR .peopleList .plName {
+    font-size: 15px;
+    margin-bottom: 0;
+}
+.sideBarR .peopleList ul li {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: solid 1px #E0E0E0;
+}
+.sideBarR .peopleList ul li:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.sideBarR .peopleList .plActions {
+    margin-top: 0;
+    padding-top: 0;
+}
+.sideBarR .plDets p {
+    font-size: 10px;
+    /*color: #E2E2E2;*/
+    margin-bottom: 0;
+}
+.sideBarR .plAddress i {
+    font-size: 10px;
+}
+.sideBarR .plActions .textBtn {
+    font-size: 12px;
+    display: inline-block;
+    /*color: #E2E2E2;*/
+}
 
 
 
