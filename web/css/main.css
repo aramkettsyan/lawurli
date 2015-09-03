@@ -1726,12 +1726,22 @@ footer h4 {
     font-size: 15px;
     margin-bottom: 0;
 }
+.sideBarR .peopleList ul li button {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.sideBarR .peopleList ul li button i {
+    font-size: 12px;
+    margin: 0;
+}
 .sideBarR .peopleList ul li {
     width: 100%;
     margin-right: 0;
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: solid 1px #E0E0E0;
+    position: relative;
 }
 .sideBarR .peopleList ul li:last-of-type {
     margin-bottom: 0;
