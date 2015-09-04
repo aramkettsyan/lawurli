@@ -27,7 +27,7 @@ dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
+figure, figcaption, footer, header,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
     margin: 0;
@@ -38,7 +38,7 @@ time, mark, audio, video {
     vertical-align: baseline;
 }
 article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
+footer, header, menu, nav, section {
     display: block;
 }
 ol, ul {
@@ -1792,47 +1792,8 @@ footer h4 {
     font-weight: 600;
     margin: 90px 0;
 }
-.imgTxt {
-    margin-bottom: 40px;
-}
-*>.imgTxt:nth-of-type(even)>.imgTxtT {
-    float: left;
-    margin-right: 5%;
-}
-*>.imgTxt:nth-of-type(even)>.imgTxtI {
-    float: right;
-}
-*>.imgTxt:nth-of-type(odd)>.imgTxtT {
-    float: right;
-    margin-left: 5%;
-}
-*>.imgTxt:nth-of-type(odd)>.imgTxtI {
-    float: left;
-}
-.imgTxt:after {
-    content: '';
-    clear: both;
-    display: block;
-}
-.imgTxtT {
-    float: left;
-    width: 55%;
-}
-.imgTxtT h4 {
-    margin-bottom: 15px;
-}
-.imgTxtT p {
-    /*line-height: 1.5em;*/
-}
-.imgTxtI {
-    float: left;
-    width: 40%;
-}
-.imgTxtI img {
-    width: 100%
-}
 .pageTitle {
-    font-size:
+    /*font-size:*/
 }
 .contactWrapp {
     margin-top: 50px;
@@ -1853,4 +1814,28 @@ footer h4 {
     font-size: 40px;
     font-weight: 600;
 }
+.aboutCont h4 {
+    margin-bottom: 15px;
+}
+.contactIntro {
+    margin-bottom: 15px;
+}
 
+/* text from editor */
+.textFromEditor b,
+.textFromEditor strong {
+    font-width: 700;
+}
+.textFromEditor i,
+.textFromEditor em {
+    font-style: italic;
+}
+.textFromEditor ul {
+    list-style-type: circle;
+    padding-left: 30px;
+}
+.textFromEditor ol {
+    list-style-type: decimal;
+    padding-left: 30px;
+}
+/* end text from editor */

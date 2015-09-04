@@ -2,29 +2,16 @@
     <h3>About Us</h3>
 </div>
 <div class="container mainContainer">
-    <div class="aboutCont">
-        <div class="imgTxt">
-            <div class="imgTxtT">
-                <h4>Veritatis facere eum quo.</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quas, ratione, nisi, maiores sapiente laudantium et vitae quae iste tempora dolores voluptas quo, quod distinctio fugit fugiat deleniti. Dolores, et!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate nostrum necessitatibus blanditiis, culpa, vitae eveniet quos odio, consectetur atque dolor est a fugit perferendis vero voluptate aliquid alias. Alias, id! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum illum a minus, expedita dolorum. Accusantium magni velit aspernatur dolorem quia voluptas doloremque quas consequatur a necessitatibus eos, nisi similique! Cum.</p>
-            </div>
-            <div class="imgTxtI">
-                <img src="images/about-img-1.jpg" alt="">
-            </div>
-        </div>
-        <div class="imgTxt">
-            <div class="imgTxtT">
-                <h4>Suscipit facilis maiores iure voluptates.</h4>
-                <p>Culpa, vitae eveniet quos odio, consectetur atque dolor est a fugit perferendis vero voluptate aliquid alias. Alias, id! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum illum a minus, expedita dolorum. Accusantium magni velit aspernatur dolorem quia voluptas doloremque quas consequatur a necessitatibus eos, nisi similique! Cum. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum enim placeat nemo sapiente id molestias quo corrupti non ex velit, ipsam odit dolorum eligendi rem facere deleniti? Doloribus, mollitia, ullam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus pariatur fugit, doloribus ab officiis illum ut dolores, magnam quo totam rerum sapiente esse voluptate. Porro, unde pariatur. Explicabo, facilis tempore.</p>
-            </div>
-            <div class="imgTxtI">
-                <img src="images/about-img-2.jpg" alt="">
-            </div>
-        </div>
+    <div class="aboutCont textFromEditor">
+        <h4>Veritatis facere eum quo.</h4>
+        <p>Alias, id! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum illum a minus, expedita dolorum. Accusantium magni velit aspernatur dolorem quia voluptas doloremque quas consequatur a necessitatibus eos, nisi similique! Cum. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quas, ratione, nisi, maiores sapiente laudantium et vitae quae iste tempora dolores voluptas quo, quod distinctio fugit fugiat deleniti. Dolores, et!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate nostrum necessitatibus blanditiis, culpa, vitae eveniet quos odio, consectetur atque dolor est a fugit perferendis vero voluptate aliquid alias. Alias, id! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum illum a minus, expedita dolorum. Accusantium magni velit aspernatur dolorem quia voluptas doloremque quas consequatur a necessitatibus eos, nisi similique! Cum. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quas, ratione, nisi, maiores sapiente laudantium et vitae quae iste tempora dolores voluptas quo, quod distinctio fugit fugiat deleniti. Dolores, et!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate nostrum necessitatibus blanditiis, culpa, vitae eveniet quos odio, consectetur atque dolor est a fugit perferendis vero voluptate aliquid alias. Alias, id! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum illum a minus, expedita dolorum. Accusantium magni velit aspernatur dolorem quia voluptas doloremque quas consequatur a necessitatibus eos, nisi similique! Cum. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus quas, ratione, nisi, maiores sapiente laudantium et vitae quae iste tempora dolores voluptas quo, quod distinctio fugit fugiat deleniti. Dolores, et!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate nostrum necessitatibus blanditiis, culpa, vitae eveniet quos odio, consectetur atque dolor est.</p>
     </div>
     <div class="contactWrapp">
         <div class="pageTitle">
             <h3>Contact us</h3>
+        </div>
+        <div class="contactIntro textFromEditor">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus architecto cupiditate facilis iusto, optio quibusdam voluptas. Alias aspernatur dolore dolores molestiae qui reiciendis, sed tempora tempore tenetur voluptate. Cum, quibusdam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est harum labore necessitatibus, odio qui rerum saepe? Commodi, debitis, eligendi esse exercitationem harum hic ipsum molestias numquam possimus provident quis ratione?</p>
         </div>
         <div class="formRow">
             <label>Your Name</label>
