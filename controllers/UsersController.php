@@ -52,7 +52,8 @@ class UsersController extends \yii\web\Controller {
                                 'reset-password',
                                 'reset-password-notifications',
                                 'reset',
-                                'error'
+                                'error',
+                                'contact-us'
                             ],
                             'allow' => true,
                             'roles' => ['?']
