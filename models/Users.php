@@ -432,40 +432,49 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
     public function getNotConnectedUsers($limit = 5, $existsIds = false) {
         $colleagues = self::getColleagues('Y');
         $colleagues = $colleagues->all();
-        $ids = '';
-        foreach ($colleagues as $colleague) {
-            if (empty($ids)) {
-                $comma = '';
-            } else {
-                $comma = ',';
+        if ($colleagues) {
+            $ids = '';
+            foreach ($colleagues as $colleague) {
+                if (empty($ids)) {
+                    $comma = '';
+                } else {
+                    $comma = ',';
+                }
+                $ids.=$comma . $colleague['id'];
             }
-            $ids.=$comma . $colleague['id'];
-        }
-        if (!$existsIds) {
-            $existsIds = '';
-        } else {
-            $existsIds = ' AND users.id NOT IN(' . $existsIds . ') ';
-        }
+            if (!$existsIds) {
+                $existsIds = '';
+            } else {
+                $existsIds = ' AND users.id NOT IN(' . $existsIds . ') ';
+            }
 
-        $users = (new Query())
-                ->select('GROUP_CONCAT(DISTINCT not_colleagues_users.not_colleague_id) as not_colleagues,'
-                        . 'GROUP_CONCAT(DISTINCT CONCAT(request_sent.user_from_id)) as request_sent,'
-                        . 'users.id,'
-                        . 'users.first_name,'
-                        . 'users.last_name,'
-                        . 'users.image,'
-                        . 'users.location'
-                )
-                ->from('users')
-                ->leftJoin('contact_requests', 'contact_requests.user_from_id IN(' . $ids . ') OR contact_requests.user_to_id IN(' . $ids . ') AND contact_requests.request_accepted = "Y"')
-                ->leftJoin('not_colleagues_users', 'not_colleagues_users.user_id = ' . \Yii::$app->user->id . ' AND not_colleagues_users.not_colleague_id = users.id')
-                ->leftJoin('contact_requests as request_sent', '(request_sent.user_from_id = ' . \Yii::$app->user->id . ' AND request_sent.user_to_id = users.id) OR (request_sent.user_to_id = ' . \Yii::$app->user->id.' AND request_sent.user_from_id = users.id)')
-                ->where('(users.id = contact_requests.user_from_id OR users.id = contact_requests.user_to_id) AND users.id NOT IN(' . $ids . ') AND users.id <> ' . \Yii::$app->user->id . $existsIds)
-                ->limit($limit)
-                ->orderBy('RAND()')
-                ->groupBy('users.id')
-                ->having('not_colleagues IS NULL AND request_sent IS NULL')
-                ->all();
+            $users = (new Query())
+                    ->select('GROUP_CONCAT(DISTINCT not_colleagues_users.not_colleague_id) as not_colleagues,'
+                            . 'GROUP_CONCAT(DISTINCT CONCAT(request_sent.user_from_id)) as request_sent,'
+                            . 'users.id,'
+                            . 'users.first_name,'
+                            . 'users.last_name,'
+                            . 'users.image,'
+                            . 'users.location'
+                    )
+                    ->from('users')
+                    ->leftJoin('contact_requests', 'contact_requests.user_from_id IN(' . $ids . ') OR contact_requests.user_to_id IN(' . $ids . ') AND contact_requests.request_accepted = "Y"')
+                    ->leftJoin('not_colleagues_users', 'not_colleagues_users.user_id = ' . \Yii::$app->user->id . ' AND not_colleagues_users.not_colleague_id = users.id')
+                    ->leftJoin('contact_requests as request_sent', '(request_sent.user_from_id = ' . \Yii::$app->user->id . ' AND request_sent.user_to_id = users.id) OR (request_sent.user_to_id = ' . \Yii::$app->user->id . ' AND request_sent.user_from_id = users.id)')
+                    ->where('(users.id = contact_requests.user_from_id OR users.id = contact_requests.user_to_id) AND users.id NOT IN(' . $ids . ') AND users.id <> ' . \Yii::$app->user->id . $existsIds)
+                    ->limit($limit)
+                    ->orderBy('RAND()')
+                    ->groupBy('users.id')
+                    ->having('not_colleagues IS NULL AND request_sent IS NULL')
+                    ->all();
+        } else {
+            $users = (new Query())
+                    ->select('*')
+                    ->from('users')
+                    ->limit($limit)
+                    ->orderBy('RAND()')
+                    ->all();
+        }
         return $users;
     }
 
