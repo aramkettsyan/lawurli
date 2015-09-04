@@ -25,9 +25,13 @@
                         <?php } ?>
                     </div>
                     <div class="peopleListR">
-                        <a href="/users/profile/256" class="plName"><?= Html::encode($us['first_name']) . ' ' . Html::encode($us['last_name']) ?></a>
+                        <a href="/users/profile/<?= $us['id'] ?>" class="plName"><?= Html::encode($us['first_name']) . ' ' . Html::encode($us['last_name']) ?></a>
                         <div class="plDets">
-                            <p class="plAddress"><i class="icon-location"></i><span><?= Html::encode($us['location']) ?></span></p>
+                            <p class="plAddress">
+                            <?php if ($us['location']) { ?>
+                            <i class="icon-location"></i><span><?= Html::encode($us['location']) ?></span>
+                            <?php } ?>
+                            </p>
                         </div>
                         <div class="plActions">
                             <a class="textBtn connect" id='<?= $us['id'] ?>'>Connect</a>

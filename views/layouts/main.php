@@ -410,7 +410,11 @@ UserAsset::register($this);
                             for (var i = 0; i < Object.keys(msg).length; i++) {
                                 if (msg[0] !== undefined) {
                                     var user = $('.notConnectedUser:first').clone();
-                                    user.find('.plAddress span').html(msg[0].location);
+                                    if (msg[0].location) {
+                                        user.find('.plAddress').html('<i class="icon-location">'+msg[0].location);
+                                    } else {
+                                        user.find('.plAddress').html('');
+                                    }
                                     user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
                                     user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
                                     user.find('.skip').attr('id', msg[0].id);
@@ -435,7 +439,11 @@ UserAsset::register($this);
                             for (var i = 0; i < Object.keys(msg).length; i++) {
                                 if (msg[0] !== undefined) {
                                     var user = $('.notConnectedUser:first').clone();
-                                    user.find('.plAddress span').html(msg[0].location);
+                                    if (msg[0].location) {
+                                        user.find('.plAddress').html('<i class="icon-location">'+msg[0].location);
+                                    } else {
+                                        user.find('.plAddress').html('');
+                                    }
                                     user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
                                     user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
                                     user.find('.skip').attr('id', msg[0].id);

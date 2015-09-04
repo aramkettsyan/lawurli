@@ -13,7 +13,7 @@ use yii\helpers\Html;
         <li>
             <div class="notifL" style="background-image: url('/images/users_images/<?=Html::encode($notification['image'])?>')"></div>
             <div class="notifC">
-                <p><?=Html::encode($notification['first_name']).' '.Html::encode($notification['last_name'])?> sent you a connect request.</p>
+                <p><a href="/users/profile/<?= $notification['id'] ?>"><?=Html::encode($notification['first_name']).' '.Html::encode($notification['last_name'])?></a> sent you a connect request.</p>
                 <time><?=Html::encode($notification['request_created'])?></time>
             </div>
             <div class="notifR">
