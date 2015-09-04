@@ -286,7 +286,7 @@ UserAsset::register($this);
                     <?php
                     $resetPassForm = ActiveForm::begin([
                                 'id' => 'password-reset-form',
-                                'action' => \yii\helpers\Url::to(['users/'.Yii::$app->controller->action->id, 'action' => 'reset_password', 'id' => $this->params['id']]),
+                                'action' => \yii\helpers\Url::to(['users/' . Yii::$app->controller->action->id, 'action' => 'reset_password', 'id' => $this->params['id']]),
                                 'options' => ['class' => '']
                     ]);
                     ?>
@@ -383,9 +383,81 @@ UserAsset::register($this);
                         <li><a href="#" data-hover="Something else">Something else</a></li>
                     </ul>
                 </div>
-                <p class="poweredBy">© 2015 <?= (date('Y',time()) == '2015' ? '' : '- '.date('Y',time())) ?> Lawurli | Created by <a href="http://st-dev.com" target="_blank">STDev</a></p>
+                <p class="poweredBy">© 2015 <?= (date('Y', time()) == '2015' ? '' : '- ' . date('Y', time())) ?> Lawurli | Created by <a href="http://st-dev.com" target="_blank">STDev</a></p>
             </div>
         </footer>
+
+        <?php if (Yii::$app->controller->action->id == 'profile') { ?>
+            <script>
+                function notConnectedUsers() {
+                    var ids = '';
+                    $('.connect').each(function () {
+                        if (ids === '') {
+                            ids += $(this).attr('id');
+                        } else {
+                            ids += ',' + $(this).attr('id');
+                        }
+                    });
+                    $('.skip,.connect').off();
+                    $('.connect').on('click', function () {
+                        $.ajax({
+                            method: "POST",
+                            url: "/users/get-not-connected-users",
+                            data: {add: true, allIds: ids, id: $(this).attr('id')},
+                            dataType: "json"
+                        }).done(function (msg) {
+                            console.log(msg)
+                            for (var i = 0; i < Object.keys(msg).length; i++) {
+                                if (msg[0] !== undefined) {
+                                    var user = $('.notConnectedUser:first').clone();
+                                    user.find('.plAddress span').html(msg[0].location);
+                                    user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
+                                    user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
+                                    user.find('.skip').attr('id', msg[0].id);
+                                    user.find('.connect').attr('id', msg[0].id);
+                                    user.appendTo('#notConnectedUsers');
+                                    notConnectedUsers();
+                                }
+                            }
+
+                        }).fail(function (msg) {
+                            console.log(msg.responseText);
+                        });
+                        $(this).parent().parent().parent().remove();
+                    });
+                    $('.skip').on('click', function () {
+                        $.ajax({
+                            method: "POST",
+                            url: "/users/get-not-connected-users",
+                            data: {allIds: ids, id: $(this).attr('id')},
+                            dataType: "json"
+                        }).done(function (msg) {
+                            for (var i = 0; i < Object.keys(msg).length; i++) {
+                                if (msg[0] !== undefined) {
+                                    var user = $('.notConnectedUser:first').clone();
+                                    user.find('.plAddress span').html(msg[0].location);
+                                    user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
+                                    user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
+                                    user.find('.skip').attr('id', msg[0].id);
+                                    user.find('.connect').attr('id', msg[0].id);
+                                    user.appendTo('#notConnectedUsers');
+                                    notConnectedUsers();
+                                }
+                            }
+
+                        }).fail(function (msg) {
+                            console.log(msg.responseText);
+                        });
+                        $(this).parent().remove();
+                    });
+
+                }
+
+                $(document).ready(function () {
+                    notConnectedUsers();
+                });
+            </script>
+        <?php } ?>
         <?php $this->endBody() ?>
     </body>
 </html>

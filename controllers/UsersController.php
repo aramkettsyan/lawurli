@@ -99,7 +99,7 @@ class UsersController extends \yii\web\Controller {
         $action_id = \Yii::$app->controller->action->id;
 
         //Not Connected Users
-        if (!\Yii::$app->user->isGuest && !\Yii::$app->request->isAjax) {
+        if ($action_id === 'profile' && !\Yii::$app->user->isGuest && !\Yii::$app->request->isAjax) {
             $notConnectedUsers = $this->actionGetNotConnectedUsers();
             \Yii::$app->view->params['notConnectedUsers'] = $notConnectedUsers;
         }

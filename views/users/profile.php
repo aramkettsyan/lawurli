@@ -194,60 +194,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             </div>
         </div>
     </div>
-    <!--    <div id='notConnectedUsers' style="margin-top:300px">
-    <?php $ids = '' ?>
-    <?php foreach ($this->params['notConnectedUsers'] as $us) { ?>
-        <?php if (empty($ids)) { ?>
-            <?php $ids.=$us['id'] ?>
-        <?php } else { ?>
-            <?php $ids.=',' . $us['id'] ?>
-        <?php } ?>
-                            <div class='notConnectedUser'>
-        <?php print_r($us['id']) ?>
-                                <img src='<?= \Yii::getAlias('@web') . '/images/users_images/' . $us['image'] ?>' alt='' style="width:50px;height:50px">
-                                <h6><?= $us['first_name'] . ' ' . $us['last_name'] ?></h6>
-                                <p><?= $us['location'] ?></p>
-                                <span id='<?= $us['id'] ?>' class='skip'>x</span>
-                                <button id='<?= $us['id'] ?>' class='connect' type="button">Connect</button>
-                                <br>
-                                <hr>
-                                <br>
-                            </div>
-    <?php } ?>
-        </div>-->
-
-
-    <div class="sideBarR">
-        <h6 class="boxTitle">People you may know</h6>
-        <div class="peopleList">
-            <ul id='notConnectedUsers'>
-                <?php $ids = '' ?>
-                <?php foreach ($this->params['notConnectedUsers'] as $us) { ?>
-                    <?php if (empty($ids)) { ?>
-                        <?php $ids.=$us['id'] ?>
-                    <?php } else { ?>
-                        <?php $ids.=',' . $us['id'] ?>
-                    <?php } ?>
-                    <li class='notConnectedUser'>
-                        <div class="peopleListL">
-                            <img src="/images/user-1.png" alt="">
-                            <span style="background-image: url(<?= \Yii::getAlias('@web') . '/images/users_images/' . $us['image'] ?>)"></span>
-                        </div>
-                        <div class="peopleListR">
-                            <a href="/users/profile/256" class="plName"><?= $us['first_name'] . ' ' . $us['last_name'] ?></a>
-                            <div class="plDets">
-                                <p class="plAddress"><i class="icon-location"></i><span><?= $us['location'] ?></span></p>
-                            </div>
-                            <div class="plActions">
-                                <a class="textBtn connect" id='<?= $us['id'] ?>'>Connect</a>
-                            </div>
-                        </div>
-                        <button class="skip" id="<?= $us['id'] ?>"><i class="icon-remove"></i></button>
-                    </li>
-                <?php } ?>
-            </ul>
-        </div>
-    </div>
+    <?php echo $this->render('sidebar') ?>
 </div>
 
 
@@ -265,75 +212,8 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
     var colleaguesTab = getParameterByName('colleaguesTab');
     var notificationsTab = getParameterByName('notificationsTab');
 
-    function notConnectedUsers() {
-        var ids = '';
-        $('.connect').each(function () {
-            if (ids === '') {
-                ids += $(this).attr('id');
-            } else {
-                ids += ',' + $(this).attr('id');
-            }
-        });
-        $('.skip,.connect').off();
-        $('.connect').on('click', function () {
-            $.ajax({
-                method: "POST",
-                url: "/users/get-not-connected-users",
-                data: {add: true, allIds: ids, id: $(this).attr('id')},
-                dataType: "json"
-            }).done(function (msg) {
-                console.log(msg)
-                for (var i = 0; i < Object.keys(msg).length; i++) {
-                    if (msg[0] !== undefined) {
-                        var user = $('.notConnectedUser:first').clone();
-                        user.find('.plAddress span').html(msg[0].location);
-                        user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
-                        user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
-                        user.find('.skip').attr('id', msg[0].id);
-                        user.find('.connect').attr('id', msg[0].id);
-                        user.appendTo('#notConnectedUsers');
-                        notConnectedUsers();
-                    }
-                }
-
-            }).fail(function (msg) {
-                console.log(msg.responseText);
-            });
-            $(this).parent().parent().parent().remove();
-        });
-        $('.skip').on('click', function () {
-            $.ajax({
-                method: "POST",
-                url: "/users/get-not-connected-users",
-                data: {allIds: ids, id: $(this).attr('id')},
-                dataType: "json"
-            }).done(function (msg) {
-                for (var i = 0; i < Object.keys(msg).length; i++) {
-                    if (msg[0] !== undefined) {
-                        var user = $('.notConnectedUser:first').clone();
-                        user.find('.plAddress span').html(msg[0].location);
-                        user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
-                        user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
-                        user.find('.skip').attr('id', msg[0].id);
-                        user.find('.connect').attr('id', msg[0].id);
-                        user.appendTo('#notConnectedUsers');
-                        notConnectedUsers();
-                    }
-                }
-
-            }).fail(function (msg) {
-                console.log(msg.responseText);
-            });
-            $(this).parent().remove();
-        });
-
-    }
 
     $(document).ready(function () {
-
-
-        notConnectedUsers();
-
         $('.hideSection').parent().hide();
         $('.hideSubSection').parent().hide();
 

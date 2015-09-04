@@ -17,10 +17,17 @@ $this->title = 'Edit profile'
                     <!--<button id="uploadImage" type="button"><i class="icon-pencil-square"></i></button>-->
                     <div id="uploadImage"><i class="icon-pencil-square"></i></div>
                 </div>
-            </div>
 
-                                <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $this->params['current_user']->image; ?>"  alt="User image" >-->
-        <?php } ?>
+                                            <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $this->params['current_user']->image; ?>"  alt="User image" >-->
+            <?php } else { ?>
+                <img src="/images/user-1.png">
+                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/default.jpg'; ?>')"></span>
+                <div class="imgEditBtns">
+                    <!--<button id="uploadImage" type="button"><i class="icon-pencil-square"></i></button>-->
+                    <div id="uploadImage"><i class="icon-pencil-square"></i></div>
+                </div>
+            <?php } ?>
+        </div>
         <p style="color:red;display: none" id="imageUploadError"></p>
 
         <div class="userDetails">
