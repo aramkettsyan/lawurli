@@ -467,6 +467,29 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                     ->groupBy('users.id')
                     ->having('not_colleagues IS NULL AND request_sent IS NULL')
                     ->all();
+            if (count($users) < $limit) {
+                $newLimit = $limit - COUNT($users);
+                $usersIds = '';
+                foreach ($users as $user) {
+                    if (empty($usersIds)) {
+                        $usersIds .= $user['id'];
+                    } else {
+                        $usersIds .= ',' . $user['id'];
+                    }
+                }
+                $otherUsers = (new Query())
+                        ->select('*')
+                        ->from('users');
+
+                if ($usersIds) {
+                    $otherUsers->where('id NOT IN(' . $usersIds . ')');
+                }
+                
+                $otherUsers = $otherUsers->limit($newLimit)
+                        ->orderBy('RAND()')
+                        ->all();
+                $users = array_merge($users,$otherUsers);
+            }
         } else {
             $users = (new Query())
                     ->select('*')
