@@ -118,7 +118,7 @@ class UsersController extends \yii\web\Controller {
         $actions = [
             'index',
             'profile',
-            'search'
+            'contact-us'
         ];
 
         if (in_array($action_id, $actions) && \Yii::$app->user->isGuest) {
@@ -1364,7 +1364,6 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionContactUs(){
-        $this->layout = false;
         return $this->render('contact-us');
     }
 
