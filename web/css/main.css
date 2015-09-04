@@ -1771,5 +1771,86 @@ footer h4 {
 }
 
 
-
+/* contact and about us page */
+.titleWithBg {
+    /*height: 240px;*/
+}
+.aboutTitle {
+    background: url('../images/about-us-main.jpg') center no-repeat;
+    background-size: cover;
+}
+.titleWithBg {
+    text-align: center;
+}
+.titleWithBg h3 {
+    color: #504348;
+    background-color: #fff;
+    display: inline-block;
+    padding: 0 10px;
+    text-transform: uppercase;
+    font-size: 40px;
+    font-weight: 600;
+    margin: 90px 0;
+}
+.imgTxt {
+    margin-bottom: 40px;
+}
+*>.imgTxt:nth-of-type(even)>.imgTxtT {
+    float: left;
+    margin-right: 5%;
+}
+*>.imgTxt:nth-of-type(even)>.imgTxtI {
+    float: right;
+}
+*>.imgTxt:nth-of-type(odd)>.imgTxtT {
+    float: right;
+    margin-left: 5%;
+}
+*>.imgTxt:nth-of-type(odd)>.imgTxtI {
+    float: left;
+}
+.imgTxt:after {
+    content: '';
+    clear: both;
+    display: block;
+}
+.imgTxtT {
+    float: left;
+    width: 55%;
+}
+.imgTxtT h4 {
+    margin-bottom: 15px;
+}
+.imgTxtT p {
+    /*line-height: 1.5em;*/
+}
+.imgTxtI {
+    float: left;
+    width: 40%;
+}
+.imgTxtI img {
+    width: 100%
+}
+.pageTitle {
+    font-size:
+}
+.contactWrapp {
+    margin-top: 50px;
+    padding-top: 50px;
+    border-top: solid 1px #CCC;
+}
+.contactWrapp .pageTitle {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.contactWrapp .pageTitle h3{
+    background: #DA8213;
+    padding: 0 10px;
+    color: #fff;
+    display: inline-block;
+    margin: 0 auto;
+    text-transform: uppercase;
+    font-size: 40px;
+    font-weight: 600;
+}
 
