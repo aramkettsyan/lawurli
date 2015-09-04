@@ -37,9 +37,9 @@ class UsersController extends \yii\web\Controller {
                                 'load-general',
                                 'load-colleagues',
                                 'load-notifications',
-                                'get-rss',
                                 'get-not-connected-users',
-                                'error'
+                                'error',
+                                'contact-us'
                             ],
                             'allow' => true,
                             'roles' => ['@'],
@@ -1363,26 +1363,11 @@ class UsersController extends \yii\web\Controller {
         }
     }
 
-    /**
-     * @return array
-     */
-    public function actionGetRss() {
-        $sites = array(
-            'http://feeds.feedburner.com/abovethelaw?format=xml',
-            'http://blogs.wsj.com/law/feed/',
-            'http://feeds.feedburner.com/abajournal/topstories?format=xml'
-        );
-
-        $array = [];
-
-        foreach ($sites as $site) {
-            $xml = simplexml_load_file('http://blogs.wsj.com/law/feed/');
-            foreach ($xml->channel->item as $item) {
-                $array[] = $item;
-            }
-        }
-        print_r($array);
-        die;
+    public function actionContactUs(){
+        $this->layout = false;
+        return $this->render('contact-us');
     }
+
+
 
 }
