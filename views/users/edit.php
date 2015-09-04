@@ -21,7 +21,7 @@ $this->title = 'Edit profile'
                                             <!--<img src="<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $this->params['current_user']->image; ?>"  alt="User image" >-->
             <?php } else { ?>
                 <img src="/images/user-1.png">
-                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/default.jpg'; ?>')"></span>
+                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/default.png'; ?>')"></span>
                 <div class="imgEditBtns">
                     <!--<button id="uploadImage" type="button"><i class="icon-pencil-square"></i></button>-->
                     <div id="uploadImage"><i class="icon-pencil-square"></i></div>

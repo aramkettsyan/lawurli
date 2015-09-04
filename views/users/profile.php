@@ -18,7 +18,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                 <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>')"></span>
             <?php } else { ?>
                 <img src="/images/user-1.png">
-                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/default.jpg'; ?>')"></span>
+                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/default.png'; ?>')"></span>
             <?php } ?>
         </div>
         <p style="color:green;display: none" id="imageUploadSuccess">Image uploaded successfully!</p>

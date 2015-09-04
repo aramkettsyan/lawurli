@@ -27,7 +27,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
 
     public $confirm_password;
     public $conditions;
-    public $default_image = 'default.jpg';
+    public $default_image = 'default.png';
     public $old_password;
 
     /**
