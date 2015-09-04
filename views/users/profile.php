@@ -75,9 +75,9 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             <ul class="clearAfter">
                 <li class="active"><a href="#" id="profiletab"><i class="icon-card-user-2"></i>Profile</a></li>
                 <li><a href="#" id="colleag"><i class="icon-contacts"></i>Colleagues</a></li>
-                <?php if((Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'] )) : ?>
-                <li><a href="#" id="profiletabNot"><i class="icon-bell-two"></i>Notifications</a></li>
-                <li><a href="#" id=""><i class="icon-newspaper"></i>News</a></li>
+                <?php if ((Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'])) : ?>
+                    <li><a href="#" id="profiletabNot"><i class="icon-bell-two"></i>Notifications</a></li>
+                    <li><a href="#" id=""><i class="icon-newspaper"></i>News</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -125,7 +125,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
 
                                                     <?php if ($form['formType'] === 'input') { ?>
                                                         <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
                                                         <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'textarea') { ?>
@@ -194,55 +194,57 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             </div>
         </div>
     </div>
+    <!--    <div id='notConnectedUsers' style="margin-top:300px">
+    <?php $ids = '' ?>
+    <?php foreach ($this->params['notConnectedUsers'] as $us) { ?>
+        <?php if (empty($ids)) { ?>
+            <?php $ids.=$us['id'] ?>
+        <?php } else { ?>
+            <?php $ids.=',' . $us['id'] ?>
+        <?php } ?>
+                            <div class='notConnectedUser'>
+        <?php print_r($us['id']) ?>
+                                <img src='<?= \Yii::getAlias('@web') . '/images/users_images/' . $us['image'] ?>' alt='' style="width:50px;height:50px">
+                                <h6><?= $us['first_name'] . ' ' . $us['last_name'] ?></h6>
+                                <p><?= $us['location'] ?></p>
+                                <span id='<?= $us['id'] ?>' class='skip'>x</span>
+                                <button id='<?= $us['id'] ?>' class='connect' type="button">Connect</button>
+                                <br>
+                                <hr>
+                                <br>
+                            </div>
+    <?php } ?>
+        </div>-->
+
+
     <div class="sideBarR">
         <h6 class="boxTitle">People you may know</h6>
         <div class="peopleList">
-            <ul>
-                <li>
-                    <div class="peopleListL">
-                        <img src="/images/user-1.png" alt="">
-                        <span style="background-image: url('/images/users_images/default.jpg')"></span>
-                    </div>
-                    <div class="peopleListR">
-                        <a href="/users/profile/256" class="plName">Ann Morrison</a>
-                        <div class="plDets">
-                            <p class="plAddress"><i class="icon-location"></i>15 Jackson Park</p>
+            <ul id='notConnectedUsers'>
+                <?php $ids = '' ?>
+                <?php foreach ($this->params['notConnectedUsers'] as $us) { ?>
+                    <?php if (empty($ids)) { ?>
+                        <?php $ids.=$us['id'] ?>
+                    <?php } else { ?>
+                        <?php $ids.=',' . $us['id'] ?>
+                    <?php } ?>
+                    <li class='notConnectedUser'>
+                        <div class="peopleListL">
+                            <img src="/images/user-1.png" alt="">
+                            <span style="background-image: url(<?= \Yii::getAlias('@web') . '/images/users_images/' . $us['image'] ?>)"></span>
                         </div>
-                        <div class="plActions">
-                            <a href="/users/connect/256" class="textBtn">Connect</a>
+                        <div class="peopleListR">
+                            <a href="/users/profile/256" class="plName"><?= $us['first_name'] . ' ' . $us['last_name'] ?></a>
+                            <div class="plDets">
+                                <p class="plAddress"><i class="icon-location"></i><span><?= $us['location'] ?></span></p>
+                            </div>
+                            <div class="plActions">
+                                <a class="textBtn connect" id='<?= $us['id'] ?>'>Connect</a>
+                            </div>
                         </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="peopleListL">
-                        <img src="/images/user-1.png" alt="">
-                        <span style="background-image: url('/images/users_images/default.jpg')"></span>
-                    </div>
-                    <div class="peopleListR">
-                        <a href="/users/profile/256" class="plName">Ann Morrison</a>
-                        <div class="plDets">
-                            <p class="plAddress"><i class="icon-location"></i>15 Jackson Park</p>
-                        </div>
-                        <div class="plActions">
-                            <a href="/users/connect/256" class="textBtn">Connect</a>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="peopleListL">
-                        <img src="/images/user-1.png" alt="">
-                        <span style="background-image: url('/images/users_images/default.jpg')"></span>
-                    </div>
-                    <div class="peopleListR">
-                        <a href="/users/profile/256" class="plName">Ann Morrison</a>
-                        <div class="plDets">
-                            <p class="plAddress"><i class="icon-location"></i>15 Jackson Park</p>
-                        </div>
-                        <div class="plActions">
-                            <a href="/users/connect/256" class="textBtn">Connect</a>
-                        </div>
-                    </div>
-                </li>
+                        <button class="skip" id="<?= $us['id'] ?>"><i class="icon-remove"></i></button>
+                    </li>
+                <?php } ?>
             </ul>
         </div>
     </div>
@@ -264,21 +266,29 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
     var notificationsTab = getParameterByName('notificationsTab');
 
     function notConnectedUsers() {
+        var ids = '';
+        $('.connect').each(function () {
+            if (ids === '') {
+                ids += $(this).attr('id');
+            } else {
+                ids += ',' + $(this).attr('id');
+            }
+        });
         $('.skip,.connect').off();
         $('.connect').on('click', function () {
             $.ajax({
                 method: "POST",
                 url: "/users/get-not-connected-users",
-                data: {add: true, allIds: '<?= $ids ?>', id: $(this).attr('id')},
+                data: {add: true, allIds: ids, id: $(this).attr('id')},
                 dataType: "json"
             }).done(function (msg) {
                 console.log(msg)
                 for (var i = 0; i < Object.keys(msg).length; i++) {
                     if (msg[0] !== undefined) {
                         var user = $('.notConnectedUser:first').clone();
-                        user.find('p').html(msg[0].location);
-                        user.find('h6').html(msg[0].first_name + ' ' + msg[0].last_name);
-                        user.find('img').attr('src', imagesPath + msg[0].image);
+                        user.find('.plAddress span').html(msg[0].location);
+                        user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
+                        user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
                         user.find('.skip').attr('id', msg[0].id);
                         user.find('.connect').attr('id', msg[0].id);
                         user.appendTo('#notConnectedUsers');
@@ -286,22 +296,24 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                     }
                 }
 
+            }).fail(function (msg) {
+                console.log(msg.responseText);
             });
-            $(this).parent().remove();
+            $(this).parent().parent().parent().remove();
         });
         $('.skip').on('click', function () {
             $.ajax({
                 method: "POST",
                 url: "/users/get-not-connected-users",
-                data: {allIds: '<?= $ids ?>', id: $(this).attr('id')},
+                data: {allIds: ids, id: $(this).attr('id')},
                 dataType: "json"
             }).done(function (msg) {
                 for (var i = 0; i < Object.keys(msg).length; i++) {
                     if (msg[0] !== undefined) {
                         var user = $('.notConnectedUser:first').clone();
-                        user.find('p').html(msg[0].location);
-                        user.find('h6').html(msg[0].first_name + ' ' + msg[0].last_name);
-                        user.find('img').attr('src', imagesPath + msg[0].image);
+                        user.find('.plAddress span').html(msg[0].location);
+                        user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
+                        user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
                         user.find('.skip').attr('id', msg[0].id);
                         user.find('.connect').attr('id', msg[0].id);
                         user.appendTo('#notConnectedUsers');
@@ -309,6 +321,8 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                     }
                 }
 
+            }).fail(function (msg) {
+                console.log(msg.responseText);
             });
             $(this).parent().remove();
         });
@@ -342,37 +356,37 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $(this).find('.inputError').hide();
         });
 
-//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                  ?>;
-//<?php // Yii::$app->getSession()->destroySession('showRegistration');                  ?>
-//        if (showRegistration) {
-//            $.magnificPopup.open({
-//                items: {src: '#signup-popup'}, type: 'inline'
-//            }, 0);
-//        }
-//
-//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                  ?>;
-//<?php // Yii::$app->getSession()->destroySession('showLogin');                  ?>
-//        if (showLogin) {
-//            $.magnificPopup.open({
-//                items: {src: '#login-popup'}, type: 'inline'
-//            }, 0);
-//        }
+        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                         ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                         ?>
+        //        if (showRegistration) {
+        //            $.magnificPopup.open({
+        //                items: {src: '#signup-popup'}, type: 'inline'
+        //            }, 0);
+        //        }
+        //
+        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                         ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showLogin');                         ?>
+        //        if (showLogin) {
+        //            $.magnificPopup.open({
+        //                items: {src: '#login-popup'}, type: 'inline'
+        //            }, 0);
+        //        }
 
 
-//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                  ?>;
-//<?php //Yii::$app->getSession()->destroySession('newPassword');                  ?>
-//        if (newPassword) {
-//            $.magnificPopup.open({
-//                items: {src: '#forgpass-popup-2'}, type: 'inline'
-//            }, 0);
-//        }
-//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                  ?>;
-//<?php //Yii::$app->getSession()->destroySession('resetPassword');                  ?>
-//        if (resetPassword) {
-//            $.magnificPopup.open({
-//                items: {src: '#forgpass-popup'}, type: 'inline'
-//            }, 0);
-//        }
+        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                         ?>;
+        //<?php //Yii::$app->getSession()->destroySession('newPassword');                         ?>
+        //        if (newPassword) {
+        //            $.magnificPopup.open({
+        //                items: {src: '#forgpass-popup-2'}, type: 'inline'
+        //            }, 0);
+        //        }
+        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                         ?>;
+        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                         ?>
+        //        if (resetPassword) {
+        //            $.magnificPopup.open({
+        //                items: {src: '#forgpass-popup'}, type: 'inline'
+        //            }, 0);
+        //        }
 
         if (colleaguesTab == 'open') {
             $("#profileInfo").hide();

@@ -444,7 +444,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         if (!$existsIds) {
             $existsIds = '';
         } else {
-            $existsIds = 'AND users.id NOT IN(' . $existsIds . ') ';
+            $existsIds = ' AND users.id NOT IN(' . $existsIds . ') ';
         }
 
         $users = (new Query())
