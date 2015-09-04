@@ -44,8 +44,14 @@ $this->title = 'Search';
                     <?php foreach ($search as $user) { ?>
                         <li>
                             <div class="peopleListL">
-                                <img src="/images/user-1.png" alt="">
-                                <span style='background-image: url("<?php echo Html::encode(\Yii::getAlias('@web') . '/images/users_images/' . $user['image']); ?>")'></span>
+                                <?php $filename = \Yii::getAlias('@webroot') . '/images/users_images/' . Html::encode($user['image']); ?>
+                                <?php if (is_file($filename)) { ?>
+                                    <img src="/images/user-1.png" alt="">
+                                    <span style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user['image']; ?>')"></span>
+                                <?php } else { ?>
+                                    <img src="/images/user-1.png" alt="">
+                                    <span style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/default.png'; ?>')"></span>
+                                <?php } ?>
                             </div>
                             <div class="peopleListR">
                                 <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="plName"><?= Html::encode($user['first_name']) ?> <?= Html::encode($user['last_name']) ?></a>
@@ -297,16 +303,16 @@ $this->title = 'Search';
             $(this).find('.inputError').hide();
         });
 
-//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'   ?>;
-//<?php //Yii::$app->getSession()->destroySession('showRegistration');   ?>
+//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'    ?>;
+//<?php //Yii::$app->getSession()->destroySession('showRegistration');    ?>
 //        if (showRegistration) {
 //            $.magnificPopup.open({
 //                items: {src: '#signup-popup'}, type: 'inline'
 //            }, 0);
 //        }
 //
-//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'   ?>;
-//<?php //Yii::$app->getSession()->destroySession('showLogin');   ?>
+//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'    ?>;
+//<?php //Yii::$app->getSession()->destroySession('showLogin');    ?>
 //        if (showLogin) {
 //            $.magnificPopup.open({
 //                items: {src: '#login-popup'}, type: 'inline'
@@ -314,15 +320,15 @@ $this->title = 'Search';
 //        }
 //
 //
-//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'   ?>;
-//<?php // Yii::$app->getSession()->destroySession('newPassword');   ?>
+//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'    ?>;
+//<?php // Yii::$app->getSession()->destroySession('newPassword');    ?>
 //        if (newPassword) {
 //            $.magnificPopup.open({
 //                items: {src: '#forgpass-popup-2'}, type: 'inline'
 //            }, 0);
 //        }
-//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'   ?>;
-//<?php // Yii::$app->getSession()->destroySession('resetPassword');   ?>
+//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'    ?>;
+//<?php // Yii::$app->getSession()->destroySession('resetPassword');    ?>
 //        if (resetPassword) {
 //            $.magnificPopup.open({
 //                items: {src: '#forgpass-popup'}, type: 'inline'
