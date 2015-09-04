@@ -18,8 +18,8 @@ use yii\helpers\Html;
                             <span style="background-image: url('/images/users_images/<?= Html::encode($notification['image']) ?>')"></span>
                         </div>
                         <div class="hdrNotifC">
-                            <p><?= Html::encode($notification['first_name']) . ' ' . Html::encode($notification['last_name']) ?></p>
-                            <p><?= Html::encode($notification['location']) ?></p>
+                            <span><?= Html::encode($notification['first_name']) . ' ' . Html::encode($notification['last_name']) ?></span>
+                            <span><?= Html::encode($notification['location']) ?></span>
                         </div>
                     </a>
                     <div class="hdrNotifR">
@@ -28,22 +28,6 @@ use yii\helpers\Html;
                     </div>
                 </li>
             <?php endforeach; ?>
-            <li>
-                <a href="#">
-                    <div class="hdrNotifL">
-                        <!--<img src="/images/users_images/heDgl-VJgsODOW79dV0E1xHBwYJ7C6FM.jpg" alt="">-->
-                        <span style="background-image: url('/images/users_images/heDgl-VJgsODOW79dV0E1xHBwYJ7C6FM.jpg')"></span>
-                    </div>
-                    <div class="hdrNotifC">
-                        <span>Notification text</span>
-                        <span>Lorem ipsum dolor sit amet</span>
-                    </div>
-                </a>
-                <div class="hdrNotifR">
-                    <button><i class="icon-check-1"></i></button>
-                    <button><i class="icon-cross-mark"></i></button>
-                </div>
-            </li>
             <li class="notifSeeAll">
                 <a href="/users/profile?notificationsTab=open">See All</a>
             </li>
