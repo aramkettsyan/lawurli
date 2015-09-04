@@ -80,7 +80,6 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                 <li><a href="#" id="colleag"><i class="icon-contacts"></i>Colleagues</a></li>
                 <?php if ((Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'])) : ?>
                     <li><a href="#" id="profiletabNot"><i class="icon-bell-two"></i>Notifications</a></li>
-                    <li><a href="#" id=""><i class="icon-newspaper"></i>News</a></li>
                 <?php endif; ?>
             </ul>
         </div>
