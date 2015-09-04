@@ -1364,6 +1364,7 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionContactUs(){
+//        $this->layout = false;
         return $this->render('contact-us');
     }
 

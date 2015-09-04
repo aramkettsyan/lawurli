@@ -398,4 +398,8 @@ class AdminsController extends \yii\web\Controller {
         $this->goHome();
     }
 
+    public function actionAboutUs(){
+
+    }
+
 }
