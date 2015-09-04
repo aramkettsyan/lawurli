@@ -16,6 +16,9 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             <?php if (is_file($filename)) { ?>
                 <img src="/images/user-1.png">
                 <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/' . $user->image; ?>')"></span>
+            <?php } else { ?>
+                <img src="/images/user-1.png">
+                <span class="profileImage" style="background-image: url('<?php echo \Yii::getAlias('@web') . '/images/users_images/default.jpg'; ?>')"></span>
             <?php } ?>
         </div>
         <p style="color:green;display: none" id="imageUploadSuccess">Image uploaded successfully!</p>
@@ -125,7 +128,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
 
                                                     <?php if ($form['formType'] === 'input') { ?>
                                                         <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
                                                         <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'textarea') { ?>
@@ -236,16 +239,16 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $(this).find('.inputError').hide();
         });
 
-        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                         ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                         ?>
+        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                          ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                          ?>
         //        if (showRegistration) {
         //            $.magnificPopup.open({
         //                items: {src: '#signup-popup'}, type: 'inline'
         //            }, 0);
         //        }
         //
-        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                         ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showLogin');                         ?>
+        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                          ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showLogin');                          ?>
         //        if (showLogin) {
         //            $.magnificPopup.open({
         //                items: {src: '#login-popup'}, type: 'inline'
@@ -253,15 +256,15 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
         //        }
 
 
-        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                         ?>;
-        //<?php //Yii::$app->getSession()->destroySession('newPassword');                         ?>
+        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                          ?>;
+        //<?php //Yii::$app->getSession()->destroySession('newPassword');                          ?>
         //        if (newPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup-2'}, type: 'inline'
         //            }, 0);
         //        }
-        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                         ?>;
-        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                         ?>
+        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                          ?>;
+        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                          ?>
         //        if (resetPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup'}, type: 'inline'
