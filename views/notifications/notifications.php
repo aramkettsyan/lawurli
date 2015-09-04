@@ -27,7 +27,23 @@ use yii\helpers\Html;
                         <a href="<?= \yii\helpers\Url::to(['users/decline', 'id' => $notification['id']]) ?>"><i class="icon-cross-mark"></i></a>
                     </div>
                 </li>
-<?php endforeach; ?>
+            <?php endforeach; ?>
+            <li>
+                <a href="#">
+                    <div class="hdrNotifL">
+                        <!--<img src="/images/users_images/heDgl-VJgsODOW79dV0E1xHBwYJ7C6FM.jpg" alt="">-->
+                        <span style="background-image: url('/images/users_images/heDgl-VJgsODOW79dV0E1xHBwYJ7C6FM.jpg')"></span>
+                    </div>
+                    <div class="hdrNotifC">
+                        <span>Notification text</span>
+                        <span>Lorem ipsum dolor sit amet</span>
+                    </div>
+                </a>
+                <div class="hdrNotifR">
+                    <button><i class="icon-check-1"></i></button>
+                    <button><i class="icon-cross-mark"></i></button>
+                </div>
+            </li>
             <li class="notifSeeAll">
                 <a href="/users/profile?notificationsTab=open">See All</a>
             </li>
