@@ -1366,20 +1366,17 @@ class UsersController extends \yii\web\Controller {
         }
     }
 
-    public function actionContactUs(){
-        $aboutUsModel =  AboutUs::findOne(['static_id'=>'1']);
+    public function actionContactUs() {
+        $aboutUsModel = AboutUs::findOne(['static_id' => '1']);
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact($aboutUsModel->contact_us_email)) {
             Yii::$app->session->setFlash('contactFormSubmitted');
             return $this->refresh();
         } else {
-            return $this->render('contact-us',['aboutUsModel'=>$aboutUsModel,
-                                               'model' => $model,
-                                              ]);
+            return $this->render('contact-us', ['aboutUsModel' => $aboutUsModel,
+                        'model' => $model,
+            ]);
         }
-
-    }
-
     }
 
 }
