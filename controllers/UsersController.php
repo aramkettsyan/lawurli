@@ -915,15 +915,19 @@ class UsersController extends \yii\web\Controller {
                         . 'WHERE '
                         . $and
                         . 'ORDER BY first_name,last_name ' . $limit);
-                $count = $q->queryAll();
-                $pages = new Pagination(['totalCount' => count($count), 'pageSize' => $this->pageSize]);
-                $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
-                $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
-                        . 'WHERE '
-                        . $and
-                        . 'ORDER BY first_name,last_name ' . $limit);
-                $search_result = $q->queryAll();
-                $models['pages'] = $pages;
+                if ($search === 'advanced') {
+                    $search_result = $q->queryAll();
+                } else {
+                    $count = $q->queryAll();
+                    $pages = new Pagination(['totalCount' => count($count), 'pageSize' => $this->pageSize]);
+                    $limit = 'LIMIT ' . $pages->limit . ' ' . 'OFFSET ' . $pages->offset;
+                    $q = \Yii::$app->db->createCommand('SELECT * FROM `users` '
+                            . 'WHERE '
+                            . $and
+                            . 'ORDER BY first_name,last_name ' . $limit);
+                    $search_result = $q->queryAll();
+                    $models['pages'] = $pages;
+                }
             } else if (!isset($last_name) || empty($last_name)) {
                 //If last name is empty 
                 $likeQuery = $first_name . '%';
@@ -1161,23 +1165,26 @@ class UsersController extends \yii\web\Controller {
                                     $input = \Yii::$app->db->quoteValue($input);
                                     $key = \Yii::$app->db->quoteValue($key);
                                     if (empty($sqlIf)) {
-                                        $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
-                                        $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                        $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $input . " ,user_forms.form_id,NULL))";
+                                        $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $input . " ,user_forms.value,NULL)) AS `" . $key . '` ';
                                     } else {
-                                        $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.form_id,NULL))";
-                                        $sqlIfValue .= " ,GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $input . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                        $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $input . ",user_forms.form_id,NULL))";
+                                        $sqlIfValue .= " ,GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $input . " ,user_forms.value,NULL)) AS `" . $key . '` ';
                                     }
                                 } else {
                                     foreach ($input as $k => $i) {
                                         $j = true;
                                         $i = \Yii::$app->db->quoteValue($i);
+                                        print_r($i);
+
                                         $key = \Yii::$app->db->quoteValue($key);
+                                        print_r($key);
                                         if (empty($sqlIf)) {
-                                            $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.form_id,NULL))";
-                                            $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                            $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $i . " ,user_forms.form_id,NULL))";
+                                            $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $i . " ,user_forms.value,NULL)) AS `" . $key . "` ";
                                         } else {
-                                            $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.form_id,NULL))";
-                                            $sqlIfValue .= ", GROUP_CONCAT(IF(user_forms.form_id='" . $key . "' AND user_forms.value='" . $i . "' ,user_forms.value,NULL)) AS `" . $key . '` ';
+                                            $sqlIf .= " AND GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $i . " ,user_forms.form_id,NULL))";
+                                            $sqlIfValue .= ", GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $i . " ,user_forms.value,NULL)) AS `" . $key . "` ";
                                         }
                                     }
                                 }
@@ -1355,7 +1362,7 @@ class UsersController extends \yii\web\Controller {
                 Users::addNotColleaguesUser($user_id);
             }
             $limit = 1;
-            $users = Users::getNotConnectedUsers($limit,$allIds);
+            $users = Users::getNotConnectedUsers($limit, $allIds);
             print_r(json_encode($users));
             die;
         } else {
@@ -1379,6 +1386,6 @@ class UsersController extends \yii\web\Controller {
 
     }
 
-
+    }
 
 }

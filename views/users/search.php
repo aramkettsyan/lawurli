@@ -164,7 +164,7 @@ $this->title = 'Search';
                                         <?php
                                         echo Html::checkboxList('checkbox', null, $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input, $query_response) {
                                                 $check = isset($query_response[$input->id][$index]) ? 'checked' : '';
-                                                return '<label for="' . Html::encode($value) . '_' . $index . '"><input ' . $check . ' id="' . Html::encode($value) . '_' . $index . '" name="advanced[' . Html::encode($input->id) . '][' . $index . ']" type="checkbox"><span>' . Html::encode($label) . '</span></label> ';
+                                                return '<label for="' . Html::encode($value) . '_' . $index . '"><input ' . $check . ' id="' . Html::encode($value) . '_' . $index . '" name="advanced[' . Html::encode($input->id) . '][' . $index . ']" value="'.$label.'" type="checkbox"><span>' . Html::encode($label) . '</span></label> ';
                                             }]);
                                         ?>
                                     </div>
