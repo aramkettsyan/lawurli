@@ -381,8 +381,6 @@ class UsersController extends \yii\web\Controller {
                     }
                     $g++;
                 }
-//                print_r($newArr);
-//                die;
 
 
                 if ($validate === true) {
@@ -513,8 +511,6 @@ class UsersController extends \yii\web\Controller {
             $new_user_forms[$key] = array_values($uf);
         }
 
-//        print_r($new_user_forms);
-//        die;
 
 
         \Yii::$app->view->params['user'] = $user;
@@ -1175,10 +1171,8 @@ class UsersController extends \yii\web\Controller {
                                     foreach ($input as $k => $i) {
                                         $j = true;
                                         $i = \Yii::$app->db->quoteValue($i);
-                                        print_r($i);
 
                                         $key = \Yii::$app->db->quoteValue($key);
-                                        print_r($key);
                                         if (empty($sqlIf)) {
                                             $sqlIf .= "GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $i . " ,user_forms.form_id,NULL))";
                                             $sqlIfValue .= "GROUP_CONCAT(IF(user_forms.form_id=" . $key . " AND user_forms.value=" . $i . " ,user_forms.value,NULL)) AS `" . $key . "` ";

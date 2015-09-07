@@ -134,7 +134,7 @@ $this->title = 'Search';
                             <div class="formRow">
                                 <?php if ($key == 2) { ?>
                                     <label class="customLbSt" for="first_name"> First name </label>
-                                    <?php echo Html::input('text', '', isset($query[0]) && (isset($query[1])) ? Html::encode($query[0]) : '', ['id' => 'first_name', 'class' => 'formControl sForm', 'placeholder' => 'First name']); ?>
+                                    <?php echo Html::input('text', 'first_name', isset($query[0]) && (isset($query[1])) ? Html::encode($query[0]) : '', ['id' => 'first_name', 'class' => 'formControl sForm', 'placeholder' => 'First name']); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'input') { ?>
                                     <label class="customLbSt" for="<?= Html::encode($input->label) . '_' . $i; ?>"> <?php echo Html::encode($input->label); ?> </label>
@@ -192,7 +192,7 @@ $this->title = 'Search';
                             <div class="formRow">
                                 <?php if ($key === 0) { ?>
                                     <label class="customLbSt" for="last_name"> Last name </label>
-                                    <?php echo Html::input('text', '', isset($query[1]) ? Html::encode($query[1]) : '', ['id' => 'last_name', 'class' => 'formControl sForm', 'placeholder' => 'Last name']); ?>
+                                    <?php echo Html::input('text', 'last_name', isset($query[1]) ? Html::encode($query[1]) : '', ['id' => 'last_name', 'class' => 'formControl sForm', 'placeholder' => 'Last name']); ?>
                                 <?php } ?>
                                 <?php if ($input->type === 'input') { ?>
                                     <label class="customLbSt" for="<?= Html::encode($input->label) . '_' . $i; ?>"> <?php echo Html::encode($input->label); ?> </label>
