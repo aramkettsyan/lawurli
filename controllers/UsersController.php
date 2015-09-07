@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\AboutUs;
 use yii\filters\AccessControl;
 use app\components\AdminAccessControl;
 use \app\models\LoginForm;
@@ -9,6 +10,7 @@ use app\models\Users;
 use \app\models\Forms;
 use yii\data\Pagination;
 use app\models\Request;
+use app\models\ContactForm;
 use Yii;
 
 class UsersController extends \yii\web\Controller {
@@ -118,7 +120,7 @@ class UsersController extends \yii\web\Controller {
         $actions = [
             'index',
             'profile',
-            'contact-us'
+            'search'
         ];
 
         if (in_array($action_id, $actions) && \Yii::$app->user->isGuest) {
@@ -1364,8 +1366,17 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionContactUs(){
-//        $this->layout = false;
-        return $this->render('contact-us');
+        $aboutUsModel =  AboutUs::findOne(['static_id'=>'1']);
+        $model = new ContactForm();
+        if ($model->load(Yii::$app->request->post()) && $model->contact($aboutUsModel->contact_us_email)) {
+            Yii::$app->session->setFlash('contactFormSubmitted');
+            return $this->refresh();
+        } else {
+            return $this->render('contact-us',['aboutUsModel'=>$aboutUsModel,
+                                               'model' => $model,
+                                              ]);
+        }
+
     }
 
 

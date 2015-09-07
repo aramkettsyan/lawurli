@@ -47,6 +47,12 @@ $config = [
                 'encryption' => 'tls', // It is often used, check your provider or mail server specs
             ],
         ],
+        'reCaptcha' => [
+            'name' => 'reCaptcha',
+            'class' => 'himiklab\yii2\recaptcha\ReCaptcha',
+            'siteKey' => '6Lf3WQwTAAAAAGhg2foSOsAGOH2SkLYRelMiGpt6',
+            'secret' => '6Lf3WQwTAAAAAFiaEQSiUbSQBaxntYOJKxN5pUDU',
+        ],
         'session' => [
             'class' => 'yii\web\CacheSession',
         ],

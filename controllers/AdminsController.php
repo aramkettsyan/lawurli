@@ -11,6 +11,7 @@ use \app\components\AdminAccessControl;
 use yii\filters\AccessControl;
 use \app\models\FormsForm;
 use app\models\Model;
+use app\models\AboutUs;
 
 class AdminsController extends \yii\web\Controller {
 
@@ -38,7 +39,7 @@ class AdminsController extends \yii\web\Controller {
                     'class' => AdminAccessControl::className(),
                     'rules' => [
                         [
-                            'actions' => ['logout', 'index', 'user-settings', 'site-settings', 'upload-image', 'delete-section', 'delete-sub-section', 'redirect-and-set-flash'],
+                            'actions' => ['logout','about-us','index', 'user-settings', 'site-settings', 'upload-image', 'delete-section', 'delete-sub-section', 'redirect-and-set-flash'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
@@ -399,6 +400,15 @@ class AdminsController extends \yii\web\Controller {
     }
 
     public function actionAboutUs(){
+        $aboutUsModel =  AboutUs::findOne(['static_id'=>'1']);
+        if($postData =  Yii::$app->request->post("AboutUs")){
+            $aboutUsModel->attributes = $postData;
+            if($aboutUsModel->save()){
+                $this->redirect('/admins/index');
+            }
+
+        }
+        return $this->render('about-us', ['model' => $aboutUsModel]);
 
     }
 
