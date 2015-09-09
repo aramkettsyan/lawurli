@@ -37,7 +37,7 @@ AdminAsset::register($this);
                             <?php } else { ?>
                                 <li class="<?= Yii::$app->controller->action->id === 'index' ? 'active' : '' ?>"><?php echo Html::a('Home', \yii\helpers\Url::to(['admins/index']), ['class' => '']) ?></li>
                                 <li class="<?= Yii::$app->controller->action->id === 'user-settings' ? 'active' : '' ?>"><?php echo Html::a('User settings', \yii\helpers\Url::to(['admins/user-settings']), ['class' => '']) ?></li>
-                                <li class="<?= Yii::$app->controller->action->id === 'user-settings' ? 'active' : '' ?>"><?php echo Html::a('About/Contact us', \yii\helpers\Url::to(['admins/about-us']), ['class' => '']) ?></li>
+                                <li class="<?= Yii::$app->controller->action->id === 'about-us' ? 'active' : '' ?>"><?php echo Html::a('About/Contact us', \yii\helpers\Url::to(['admins/about-us']), ['class' => '']) ?></li>
                                 <li class="<?= Yii::$app->controller->action->id === 'site-settings' ? 'active' : '' ?>"><?php echo Html::a('Site settings', \yii\helpers\Url::to(['admins/site-settings']), ['class' => '']) ?></li>
                                 <li class=""><?php echo Html::a('Logout', \yii\helpers\Url::to(['admins/logout']), ['class' => '']) ?></li>
                             <?php } ?>
