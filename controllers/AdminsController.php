@@ -97,6 +97,7 @@ class AdminsController extends \yii\web\Controller {
                     $forms_form->id = $form->id;
                     $forms_form->sub_section_id = $form->sub_section_id;
                     $forms_form->options = $form->options;
+                    $forms_form->show_in_search = $form->show_in_search;
                     $form_ids[] = $form->id;
                     $options = explode('-,-', $form->options);
                     foreach ($options as $option) {
@@ -157,6 +158,7 @@ class AdminsController extends \yii\web\Controller {
                 $options = '';
             }
             $multiple_form_model = Model::createMultiple(FormsForm::classname());
+            
             Model::loadMultiple($multiple_form_model, $form);
 
             $loadsData['_csrf'] = Yii::$app->request->post()['_csrf'];

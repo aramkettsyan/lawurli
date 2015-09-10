@@ -16,6 +16,7 @@ class FormsForm extends Model {
     public $placeholder;
     public $numeric;
     public $options;
+    public $show_in_search;
     public $created;
     public $modified;
     public $sub_section_id;
@@ -25,52 +26,52 @@ class FormsForm extends Model {
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['sub_section_id', 'numeric','id'], 'integer'],
+            [['sub_section_id', 'numeric','show_in_search', 'id'], 'integer'],
             [['type', 'options'], 'string'],
             [['created', 'modified'], 'safe'],
             [['label', 'placeholder'], 'string', 'max' => 255],
-            ['options','checkOptions','skipOnEmpty'=> false],
-            ['placeholder', 'required','on'=>'input'],
-            ['placeholder', 'required','on'=>'textarea'],
-            [['options', 'label'], 'required','on'=>'select'],
-            [['label','options'], 'required','on'=>'radio'],
-            [['label','options'], 'required','on'=>'checkbox'],
+            ['options', 'checkOptions', 'skipOnEmpty' => false],
+            ['placeholder', 'required', 'on' => 'input'],
+            ['placeholder', 'required', 'on' => 'textarea'],
+            [['options', 'label'], 'required', 'on' => 'select'],
+            [['label', 'options'], 'required', 'on' => 'radio'],
+            [['label', 'options'], 'required', 'on' => 'checkbox'],
         ];
     }
-    
-    public function checkOptions($attr,$param){
-        if($this->type === 'select' || $this->type === 'checkbox' || $this->type === 'radio'){
-            if(empty($this->options)){
-                $this->addError($attr,'You must type options');
+
+    public function checkOptions($attr, $param) {
+        if ($this->type === 'select' || $this->type === 'checkbox' || $this->type === 'radio') {
+            if (empty($this->options)) {
+                $this->addError($attr, 'You must type options');
             }
         }
     }
-    
-    public function save($validation=true){
-        if(!$this->validate()){
+
+    public function save($validation = true) {
+        if (!$this->validate()) {
             return false;
         }
-        if($this->id){
+        if ($this->id) {
             $form = Forms::findOne($this->id);
-        }else{
+        } else {
             $form = new Forms();
         }
-        $form->label= $this->label;
+        $form->label = $this->label;
         $form->placeholder = $this->placeholder;
-        $form->type= $this->type;
-        $form->numeric= $this->numeric;
-        $form->sub_section_id= $this->sub_section_id;
-        $form->options= $this->options;
+        $form->type = $this->type;
+        $form->numeric = $this->numeric;
+        $form->show_in_search = $this->show_in_search;
+        $form->sub_section_id = $this->sub_section_id;
+        $form->options = $this->options;
         return $form->save(false);
     }
-    
-    public function update(){
+
+    public function update() {
         
     }
-    
+
 //    public function update($validation){
 //        $form = new Forms();
 //        $form = $form->findOne($this->id);
@@ -83,5 +84,4 @@ class FormsForm extends Model {
 //        $form->options= $this->options;
 //        return $form->save(false);
 //    }
-
 }

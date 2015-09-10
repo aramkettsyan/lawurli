@@ -56,7 +56,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
                                                         <label class="customLbSt" for="<?= $sub->label; ?>"><?php echo $sub->label; ?></label> 
                                                         <?php $options = explode('-,-', $sub->options); ?>
-                                                        <?php echo Html::dropDownList($sub->label, '', $options, ['prompt' => $sub->placeholder?$sub->placeholder:'Select', 'id' => $sub->label, 'class' => 'form-control']); ?>
+                                                        <?php echo Html::dropDownList($sub->label, '', $options, ['prompt' => $sub->placeholder ? $sub->placeholder : 'Select', 'id' => $sub->label, 'class' => 'form-control']); ?>
 
                                                     <?php } ?>
                                                     <?php if ($sub->type === 'input' && $sub->sub_section_id === $sub_section->id) { ?>
@@ -179,6 +179,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                             'numeric',
                             'type',
                             'options',
+                            'show_in_search',
                             'placeholder'
                         ],
                     ]);
@@ -200,7 +201,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                         'class' => 'form-group numeric'
                                     ]
                                 ])->checkbox()->label('Only integer values')
-                                ?> 
+                                ?>
                                 <?php //$form->field($modelAddress, "[{$i}]numeric")->checkbox()->label('Only integer values') ?>
                                 <?php // $form->field($modelAddress, "[{$i}]type")->dropDownList(['select' => 'Drop down list', 'input' => 'Input', 'checkbox' => 'Checkbox', 'radio' => 'Radio', 'textarea' => 'Textarea'], ['prompt' => 'Choose']) ?>
                                 <label for="sel_sec_form" class="required">Type</label>
@@ -248,6 +249,15 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                 </div>    
                                 <?php DynamicFormWidget::end(); ?>
                                 <?= $form->field($modelAddress, "[{$i}]placeholder")->textInput(['class' => 'placeholder form-control']) ?>
+
+                                <?=
+                                $form->field($modelAddress, "[{$i}]show_in_search", ['options' =>
+                                    [
+                                        'tag' => 'div',
+                                        'class' => 'form-group show_in_search'
+                                    ]
+                                ])->checkbox()->label('Show in search')
+                                ?> 
                             </div>
                         <?php endforeach; ?>
 

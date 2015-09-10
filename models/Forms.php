@@ -14,6 +14,7 @@ use yii\db\Expression;
  * @property string $type
  * @property string $placeholder
  * @property integer $numeric
+ * @property integer $show_in_search
  * @property string $options
  * @property string $created
  * @property string $modified
@@ -36,16 +37,16 @@ class Forms extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['sub_section_id', 'numeric'], 'integer'],
+            [['sub_section_id', 'numeric','show_in_search'], 'integer'],
             [['type', 'options'], 'string'],
             [['created', 'modified'], 'safe'],
             [['label', 'placeholder'], 'string', 'max' => 255],
             ['options', 'checkOptions', 'skipOnEmpty' => false],
-            ['placeholder', 'required','on'=>'input'],
-            ['placeholder', 'required','on'=>'textarea'],
-            [['options', 'label'], 'required','on'=>'select'],
-            [['label','options'], 'required','on'=>'radio'],
-            [['label','options'], 'required','on'=>'checkbox'],
+            ['placeholder', 'required', 'on' => 'input'],
+            ['placeholder', 'required', 'on' => 'textarea'],
+            [['options', 'label'], 'required', 'on' => 'select'],
+            [['label', 'options'], 'required', 'on' => 'radio'],
+            [['label', 'options'], 'required', 'on' => 'checkbox'],
         ];
     }
 
@@ -61,6 +62,7 @@ class Forms extends \yii\db\ActiveRecord {
             'placeholder' => 'Placeholder',
             'numeric' => 'Numeric',
             'options' => 'Options',
+            'show_in_search' => 'Show in search',
             'created' => 'Created',
             'modified' => 'Modified',
         ];
@@ -76,7 +78,7 @@ class Forms extends \yii\db\ActiveRecord {
     public function checkOptions($attr, $param) {
         if ($this->type === 'select' || $this->type === 'checkbox' || $this->type === 'radio') {
             if (empty($this->options)) {
-                
+
                 $this->addError($attr, 'You must type options');
             }
         }
@@ -87,9 +89,14 @@ class Forms extends \yii\db\ActiveRecord {
             $connection = \Yii::$app->db;
             $forms_array = [];
             foreach ($this->forms as $form) {
-            $forms_array[] = [$this->sub_section_id,$form['label'],$form['numeric'],$form['type'],$form['options'],$form['placeholder']];
+                print_r($form);
+                die;
+                if (!$form['show_in_search']) {
+                    $form['show_in_search'] = 0;
+                }
+                $forms_array[] = [$this->sub_section_id, $form['label'], $form['numeric'], $form['type'], $form['options'], $form['placeholder'], $form['show_in_search']];
             }
-            $connection->createCommand()->batchInsert('forms', ['sub_section_id','label', 'numeric', 'type', 'options', 'placeholder'], $forms_array)->execute();
+            $connection->createCommand()->batchInsert('forms', ['sub_section_id', 'label', 'numeric', 'type', 'options', 'placeholder', 'show_in_search'], $forms_array)->execute();
         }
         if ($this->isNewRecord) {
             $this->created = new Expression('NOW()');
@@ -101,14 +108,13 @@ class Forms extends \yii\db\ActiveRecord {
 
         return parent::beforeSave($insert);
     }
-    
+
     public function afterValidate() {
-        if($this->hasErrors()){
+        if ($this->hasErrors()) {
             $forms = Yii::$app->request->post('FormsForm');
             Yii::$app->getSession()->writeSession('FormsForm', $forms);
         }
         parent::afterValidate();
     }
-    
 
 }
