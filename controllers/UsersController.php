@@ -120,7 +120,8 @@ class UsersController extends \yii\web\Controller {
         $actions = [
             'index',
             'profile',
-            'search'
+            'search',
+            'contact-us'
         ];
 
         if (in_array($action_id, $actions) && \Yii::$app->user->isGuest) {
@@ -690,7 +691,7 @@ class UsersController extends \yii\web\Controller {
                 $model->save();
                 $email = \Yii::$app->mailer->compose('resetPassword', ['user' => $model, 'action' => $action])
                         ->setTo($model->email)
-                        ->setFrom(['admin@email.com' => \Yii::$app->name])
+                        ->setFrom(['noreplay@lawurli.com' => \Yii::$app->name])
                         ->setSubject('Password reset')
                         ->send();
                 if ($email) {
@@ -1325,6 +1326,7 @@ class UsersController extends \yii\web\Controller {
                     'pages' => $pages
         ]);
     }
+
 
     /**
      * 
