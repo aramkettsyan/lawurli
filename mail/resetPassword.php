@@ -6,8 +6,8 @@ use yii\helpers\Html;
  
 $confirmLink = Yii::$app->urlManager->createAbsoluteUrl([$action,'action'=>'reset', 'id' => $user->id, 'key' => $user->password_reset_token]).'#forgpass-popup-2';
 ?>
-<img src="<?= \Yii::getAlias('@webroot') ?>/images/logo.png">
 
 Dear <?= Html::encode($user->first_name.' '.$user->last_name) ?>,<br>
+<img src="<?= \Yii::getAlias('@webroot') ?>/images/logo.png">
 For resetting your password please follow this <?= Html::a(Html::encode($confirmLink), $confirmLink) ?> <br>
 Best regards.
