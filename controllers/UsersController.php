@@ -72,7 +72,7 @@ class UsersController extends \yii\web\Controller {
                     'user' => 'admin',
                     'rules' => [
                         [
-                            'actions' => ['index', 'edit', 'profile', 'search', 'error'],
+                            'actions' => ['index', 'edit', 'profile', 'search', 'error','contact-us'],
                             'allow' => true,
                             'roles' => ['@'],
                         ]
@@ -100,6 +100,10 @@ class UsersController extends \yii\web\Controller {
 
     public function beforeAction($action) {
         $action_id = \Yii::$app->controller->action->id;
+        
+        $aboutUsModel = AboutUs::findOne(['static_id' => '1']);
+        
+        \Yii::$app->view->params['contact_email'] = $aboutUsModel['contact_us_email'];
 
         //Not Connected Users
         if ($action_id === 'profile' && !\Yii::$app->user->isGuest && !\Yii::$app->request->isAjax) {
@@ -125,6 +129,7 @@ class UsersController extends \yii\web\Controller {
         ];
 
         if (in_array($action_id, $actions) && \Yii::$app->user->isGuest) {
+            
             $id = false;
             $key = false;
             $act = false;
@@ -635,7 +640,7 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionIndex($action = false, $id = false, $key = false) {
-
+        
         $models = $this->models;
 
         return $this->render('index', $models);

@@ -361,7 +361,7 @@ UserAsset::register($this);
                     </div>
                     <div class="footerContact">
                         <h4>Contact Us</h4>
-                        <p><i class="icon-letter-mail-1"></i>blah@mail.com</p>
+                        <p><i class="icon-letter-mail-1"></i><?php echo $this->params['contact_email'] ?></p>
                         <p><i class="icon-call-phone-square"></i>341 987 44 63</p>
                         <div class="footerSocials">
                             <ul>
@@ -379,9 +379,9 @@ UserAsset::register($this);
                 </div>
                 <div class="footerNav">
                     <ul class="clearAfter linkHover">
-                        <li><a href="#" data-hover="Home">Home</a></li>
-                        <li><a href="#" data-hover="Blah menu">Blah menu</a></li>
-                        <li><a href="#" data-hover="Another blah">Another blah</a></li>
+                        <li><a href="<?= \yii\helpers\Url::to(['users/index']) ?>" data-hover="Home">Home</a></li>
+                        <li><a href="<?= \yii\helpers\Url::to(['users/contact-us#about_us']) ?>" data-hover="About us">About us</a></li>
+                        <li><a href="<?= \yii\helpers\Url::to(['users/contact-us#contact_us']) ?>" data-hover="Contact us">Contact us</a></li>
                         <li><a href="#" data-hover="Something else">Something else</a></li>
                     </ul>
                 </div>

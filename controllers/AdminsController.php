@@ -39,7 +39,7 @@ class AdminsController extends \yii\web\Controller {
                     'class' => AdminAccessControl::className(),
                     'rules' => [
                         [
-                            'actions' => ['logout','about-us','index', 'user-settings', 'site-settings', 'upload-image', 'delete-section', 'delete-sub-section', 'redirect-and-set-flash'],
+                            'actions' => ['logout', 'about-us', 'news', 'index', 'user-settings', 'site-settings', 'upload-image', 'delete-section', 'delete-sub-section', 'redirect-and-set-flash'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
@@ -158,7 +158,7 @@ class AdminsController extends \yii\web\Controller {
                 $options = '';
             }
             $multiple_form_model = Model::createMultiple(FormsForm::classname());
-            
+
             Model::loadMultiple($multiple_form_model, $form);
 
             $loadsData['_csrf'] = Yii::$app->request->post()['_csrf'];
@@ -401,17 +401,42 @@ class AdminsController extends \yii\web\Controller {
         $this->goHome();
     }
 
-    public function actionAboutUs(){
-        $aboutUsModel =  AboutUs::findOne(['static_id'=>'1']);
-        if($postData =  Yii::$app->request->post("AboutUs")){
+    public function actionAboutUs() {
+        $aboutUsModel = AboutUs::findOne(['static_id' => '1']);
+        if ($postData = Yii::$app->request->post("AboutUs")) {
             $aboutUsModel->attributes = $postData;
-            if($aboutUsModel->save()){
+            if ($aboutUsModel->save()) {
                 $this->redirect('/admins/index');
             }
-
         }
         return $this->render('about-us', ['model' => $aboutUsModel]);
+    }
 
+    public function actionNews($edit = false, $delete = false, $id = false) {
+
+        if ($id && $edit) {
+            $newsModel = \app\models\NewsResources::findOne(['resource_id' => $id]);
+        } else {
+            $newsModel = new \app\models\NewsResources();
+        }
+        
+        if($id && $delete){
+            $newsModel->deleteAll(['resource_id'=>$id]);
+        }
+        
+        $newsList = \app\models\NewsResources::find()->all();
+
+        if (\Yii::$app->request->isPost) {
+            if ($newsModel->load(\Yii::$app->request->post()) && $newsModel->save()) {
+                \Yii::$app->session->setFlash('newsSuccess', 'Url saved.');
+                $this->redirect('/admins/news');
+            }
+        }
+
+        return $this->render('news', [
+                    'model' => $newsModel,
+                    'newsList' => $newsList
+        ]);
     }
 
 }

@@ -10,7 +10,7 @@ use yii\captcha\Captcha;
 
 $this->title = 'Contact';
 ?>
-<div class="titleWithBg aboutTitle">
+<div id="about_us" class="titleWithBg aboutTitle">
     <h3>About Us</h3>
 </div>
 <div class="container mainContainer">
@@ -18,7 +18,7 @@ $this->title = 'Contact';
         <p><?= $aboutUsModel['about_us'] ?></p>
     </div>
     <div class="contactWrapp">
-        <div class="pageTitle">
+        <div class="pageTitle" id="contact_us">
             <h3>Contact us</h3>
         </div>
         <?php if (Yii::$app->session->hasFlash('contactFormSubmitted')): ?>
