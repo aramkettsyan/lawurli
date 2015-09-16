@@ -23,8 +23,8 @@ $this->title = 'News';
         </div>
         <?php ActiveForm::end(); ?>
     </div>
-    <?php if (!empty($newsList)) { ?>
-        <table border="1" style="display: inline-block;position: absolute;right: 50px">
+    <table border="1" style="display: inline-block;position: absolute;right: 50px">
+        <?php if (!empty($newsList)) { ?>
             <tr>
                 <th>Url</th>
                 <th>Edit</th>
@@ -38,11 +38,11 @@ $this->title = 'News';
                     <td><a href="/admins/news/?delete=true&id=<?= $news_url->resource_id ?>" >Delete</a></td>
                 </tr>
             <?php } ?>
+        <?php } else { ?>
+            <tr>There are no sites</tr>
+        <?php } ?>
 
-        </table>
-    <?php } else { ?>
-        <tr>There are no sites</tr>
-    <?php } ?>
+    </table>
 
 
 </div>
