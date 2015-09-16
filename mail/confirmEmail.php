@@ -1,5 +1,5 @@
 <div style="text-align: left; padding-bottom:20px; ">
-    <img src="/images/logo.png" alt="" style="width: 200px;" />
+    <img src="http://network.codebnb.me/images/logo.png" alt="" style="width: 200px;" />
 </div>
 <?php
 use yii\helpers\Html;
