@@ -25,6 +25,7 @@ class UserAsset extends AssetBundle {
         'include/animated-headline/animated-headline.css',
         'include/magnific-popup/magnific-popup.css',
         'include/custom-scrollbar/jquery.mCustomScrollbar.css',
+        'include/flexslider/flexslider.css',
         'css/fileuploader.css',
         'css/main.css'
     ];
@@ -40,6 +41,7 @@ class UserAsset extends AssetBundle {
         'include/animated-headline/animated-headline.js',
         'include/magnific-popup/jquery.magnific-popup.js',
         'include/custom-scrollbar/jquery.mCustomScrollbar.js',
+        'include/flexslider/jquery.flexslider-min.js',
         'include/main.js',
         'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places',
     ];

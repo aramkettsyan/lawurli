@@ -11,7 +11,21 @@ use yii\widgets\ActiveForm;
 $this->title = 'Home'
 ?>
 <div class="homeTop <?= !Yii::$app->user->isGuest ? 'homeTopUser' : '' ?> clearAfter">
+    <div class="flexslider">
+            <ul class="slides">
+                <li>                    
+                    <div class="slide slide_1"></div>
+                </li>
+                <li>                    
+                    <div class="slide slide_2"></div>
+                </li>
+                <li>                    
+                    <div class="slide slide_3"></div>
+                </li>
+            </ul>
+        </div>
     <div class="container">
+        
         <div class="homeTopText">
             <h4 class="cd-headline zoom">
                 <span class="cd-words-wrapper">
@@ -193,6 +207,12 @@ $this->title = 'Home'
 
 
 <script type="text/javascript">
+    $(window).load(function () {
+        $('.flexslider').flexslider({
+            animation: "slide"
+        });
+
+    });
     $(document).ready(function () {
 
         $('#signupTab input').on('keyup', function () {
