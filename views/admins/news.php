@@ -23,21 +23,26 @@ $this->title = 'News';
         </div>
         <?php ActiveForm::end(); ?>
     </div>
-
-    <table border="1" style="display: inline-block;position: absolute;right: 50px">
-        <tr>
-            <th>Url</th>
-            <th>Edit</th>
-            <th>Delete</th>
-        </tr>
-        <?php foreach ($newsList as $news_url) { ?>
+    <?php if (!empty($newsList)) { ?>
+        <table border="1" style="display: inline-block;position: absolute;right: 50px">
             <tr>
-                <td><?= $news_url->resource_url ?></td>
-                <td><a href="/admins/news/?edit=true&id=<?= $news_url->resource_id ?>" >Edit</a></td>
-                <td><a href="/admins/news/?delete=true&id=<?= $news_url->resource_id ?>" >Delete</a></td>
+                <th>Url</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
-        <?php } ?>
-    </table>
+
+            <?php foreach ($newsList as $news_url) { ?>
+                <tr>
+                    <td><?= $news_url->resource_url ?></td>
+                    <td><a href="/admins/news/?edit=true&id=<?= $news_url->resource_id ?>" >Edit</a></td>
+                    <td><a href="/admins/news/?delete=true&id=<?= $news_url->resource_id ?>" >Delete</a></td>
+                </tr>
+            <?php } ?>
+
+        </table>
+    <?php } else { ?>
+        <tr>There are no sites</tr>
+    <?php } ?>
 
 
 </div>
