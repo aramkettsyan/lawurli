@@ -1,10 +1,10 @@
 <?php if(!empty($resources)){ ?>    
 <div style="position: relative">   
-        <ul id="newsContent">
+        <ul id="newsContent" class="news_cont">
             <?php foreach ($resources as $xmlObject) { ?>
-                <li style="border-bottom:1px solid rgb(100,100,100);margin-top: 10px">
+                <li>
                     <p style="font-weight:bold"><a href="<?php echo $xmlObject['link']; ?>" target="_blank"><?php echo $xmlObject['title']; ?></a></p>
-                    <small><?php echo $xmlObject['pubDate']; ?></small>
+                    <time><?php echo $xmlObject['pubDate']; ?></time>
                 </li>
             <?php } ?>
         </ul>

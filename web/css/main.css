@@ -1336,10 +1336,19 @@ header {
     text-overflow: ellipsis;
     overflow: hidden;
 }
-.notifList ul li .notifC time {
+.notifList ul li .notifC time, 
+.news_cont time{
     border-left: solid 2px #DA8213;
     padding-left: 7px;
     color: #DA8213;
+}
+.news_cont{
+    padding-bottom: 20px;
+}
+.news_cont li + li{
+    border-top: solid 1px #E0E0E0;
+    padding-top: 10px;
+    margin-top: 10px;
 }
 /* end notification page */
 
