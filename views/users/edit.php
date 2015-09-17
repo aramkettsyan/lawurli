@@ -28,6 +28,10 @@ $this->title = 'Edit profile'
                 </div>
             <?php } ?>
         </div>
+        
+        <?php if($user->image !== 'default.png'){ ?>
+        <a href='/users/delete-image'>Delete Image</a>
+        <?php } ?>
         <p style="color:red;display: none" id="imageUploadError"></p>
 
         <div class="userDetails">

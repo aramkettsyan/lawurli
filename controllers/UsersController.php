@@ -41,7 +41,8 @@ class UsersController extends \yii\web\Controller {
                                 'load-notifications',
                                 'get-not-connected-users',
                                 'error',
-                                'contact-us'
+                                'contact-us',
+                                'delete-image'
                             ],
                             'allow' => true,
                             'roles' => ['@'],
@@ -249,6 +250,14 @@ class UsersController extends \yii\web\Controller {
         Yii::$app->getSession()->writeSession('showRegistration', true);
 
         return $registrationModel;
+    }
+    
+    public function actionDeleteImage(){
+        $id = Yii::$app->user->id;
+        $model = Users::findOne(['id'=>$id]);
+        $model->image = 'default.png';
+        $model->save();
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     public function actionEdit($action = 'general', $id = false) {

@@ -23,14 +23,16 @@ class NewsController extends \yii\web\Controller {
                     'user' => 'user',
                     'rules' => [
                         [
-                            'actions' => ['load-news'
+                            'actions' => [
+                                'load-news',
+                                'cron'
                             ],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
                         [
                             'actions' => [
-                            //todo
+                                'cron'
                             ],
                             'allow' => true,
                             'roles' => ['?']
@@ -70,6 +72,49 @@ class NewsController extends \yii\web\Controller {
         }
         $page = \Yii::$app->request->get('page');
         if ($page === NULL) {
+            $current_page = 0;
+        } else {
+            $current_page = $page;
+        }
+
+        $model = new \app\models\News();
+        $news = $model->find()->all();
+        $newsArray = [];
+        $k = 0;
+        foreach ($news as $n) {
+            $newsArray[$k]['title'] = $n->news_title;
+            $newsArray[$k]['link'] = $n->news_url;
+            $newsArray[$k]['pubDate'] = $n->news_pub_date;
+            $k++;
+        }
+        usort($newsArray, function($a, $b) {
+            return strcmp($b['pubDate'], $a['pubDate']);
+        });
+
+
+
+
+        $newsCount = count($newsArray);
+        $pageSize = 10;
+        if ($page) {
+            $pageFrom = $page * $pageSize;
+        } else {
+            $pageFrom = 0;
+        }
+        $pagesCount = ceil($newsCount / $pageSize);
+        $pageNews = array_slice($newsArray, $pageFrom, $pageSize);
+        return $this->render('load-news', [
+                    'resources' => $pageNews,
+                    'pagesCount' => $pagesCount,
+                    'current_page' => $current_page,
+                    'pageSize' => $pageSize
+        ]);
+    }
+
+    public function actionCron($token = false) {
+        $cToken = md5('stdevcron');
+        if ($token && $token === $cToken) {
+            $this->layout = false;
             $limit = 10;
             $newsResources = NewsResources::findeResources($limit);
             $resources = [];
@@ -88,11 +133,8 @@ class NewsController extends \yii\web\Controller {
                 $resources[] = $xmlObject;
             }
 
-//            print_r($resources);
-//            die;
-
-
             $newsArray = [];
+            $rows = [];
             $k = 0;
             foreach ($resources as $resource) {
                 $j = 0;
@@ -107,54 +149,59 @@ class NewsController extends \yii\web\Controller {
                         $newsArray[$k]['pubDate'] = (isset($item->pubDate) && !empty($item->pubDate)) ? (string) $item->pubDate : (string) '';
                         if (!empty($newsArray[$k]['pubDate'])) {
                             $date = new DateTime($newsArray[$k]['pubDate']);
-
+                            $date->setTimezone(new \DateTimeZone('Europe/London'));
                             $newsArray[$k]['pubDate'] = $date->format("d-m-Y H:i:s");
                         }
+
+                        $cDate = new \yii\db\Expression('NOW()');
+                        $rows[] = [
+                            'news_title' => (string) $item->title,
+                            'news_pub_date' => $newsArray[$k]['pubDate'],
+                            'news_url' => (string) $item->link,
+                            'created' => $cDate,
+                            'modified' => $cDate
+                        ];
+
                         $k++;
                         $j++;
                     }
-                    usort($newsArray, function($a, $b) {
-                        return strcmp($b['pubDate'], $a['pubDate']);
-                    });
-//                    $k = 0;
-//                    foreach ($newsArray as $news) {
-//                        if (!empty($newsArray[$k]['pubDate'])) {
-//                            $curentTime = time();
-//                            $time = strtotime($newsArray[$k]['pubDate']);
-//                            if (($curentTime - $time) < 3600) {
-//                                $newsArray[$k]['pubDate'] = floor(($curentTime - $time) / 60);
-//                            }else if(($curentTime - $time) < 86400){
-//                                $newsArray[$k]['pubDate'] = 'Today '.date("H:i:s", strtotime($newsArray[$k]['pubDate']));
-//                            } else {
-//                                $newsArray[$k]['pubDate'] = date("d-m-Y H:i:s", strtotime($newsArray[$k]['pubDate']));
-//                            }
-//                        }
-//                        $k++;
-//                    }
+                } else if (is_object($resource->entry)) {
+                    foreach ($resource->entry as $item) {
+                        if ($j === 15) {
+                            break;
+                        }
+                        $newsArray[$k]['title'] = (string) $item->title;
+                        $newsArray[$k]['link'] = (string) $item->link;
+                        $newsArray[$k]['pubDate'] = (isset($item->published) && !empty($item->published)) ? (string) $item->published : (string) '';
+                        if (!empty($newsArray[$k]['pubDate'])) {
+                            $date = new DateTime($newsArray[$k]['pubDate']);
+                            $date->setTimezone(new \DateTimeZone('Europe/London'));
+                            $newsArray[$k]['pubDate'] = $date->format("d-m-Y H:i:s");
+                        }
+
+                        $cDate = new \yii\db\Expression('NOW()');
+                        $rows[] = [
+                            'news_title' => (string) $item->title,
+                            'news_pub_date' => $newsArray[$k]['pubDate'],
+                            'news_url' => (string) $item->link,
+                            'created' => $cDate,
+                            'modified' => $cDate
+                        ];
+
+                        $k++;
+                        $j++;
+                    }
                 }
             }
-            $current_page = 0;
-            \Yii::$app->session->writeSession('news', $newsArray);
-        } else {
-            $current_page = $page;
-            $newsArray = \Yii::$app->session->readSession('news');
+            $model = new \app\models\News();
+            $model->deleteAll();
+            \Yii::$app->db->createCommand('ALTER TABLE news AUTO_INCREMENT = 1')->execute();
+            \Yii::$app->db->createCommand()->batchInsert('news', ['news_title', 'news_pub_date', 'news_url', 'created', 'modified'], $rows)->execute();
+        }else{
+            throw new \yii\web\NotFoundHttpException();
         }
-
-        $newsCount = count($newsArray);
-        $pageSize = 10;
-        if ($page) {
-            $pageFrom = $page * $pageSize;
-        } else {
-            $pageFrom = 0;
-        }
-        $pagesCount = ceil($newsCount / $pageSize);
-        $pageNews = array_slice($newsArray, $pageFrom, $pageSize);
-        return $this->render('load-news', [
-                    'resources' => $pageNews,
-                    'pagesCount' => $pagesCount,
-                    'current_page' => $current_page,
-                    'pageSize' => $pageSize
-        ]);
+        
+        return;
     }
 
     public function actionAddNewsUrl($url) {
