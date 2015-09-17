@@ -74,17 +74,19 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
         <?php Yii::$app->getSession()->destroySession('updateSuccess'); ?>
         <div class="profileTabs">
             <ul class="clearAfter">
-                <li class="active"><a href="#" id="profiletab"><i class="icon-card-user-2"></i>Profile</a></li>
+                <?php if ((Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'])) : ?>
+                    <li><a href="#" id="profiletabNews"><i class="icon-newspaper"></i>News</a></li>
+                <?php endif; ?>
+                <li><a href="#" id="profiletab"><i class="icon-card-user-2"></i>Profile</a></li>
                 <li><a href="#" id="colleag"><i class="icon-contacts"></i>Colleagues</a></li>
                 <?php if ((Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'])) : ?>
                     <li><a href="#" id="profiletabNot"><i class="icon-bell-two"></i>Notifications</a></li>
-                    <li><a href="#" id="profiletabNews"><i class="icon-newspaper"></i>News</a></li>
                 <?php endif; ?>
             </ul>
         </div>
         <div class="tabsContent">
             <div id="tabContent"></div>
-            <div id="profileInfo">
+            <div id="profileInfo" style="display:none">
                 <?php $emptyProfile = false; ?>
                 <?php foreach ($this->params['sections'] as $sectionName => $section) { ?>
                     <?php $emptySectionToken = false; ?>
@@ -126,7 +128,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
 
                                                     <?php if ($form['formType'] === 'input') { ?>
                                                         <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
                                                         <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'textarea') { ?>
@@ -213,9 +215,29 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
     }
     var colleaguesTab = getParameterByName('colleaguesTab');
     var notificationsTab = getParameterByName('notificationsTab');
+    var profileTab = getParameterByName('profileTab');
 
 
     $(document).ready(function () {
+        if (colleaguesTab != 'open' && notificationsTab != 'open' && profileTab != 'open') {
+            $('#newsContent').css('opacity', '0.2');
+            $('#loader').show();
+
+            $("#tabContent").hide();
+            $("#profileInfo").hide();
+            $(this).parent().addClass("active");
+            $(this).parent().siblings().removeClass("active");
+            $("#tabContent").load("/news/load-news", function () {
+                $('#newsContent').css('opacity', '1');
+                $('#loader').hide();
+                $("#tabContent").show();
+                $('#profileInfo').hide();
+                $("#profiletabNews").parent().addClass("active");
+                $("#profiletabNews").parent().siblings().removeClass("active");
+            });
+        }
+
+
         $('.hideSection').parent().hide();
         $('.hideSubSection').parent().hide();
 
@@ -238,16 +260,16 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $(this).find('.inputError').hide();
         });
 
-        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                           ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                           ?>
+        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                              ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                              ?>
         //        if (showRegistration) {
         //            $.magnificPopup.open({
         //                items: {src: '#signup-popup'}, type: 'inline'
         //            }, 0);
         //        }
         //
-        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                           ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showLogin');                           ?>
+        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                              ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showLogin');                              ?>
         //        if (showLogin) {
         //            $.magnificPopup.open({
         //                items: {src: '#login-popup'}, type: 'inline'
@@ -255,20 +277,23 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
         //        }
 
 
-        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                           ?>;
-        //<?php //Yii::$app->getSession()->destroySession('newPassword');                           ?>
+        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                              ?>;
+        //<?php //Yii::$app->getSession()->destroySession('newPassword');                              ?>
         //        if (newPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup-2'}, type: 'inline'
         //            }, 0);
         //        }
-        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                           ?>;
-        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                           ?>
+        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                              ?>;
+        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                              ?>
         //        if (resetPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup'}, type: 'inline'
         //            }, 0);
         //        }
+
+        console.log(colleaguesTab);
+        console.log(notificationsTab);
 
         if (colleaguesTab == 'open') {
             $("#profileInfo").hide();
@@ -281,6 +306,12 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $("#profiletabNot").parent().addClass("active");
             $("#profiletabNot").parent().siblings().removeClass("active");
             $("#tabContent").load("/users/load-notifications");
+        }
+        if (profileTab == 'open') {
+            $("#tabContent").hide();
+            $("#profiletab").parent().addClass("active");
+            $("#profiletab").parent().siblings().removeClass("active");
+            $("#profileInfo").show();
         }
 
         $(document).on("click", "#colleag", function (event) {

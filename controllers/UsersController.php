@@ -298,7 +298,7 @@ class UsersController extends \yii\web\Controller {
                 $user->scenario = 'update';
                 if ($user->load($post) && $user->save()) {
                     $transaction->commit();
-                    return $this->redirect('/users/profile');
+                    return $this->redirect('/users/profile?profileTab=open');
                 } else {
                     $transaction->rollBack();
                 }
@@ -444,14 +444,14 @@ class UsersController extends \yii\web\Controller {
                     if (!empty($newArr) && !$deleteFailed) {
                         if (Yii::$app->db->createCommand()->batchInsert('user_forms', ['user_id', 'form_id', 'index', 'value', 'created', 'modified'], $newArr)->execute()) {
                             $transaction->commit();
-                            return $this->redirect('/users/profile');
+                            return $this->redirect('/users/profile?profileTab=open');
                         } else {
                             Yii::$app->getSession()->writeSession('updateError', 'Can\'t insert form(s), try again.');
                             $transaction->rollBack();
                         }
                     } else if (!$deleteFailed) {
                         $transaction->commit();
-                        return $this->redirect('/users/profile');
+                        return $this->redirect('/users/profile?profileTab=open');
                     }
                 } else {
                     Yii::$app->getSession()->writeSession('updateError', 'There are some error(s) in form(s), try again.');
