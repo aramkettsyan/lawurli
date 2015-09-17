@@ -1874,6 +1874,9 @@ footer h4 {
     margin: 0;
     overflow: hidden;
 }
+.flexslider .container{
+    min-height: 418px;
+}
 .flexslider .slides img {
     width: 100%;
     height: auto;
