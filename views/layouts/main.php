@@ -382,7 +382,6 @@ UserAsset::register($this);
                         <li><a href="<?= \yii\helpers\Url::to(['users/index']) ?>" data-hover="Home">Home</a></li>
                         <li><a href="<?= \yii\helpers\Url::to(['users/contact-us#about_us']) ?>" data-hover="About us">About us</a></li>
                         <li><a href="<?= \yii\helpers\Url::to(['users/contact-us#contact_us']) ?>" data-hover="Contact us">Contact us</a></li>
-                        <li><a href="#" data-hover="Something else">Something else</a></li>
                     </ul>
                 </div>
                 <p class="poweredBy">© 2015 <?= (date('Y', time()) == '2015' ? '' : '- ' . date('Y', time())) ?> Lawurli | Created by <a href="http://st-dev.com" target="_blank">STDev</a></p>
@@ -413,7 +412,7 @@ UserAsset::register($this);
                                 if (msg[0] !== undefined) {
                                     var user = $('.notConnectedUser:first').clone();
                                     if (msg[0].location) {
-                                        user.find('.plAddress').html('<i class="icon-location">'+msg[0].location);
+                                        user.find('.plAddress').html('<i class="icon-location">' + msg[0].location);
                                     } else {
                                         user.find('.plAddress').html('');
                                     }
@@ -442,7 +441,7 @@ UserAsset::register($this);
                                 if (msg[0] !== undefined) {
                                     var user = $('.notConnectedUser:first').clone();
                                     if (msg[0].location) {
-                                        user.find('.plAddress').html('<i class="icon-location">'+msg[0].location);
+                                        user.find('.plAddress').html('<i class="icon-location">' + msg[0].location);
                                     } else {
                                         user.find('.plAddress').html('');
                                     }
