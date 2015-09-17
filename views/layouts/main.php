@@ -56,7 +56,7 @@ UserAsset::register($this);
                                         <li><a href="#signup-popup" class="popupBtn" data-hover="Sign up">Sign up</a></li>
                                     <?php } else { ?>
                                         <li><a href="<?= \yii\helpers\Url::to(['users/index']) ?>" data-hover="Home">Home</a></li>
-                                        <li><a href="<?= \yii\helpers\Url::to(['users/contact-us']) ?>" data-hover="Contact Us">Contact Us</a></li>
+                                        <li><a href="<?= \yii\helpers\Url::to(['users/contact-us#contact_us']) ?>" data-hover="Contact Us">Contact Us</a></li>
                                         <li><a href="/users/profile?colleaguesTab=open" data-hover="Colleagues">Colleagues</a></li>
                                     <?php } ?>
                                 </ul>
