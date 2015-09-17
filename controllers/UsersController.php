@@ -454,7 +454,8 @@ class UsersController extends \yii\web\Controller {
                         return $this->redirect('/users/profile');
                     }
                 } else {
-                    $this->redirect('/users/index');
+                    Yii::$app->getSession()->writeSession('updateError', 'There are some error(s) in form(s), try again.');
+                    return $this->redirect('/users/edit');
                 }
             } catch (Exception $e) {
                 $transaction->rollBack();
@@ -561,9 +562,11 @@ class UsersController extends \yii\web\Controller {
         switch ($type) {
             case 'input':
                 if (strlen($value) > 255) {
+                    print_r('1');
+                    die;
                     $validated = false;
                 }
-                if ($numeric != 0 && !is_int($value)) {
+                if ($numeric != 0 && !((int) $value)) {
                     $validated = false;
                 }
                 break;
@@ -571,21 +574,29 @@ class UsersController extends \yii\web\Controller {
                 break;
             case 'select':
                 if (!in_array($value, $optionsArray)) {
+                    print_r('3');
+                    die;
                     $validated = false;
                 }
                 break;
             case 'radio':
                 if (!in_array($value, $optionsArray)) {
+                    print_r('4');
+                    die;
                     $validated = false;
                 }
                 break;
             case 'checkbox':
                 if (!in_array($value, $optionsArray)) {
+                    print_r('5');
+                    die;
                     $validated = false;
                 }
                 break;
 
             default:
+                print_r('6');
+                    die;
                 $validated = false;
                 break;
         }
@@ -887,7 +898,6 @@ class UsersController extends \yii\web\Controller {
         if (Yii::$app->user->isGuest) {
             return $this->redirect('/users/index');
         }
-
         $query = trim(\Yii::$app->request->get('query'));
         $first_name = str_replace('_', '', str_replace('%', '', trim(\Yii::$app->request->get('first_name'))));
         $last_name = str_replace('_', '', str_replace('%', '', trim(\Yii::$app->request->get('last_name'))));

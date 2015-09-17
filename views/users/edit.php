@@ -60,7 +60,9 @@ $this->title = 'Edit profile'
         </div>
     </div>
     <div class="profileR">
-
+        <h4 style="color:red"><?= Yii::$app->getSession()->readSession('updateError') ?></h4>
+        <?php Yii::$app->getSession()->destroySession('updateError'); ?>
+        
         <?php $action = Yii::$app->getRequest()->getQueryParam('action'); ?>
 
         <?php if (empty($action)) { ?>

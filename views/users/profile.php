@@ -71,9 +71,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
     </div>
     <div class="profileR">
         <h4 style="color:green"><?= Yii::$app->getSession()->readSession('updateSuccess') ?></h4>
-        <h4 style="color:red"><?= Yii::$app->getSession()->readSession('updateError') ?></h4>
         <?php Yii::$app->getSession()->destroySession('updateSuccess'); ?>
-        <?php Yii::$app->getSession()->destroySession('updateError'); ?>
         <div class="profileTabs">
             <ul class="clearAfter">
                 <li class="active"><a href="#" id="profiletab"><i class="icon-card-user-2"></i>Profile</a></li>
