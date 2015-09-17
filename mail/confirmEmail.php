@@ -7,8 +7,8 @@ use yii\helpers\Html;
 $confirmLink = Yii::$app->urlManager->createAbsoluteUrl(['users/confirm', 'id' => $user->id, 'key' => $user->activation_token]);
 ?>
 <br>
-<a href="http://network.codebnb.me/" style="display: inline-block; text-align: left; text-decoration:none;">
-    <img src="http://network.codebnb.me/images/logo.png" style="width: 130px; border:0 none; outline:0 none; margin:0; padding:0" alt="" />
+<a href="<?php echo "http://" . $_SERVER['SERVER_NAME']; ?>" style="display: inline-block; text-align: left; text-decoration:none;">
+    <img src="<?php echo "http://" . $_SERVER['SERVER_NAME']; ?>images/logo.png" style="width: 130px; border:0 none; outline:0 none; margin:0; padding:0" alt="" />
 </a>
 <br>
 <br>
