@@ -454,7 +454,7 @@ class UsersController extends \yii\web\Controller {
                         return $this->redirect('/users/profile');
                     }
                 } else {
-                    Yii::$app->getSession()->writeSession('updateError', 'There are some error(s) in form(s), try again.');
+                    $this->redirect('/users/index');
                 }
             } catch (Exception $e) {
                 $transaction->rollBack();
