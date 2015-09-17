@@ -115,7 +115,7 @@ class NewsController extends \yii\web\Controller {
         $cToken = md5('stdevcron');
         if ($token && $token === $cToken) {
             $this->layout = false;
-            $limit = 10;
+            $limit = 10000;
             $newsResources = NewsResources::findeResources($limit);
             $resources = [];
             $urls = [];
