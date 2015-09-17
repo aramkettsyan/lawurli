@@ -10,6 +10,7 @@ use yii\widgets\ActiveForm;
 <?php
 $this->title = 'Home'
 ?>
+<?= Yii::$app->getBasePath() ?>
 <div class="homeTop <?= !Yii::$app->user->isGuest ? 'homeTopUser' : '' ?> clearAfter">
     <div class="flexslider">
             <ul class="slides">

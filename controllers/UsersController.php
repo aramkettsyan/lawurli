@@ -73,7 +73,7 @@ class UsersController extends \yii\web\Controller {
                     'user' => 'admin',
                     'rules' => [
                         [
-                            'actions' => ['index', 'edit', 'profile', 'search', 'error','contact-us'],
+                            'actions' => ['index', 'edit', 'profile', 'search', 'error', 'contact-us'],
                             'allow' => true,
                             'roles' => ['@'],
                         ]
@@ -101,9 +101,9 @@ class UsersController extends \yii\web\Controller {
 
     public function beforeAction($action) {
         $action_id = \Yii::$app->controller->action->id;
-        
+
         $aboutUsModel = AboutUs::findOne(['static_id' => '1']);
-        
+
         \Yii::$app->view->params['contact_email'] = $aboutUsModel['contact_us_email'];
 
         //Not Connected Users
@@ -130,7 +130,7 @@ class UsersController extends \yii\web\Controller {
         ];
 
         if (in_array($action_id, $actions) && \Yii::$app->user->isGuest) {
-            
+
             $id = false;
             $key = false;
             $act = false;
@@ -251,13 +251,17 @@ class UsersController extends \yii\web\Controller {
 
         return $registrationModel;
     }
-    
-    public function actionDeleteImage(){
+
+    public function actionDeleteImage() {
         $id = Yii::$app->user->id;
-        $model = Users::findOne(['id'=>$id]);
-        $model->image = 'default.png';
-        $model->save();
-        return $this->redirect(Yii::$app->request->referrer);
+        $model = Users::findOne(['id' => $id]);
+        if ($model) {
+            $model->image = 'default.png';
+            $model->save();
+            return $this->redirect(Yii::$app->request->referrer);
+        }else{
+            return $this->redirect('/users/index');
+        }
     }
 
     public function actionEdit($action = 'general', $id = false) {
@@ -649,7 +653,7 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionIndex($action = false, $id = false, $key = false) {
-        
+
         $models = $this->models;
 
         return $this->render('index', $models);
@@ -1340,7 +1344,6 @@ class UsersController extends \yii\web\Controller {
                     'pages' => $pages
         ]);
     }
-
 
     /**
      * 
