@@ -7,8 +7,8 @@ use yii\helpers\Html;
 $confirmLink = Yii::$app->urlManager->createAbsoluteUrl([$action,'action'=>'reset', 'id' => $user->id, 'key' => $user->password_reset_token]).'#forgpass-popup-2';
 ?>
 <br>
-<a href="<?php echo "http://" . $_SERVER['SERVER_NAME']; ?>" style="display: inline-block; text-align: left; text-decoration:none;">
-    <img src="<?php echo "http://" . $_SERVER['SERVER_NAME']; ?>images/logo.png" style="width: 130px; border:0 none; outline:0 none; margin:0; padding:0" alt="" />
+<a href="<?= Yii::$app->urlManager->createAbsoluteUrl(['']) ?>" style="display: inline-block; text-align: left; text-decoration:none;">
+    <img src="<?= Yii::$app->urlManager->createAbsoluteUrl(['']) ?>images/logo.png" style="width: 130px; border:0 none; outline:0 none; margin:0; padding:0" alt="" />
 </a>
 <br>
 <br>
