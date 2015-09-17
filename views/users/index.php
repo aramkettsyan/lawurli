@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 <?php
 $this->title = 'Home'
 ?>
-<?php echo "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']; ?>
+<?php echo "http://" . $_SERVER['SERVER_NAME']; ?>
 <div class="homeTop <?= !Yii::$app->user->isGuest ? 'homeTopUser' : '' ?> clearAfter">
     <div class="flexslider">
             <ul class="slides">
