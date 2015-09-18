@@ -10,7 +10,20 @@ use yii\widgets\ActiveForm;
 <?php
 $this->title = 'Home'
 ?>
-
+<div class="homeTop <?= !Yii::$app->user->isGuest ? 'homeTopUser' : '' ?> clearAfter">
+    <div class="flexslider">
+            <ul class="slides">
+                <li>                    
+                    <div class="slide slide_1"></div>
+                </li>
+                <li>                    
+                    <div class="slide slide_2"></div>
+                </li>
+                <li>                    
+                    <div class="slide slide_3"></div>
+                </li>
+            </ul>
+        </div>
     <div class="container">
         
         <div class="homeTopText">
@@ -192,7 +205,11 @@ $this->title = 'Home'
     </div>
 </section>
 
-
+<script type="text/javascript" async>
+        $('.flexslider').flexslider({
+            animation: "slide"
+        });
+</script>
 <script type="text/javascript">
     $(document).ready(function () {
 
