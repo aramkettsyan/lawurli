@@ -12,10 +12,18 @@ $confirmLink = Yii::$app->urlManager->createAbsoluteUrl([$action,'action'=>'rese
 </a>
 <br>
 <br>
-Dear <?= Html::encode($user->first_name.' '.$user->last_name) ?>,
+<p style="color:#222; margin: 0; padding: 0;">Dear <?= Html::encode($user->first_name.' '.$user->last_name) ?>,</p>
 <br>
 <br>
-For resetting your password please follow this <?= Html::a(Html::encode($confirmLink), $confirmLink) ?>
-<br>
-<br>
-Best regards.
+<p style="color:#222; margin: 0; padding: 0;">You have requested to reset your password. Please proceed with the following button.</p>
+<div style="width:100%; clear:both; text-align: center;">
+    <br>
+    <br>
+    <a href="<?= $confirmLink ?>" style="display: inline-block; text-align: center; background: #DA8213; color: #fff; padding: 9px 18px; font-size: 14px; border: none; margin: 0; text-decoration:none;">Reset Password</a>
+    <br>
+    <br>
+</div>
+<p style="color:#222; margin: 0; padding: 0;">Best regards.</p>
+
+
+ <?php //= Html::a(Html::encode($confirmLink), $confirmLink) ?>
