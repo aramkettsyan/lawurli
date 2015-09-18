@@ -54,7 +54,7 @@ $this->title = 'Search';
                                 <?php } ?>
                             </div>
                             <div class="peopleListR">
-                                <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="plName"><?= Html::encode($user['first_name']) ?> <?= Html::encode($user['last_name']) ?></a>
+                                <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id'],'profileTab'=>'open']) ?>" class="plName"><?= Html::encode($user['first_name']) ?> <?= Html::encode($user['last_name']) ?></a>
                                 <div class="plDets">
                                     <!--<p>Plumber at "Clean House" Ltd</p>-->
                                     <?php if ($user['location']) { ?>
