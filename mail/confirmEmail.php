@@ -12,10 +12,10 @@ $confirmLink = Yii::$app->urlManager->createAbsoluteUrl(['users/confirm', 'id' =
 </a>
 <br>
 <br>
-Dear <?= Html::encode($user->first_name.' '.$user->last_name) ?>,
+<p style="color:#222; margin: 0; padding: 0;">Dear <?= Html::encode($user->first_name.' '.$user->last_name) ?>,</p>
 <br>
 <br>
-Thank you for becoming a member of our growing legal community! Please confirm your email address. 
+<p style="color:#222; margin: 0; padding: 0;">Thank you for becoming a member of our growing legal community! Please confirm your email address. </p>
 
 <div style="width:100%; clear:both; text-align: center;">
     <br>
@@ -24,4 +24,4 @@ Thank you for becoming a member of our growing legal community! Please confirm y
     <br>
     <br>
 </div>
-- The Lawurli Team
+<p style="color:#222; margin: 0; padding: 0;">- The Lawurli Team</p>
