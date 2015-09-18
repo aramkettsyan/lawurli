@@ -24,6 +24,3 @@ $confirmLink = Yii::$app->urlManager->createAbsoluteUrl([$action,'action'=>'rese
     <br>
 </div>
 <p style="color:#222; margin: 0; padding: 0;">Best regards.</p>
-
-
- <?php //= Html::a(Html::encode($confirmLink), $confirmLink) ?>

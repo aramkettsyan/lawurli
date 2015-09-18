@@ -23,7 +23,7 @@ use yii\helpers\Html;
                         <?php } ?>
                     </div>
                     <div class="peopleListR">
-                        <a href="/users/profile/<?= $colleague['id'] ?>" class="plName"><?= Html::encode($colleague['first_name']) . ' ' . Html::encode($colleague['last_name'][0]).'.' ?></a>
+                        <a href="/users/profile/<?= $colleague['id'] ?>?profileTab=open" class="plName"><?= Html::encode($colleague['first_name']) . ' ' . Html::encode($colleague['last_name'][0]).'.' ?></a>
                         <div class="plDets">
                             <?= ($colleague['location'] ? '<p class="plAddress"><i class="icon-location"></i>' . $colleague['location'] . '</p>' : '' ) ?>
                         </div>
