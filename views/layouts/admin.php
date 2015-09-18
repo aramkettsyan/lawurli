@@ -35,7 +35,6 @@ AdminAsset::register($this);
                             <?php if (Yii::$app->admin->isGuest) { ?>
                                 <li class=""><?php echo Html::a('Login', \yii\helpers\Url::to(['admins/login']), ['class' => '']) ?></li>
                             <?php } else { ?>
-                                <li class="<?= Yii::$app->controller->action->id === 'index' ? 'active' : '' ?>"><?php echo Html::a('Home', \yii\helpers\Url::to(['admins/index']), ['class' => '']) ?></li>
                                 <li class="<?= Yii::$app->controller->action->id === 'user-settings' ? 'active' : '' ?>"><?php echo Html::a('User settings', \yii\helpers\Url::to(['admins/user-settings']), ['class' => '']) ?></li>
                                 <li class="<?= Yii::$app->controller->action->id === 'about-us' ? 'active' : '' ?>"><?php echo Html::a('About/Contact us', \yii\helpers\Url::to(['admins/about-us']), ['class' => '']) ?></li>
                                 <li class="<?= Yii::$app->controller->action->id === 'site-settings' ? 'active' : '' ?>"><?php echo Html::a('Site settings', \yii\helpers\Url::to(['admins/site-settings']), ['class' => '']) ?></li>

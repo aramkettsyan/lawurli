@@ -384,13 +384,13 @@ class AdminsController extends \yii\web\Controller {
     }
 
     public function actionIndex() {
-        return $this->render('index');
+        return $this->redirect('/admins/user-settings');
     }
 
     public function actionLogin() {
         $model = new AdminLoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect('/admins/index');
+            return $this->redirect('/admins/user-settings');
         } else {
             return $this->render('login', ['model' => $model]);
         }
