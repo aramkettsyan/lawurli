@@ -317,6 +317,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
         $(document).on("click", "#colleag", function (event) {
             event.preventDefault();
             $("#profileInfo").hide();
+            $("#tabContent").show();
             $(this).parent().addClass("active");
             $(this).parent().siblings().removeClass("active");
             var userId = "<?= Yii::$app->controller->actionParams['id'] ?>";
@@ -336,6 +337,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             var pageString = $(this).attr('data-page');
             var pageInt = parseInt(pageString) + 1;
             $("#profileInfo").hide();
+            $("#tabContent").show();
             $(this).parent().addClass("active");
             $(this).parent().siblings().removeClass("active");
             var userId = "<?= Yii::$app->controller->actionParams['id'] ?>";
@@ -346,6 +348,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
         $(document).on("click", "#profiletabNot", function (event) {
             event.preventDefault();
             $("#profileInfo").hide();
+            $("#tabContent").show();
             $(this).parent().addClass("active");
             $(this).parent().siblings().removeClass("active");
             $("#tabContent").load("/users/load-notifications");

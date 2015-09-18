@@ -62,7 +62,7 @@ $this->title = 'Search';
                                     <?php } ?>
                                 </div>
                                 <div class="plActions">
-                                    <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id']]) ?>" class="btn lineDefBtn sBtn">View Profile</a>
+                                    <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id'],'profileTab'=>'open']) ?>" class="btn lineDefBtn sBtn">View Profile</a>
                                     <?php if (!Yii::$app->user->isGuest) : ?>
                                         <?php if (isset($contacts[$user['id']])) : ?>
                                             <?php if ($contacts[$user['id']]['user_to_id'] == $user['id'] && $contacts[$user['id']]['request_accepted'] == 'N') : ?>
