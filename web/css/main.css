@@ -1438,7 +1438,7 @@ header {
     border-top: solid 1px #dbdbdb;
 }
 .srchPopupCont .customScroll {
-    max-height: 520px;
+    max-height: 300px;
 }
 /* end search page */
 
@@ -1794,7 +1794,9 @@ footer h4 {
     display: inline-block;
     /*color: #E2E2E2;*/
 }
-
+#advanced-search {
+    max-height: 440px;
+}
 
 /* contact and about us page */
 .titleWithBg {
@@ -1849,7 +1851,7 @@ footer h4 {
 /* text from editor */
 .textFromEditor b,
 .textFromEditor strong {
-    font-width: 700;
+    font-weight: 700;
 }
 .textFromEditor i,
 .textFromEditor em {
