@@ -665,6 +665,10 @@ class UsersController extends \yii\web\Controller {
 
     public function actionIndex($action = false, $id = false, $key = false) {
 
+        if(!Yii::$app->user->isGuest){
+            return $this->redirect('/users/profile');
+        }
+
         $models = $this->models;
 
         return $this->render('index', $models);
