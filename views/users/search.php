@@ -284,6 +284,14 @@ $this->title = 'Search';
         var lastName = $('#last_name').val();
         $('#query').val(firstName + ' ' + lastName);
     });
+
+
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
 </script>
 
 
@@ -315,6 +323,11 @@ $this->title = 'Search';
         $('.checkbox').on('change', function () {
             $(this).find('.inputError').hide();
         });
+        // open advanced Search popup
+        var advancedSearch = getParameterByName('advancedSearch');
+        if (advancedSearch == 'open') {
+            $('.openAdvSrch').click();
+        }
 
 //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                  ?>;
 //<?php //Yii::$app->getSession()->destroySession('showRegistration');                  ?>
