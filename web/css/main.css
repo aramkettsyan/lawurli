@@ -217,7 +217,7 @@ em {
 .radio-inline input[type="radio"]:hover+span,
 .checkbox input[type="checkbox"]:hover,
 .checkbox input[type="checkbox"]:hover+span,
-.checkbox-inline input[type="checkbox"]:hover {
+.checkbox-inline input[type="checkbox"]:hover,
 .checkbox-inline input[type="checkbox"]:hover+span {
     opacity: .8;
 }
