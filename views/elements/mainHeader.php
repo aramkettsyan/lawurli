@@ -17,6 +17,7 @@ use yii\helpers\Html;
                         <i class="icon-search"></i>
                     </button>
                 </form>
+                <a href="/users/search?advancedSearch=open" class="advSrch">Advanced</a>
             </div>
             <nav class="headerMenu">
                 <ul class="clearAfter linkHover">

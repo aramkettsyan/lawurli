@@ -626,6 +626,19 @@ header {
     margin-top: 3px;
     width: 220px;
 }
+.headerSrch .advSrch {
+    position: absolute;
+    border-left: solid 1px #5F5F5F;
+    padding-left: 7px;
+    right: -65px;
+    top: 11px;
+    font-size: 11px;
+    -webkit-transition: .7s color;
+    transition: .7s color;
+}
+.headerSrch .advSrch:hover {
+    color: #fff;
+}
 .headerSrch input {
     background: transparent;
     border: none;
