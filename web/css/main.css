@@ -211,8 +211,8 @@ em {
     float: left;
     margin-left: -18px;
 }
-.radio label,
-.checkbox label {
+.radio label:hover,
+.checkbox label:hover {
     opacity: .8;
 }
 .frIconLeft {
