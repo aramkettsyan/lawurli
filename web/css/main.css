@@ -211,14 +211,8 @@ em {
     float: left;
     margin-left: -18px;
 }
-.radio input[type="radio"]:hover,
-.radio input[type="radio"]:hover+span,
-.radio-inline input[type="radio"]:hover,
-.radio-inline input[type="radio"]:hover+span,
-.checkbox input[type="checkbox"]:hover,
-.checkbox input[type="checkbox"]:hover+span,
-.checkbox-inline input[type="checkbox"]:hover,
-.checkbox-inline input[type="checkbox"]:hover+span {
+.radio label,
+.checkbox label {
     opacity: .8;
 }
 .frIconLeft {
