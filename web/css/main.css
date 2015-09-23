@@ -586,8 +586,17 @@ header {
 }
 .headerLogo {
     float: left;
-    max-width: 140px;
+    max-width: 150px;
     overflow: hidden;
+}
+.headerLogo a {
+    background: #DA8213;
+    padding: 0 10px;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 29px;
+    font-weight: 600;
+    display: inline-block;
 }
 .headerRight {
     float: right;

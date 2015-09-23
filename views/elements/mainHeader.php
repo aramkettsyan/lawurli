@@ -7,7 +7,7 @@ use yii\helpers\Html;
 <header>
     <div class="container">
         <div class="headerLogo">
-            <a href="<?= \yii\helpers\Url::to(['users/index']) ?>"><img src="<?= \Yii::getAlias('@web') . '/images/' . $this->params['logo']; ?>" alt=""></a>
+            <a href="<?= \yii\helpers\Url::to(['users/index']) ?>">Lawurli</a>
         </div>
         <div class="headerRight">
             <div class="headerSrch">
