@@ -117,7 +117,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                         <?php continue; ?>
                                                     <?php } ?>
                                                     <?php $value = ''; ?>
-                                                    <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
+                                                    <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']]) && !is_array($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
                                                         <?php $value = Html::encode($this->params['user_forms'][$subSectionId][$u][$form['formId']]) ?>
                                                     <?php } ?>
                                                     <?php if (!empty($value)) { ?>
@@ -128,18 +128,31 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
 
                                                     <?php if ($form['formType'] === 'input') { ?>
                                                         <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
-                                                        <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
+                                                        <?php if (!empty($value)) { ?>
+                                                            <div class="labelValue">
+                                                                <label><?= Html::encode($form['formLabel']) ?></label>
+                                                                <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></span>
+                                                            </div>
+                                                        <?php } ?>
+                                                                                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'textarea') { ?>
-                                                        <p class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></p>
+                                                        <?php if (!empty($value)) { ?>
+                                                            <div class="labelValue">
+                                                                <label><?= Html::encode($form['formLabel']) ?></label>
+                                                                <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></span>
+                                                            </div>
+                                                        <?php } ?>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'select') { ?>
                                                         <?php $options = Html::encode(str_replace('-,-', ',', $form['formOptions'])); ?>
-                                                        <div class="labelValue">
-                                                            <label><?= Html::encode($form['formLabel']) ?></label>
-                                                            <span><?= $value ?></span>
-                                                        </div>
+                                                        <?php if (!empty($value)) { ?>
+                                                            <div class="labelValue">
+                                                                <label><?= Html::encode($form['formLabel']) ?></label>
+                                                                <span><?= $value ?></span>
+                                                            </div>
+                                                        <?php } ?>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'checkbox') { ?>
                                                         <?php $options = explode('-,-', $form['formOptions']); ?>
@@ -158,16 +171,23 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                             <?php } ?>
 
                                                         <?php } ?>
-                                                        <div class="labelValue">
-                                                            <label><?= Html::encode($form['formLabel']) ?></label>
-                                                            <span><?= Html::encode($values) ?></span>
-                                                        </div>
+                                                        <?php if (!empty($values)) { ?>
+                                                            <?php $emptyProfile = true; ?>
+                                                            <?php $emptySectionToken = true; ?>
+                                                            <?php $emptySubSectionToken = true; ?>
+                                                            <div class="labelValue">
+                                                                <label><?= Html::encode($form['formLabel']) ?></label>
+                                                                <span><?= Html::encode($values) ?></span>
+                                                            </div>
+                                                        <?php } ?>
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'radio') { ?>
-                                                        <div class="labelValue">
-                                                            <label><?= Html::encode($form['formLabel']) ?></label>
-                                                            <span><?= $value ?></span>
-                                                        </div>
+                                                        <?php if (!empty($value)) { ?>
+                                                            <div class="labelValue">
+                                                                <label><?= Html::encode($form['formLabel']) ?></label>
+                                                                <span><?= $value ?></span>
+                                                            </div>
+                                                        <?php } ?>
                                                     <?php } ?>
                                                     <p class="message"></p>
                                                     <?php $value = ''; ?>
@@ -260,16 +280,16 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $(this).find('.inputError').hide();
         });
 
-        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                              ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                              ?>
+        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                                        ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                                        ?>
         //        if (showRegistration) {
         //            $.magnificPopup.open({
         //                items: {src: '#signup-popup'}, type: 'inline'
         //            }, 0);
         //        }
         //
-        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                              ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showLogin');                              ?>
+        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                                        ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showLogin');                                        ?>
         //        if (showLogin) {
         //            $.magnificPopup.open({
         //                items: {src: '#login-popup'}, type: 'inline'
@@ -277,15 +297,15 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
         //        }
 
 
-        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                              ?>;
-        //<?php //Yii::$app->getSession()->destroySession('newPassword');                              ?>
+        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                                        ?>;
+        //<?php //Yii::$app->getSession()->destroySession('newPassword');                                        ?>
         //        if (newPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup-2'}, type: 'inline'
         //            }, 0);
         //        }
-        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                              ?>;
-        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                              ?>
+        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                                        ?>;
+        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                                        ?>
         //        if (resetPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup'}, type: 'inline'
