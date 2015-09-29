@@ -38,7 +38,7 @@ $fm = ActiveForm::begin([
                                         <?php continue; ?>
                                     <?php } ?>
                                     <?php $value = ''; ?>
-                                    <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
+                                    <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']]) && !is_array($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
                                         <?php $value = Html::encode($this->params['user_forms'][$subSectionId][$u][$form['formId']]) ?>
                                     <?php } ?>
                                     <div class = 'item formRow'>
