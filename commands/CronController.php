@@ -68,7 +68,7 @@ class CronController extends Controller {
         foreach ($resources as $resource) {
             $j = 0;
             if (is_object($resource) && is_object($resource->channel) && is_object($resource->channel->item)) {
-
+                
                 foreach ($resource->channel->item as $item) {
                     if ($j === 15) {
                         break;
@@ -98,6 +98,7 @@ class CronController extends Controller {
                 }
             } else if (is_object($resource) && is_object($resource->entry)) {
                 foreach ($resource->entry as $item) {
+                    
                     if ($j === 15) {
                         break;
                     }
@@ -114,8 +115,8 @@ class CronController extends Controller {
                     $rows[] = [
                         'news_title' => (string) $item->title,
                         'news_pub_date' => $newsArray[$k]['pubDate'],
-                        'news_url' => (string) $item->link,
-                        'site_url' => (string) $resource->entry->link->href,
+                        'news_url' => (string) $item->link['href'],
+                        'site_url' => (string) $resource->link['href'],
                         'created' => $cDate,
                         'modified' => $cDate
                     ];
@@ -129,7 +130,7 @@ class CronController extends Controller {
         $model = new \app\models\News();
         $model->deleteAll();
         \Yii::$app->db->createCommand('ALTER TABLE news AUTO_INCREMENT = 1')->execute();
-        \Yii::$app->db->createCommand()->batchInsert('news', ['news_title', 'news_pub_date', 'news_url', 'site_url', 'created', 'modified'], $rows)->execute();
+        \Yii::$app->db->createCommand()->batchInsert('news', ['news_title', 'news_pub_date', 'news_url','site_url', 'created', 'modified'], $rows)->execute();
     }
 
     protected function get_data($data) {
