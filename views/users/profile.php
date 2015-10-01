@@ -218,7 +218,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
         </div>
         <img src="/images/ajax-loader.gif" id="loader" style="display: none;position:absolute;top:250px;left:48%" >
     </div>
-    <?php echo $this->render('sidebar') ?>
+    <?php echo $this->render('//elements/sidebar') ?>
 </div>
 
 

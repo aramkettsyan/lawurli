@@ -7,6 +7,7 @@
                     <?php if (!empty($xmlObject['pubDate'])) { ?>
                         <time><?php echo $xmlObject['pubDate']; ?></time>
                     <?php } ?>
+                        <time><a target="_blank" href="<?php echo $xmlObject['site_url']; ?>"><?php echo $xmlObject['site_url']; ?></a></time>
                 </li>
             <?php } ?>
         </ul>
@@ -19,7 +20,7 @@
                     <?php if ($current_page == $i) { ?>
                         <?php $count++; ?>
                         <li class="pagination_item active" id="<?= $i ?>"><a><?= $i + 1 ?></a></li>&nbsp;
-                    <?php } else if ($i < $current_page && abs($i - $current_page) < 6 || $checkPos > 0) { ?>
+                    <?php } else if ($i < $current_page && abs($i - $current_page) < 6 || ($checkPos > 0 && abs($i - $current_page) < (6+$checkPos))) { ?>
                         <?php if ($checkPos > 0) { ?>
                             <?php $checkPos--; ?>
                         <?php } ?>

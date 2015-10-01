@@ -12,6 +12,7 @@ use yii\data\Pagination;
 use app\models\Request;
 use app\models\ContactForm;
 use Yii;
+use app\models\UserForms;
 
 class UsersController extends \yii\web\Controller {
 
@@ -259,7 +260,7 @@ class UsersController extends \yii\web\Controller {
             $model->image = 'default.png';
             $model->save();
             return $this->redirect(Yii::$app->request->referrer);
-        }else{
+        } else {
             return $this->redirect('/users/index');
         }
     }
@@ -562,8 +563,6 @@ class UsersController extends \yii\web\Controller {
         switch ($type) {
             case 'input':
                 if (strlen($value) > 255) {
-                    print_r('1');
-                    die;
                     $validated = false;
                 }
                 if ($numeric != 0 && !((int) $value)) {
@@ -574,29 +573,21 @@ class UsersController extends \yii\web\Controller {
                 break;
             case 'select':
                 if (!in_array($value, $optionsArray)) {
-                    print_r('3');
-                    die;
                     $validated = false;
                 }
                 break;
             case 'radio':
                 if (!in_array($value, $optionsArray)) {
-                    print_r('4');
-                    die;
                     $validated = false;
                 }
                 break;
             case 'checkbox':
                 if (!in_array($value, $optionsArray)) {
-                    print_r('5');
-                    die;
                     $validated = false;
                 }
                 break;
 
             default:
-                print_r('6');
-                    die;
                 $validated = false;
                 break;
         }
@@ -665,7 +656,7 @@ class UsersController extends \yii\web\Controller {
 
     public function actionIndex($action = false, $id = false, $key = false) {
 
-        if(!Yii::$app->user->isGuest){
+        if (!Yii::$app->user->isGuest) {
             return $this->redirect('/users/profile');
         }
 
@@ -888,8 +879,6 @@ class UsersController extends \yii\web\Controller {
             $models['user_forms'] = $new_user_forms;
             $models['sections'] = $newSections;
             $models['relation'] = $relation;
-
-
 
             return $this->render('/users/profile', $models);
         } else {
@@ -1390,11 +1379,43 @@ class UsersController extends \yii\web\Controller {
             }
             $limit = 1;
             $users = Users::getNotConnectedUsers($limit, $allIds);
-            print_r(json_encode($users));
+            
+            $title_form_id = Forms::findOne(['is_title' => 1])->id;
+            $usersIds = '';
+            foreach ($users as $user){
+                if(empty($usersIds)){
+                    $usersIds.=$user['id'];
+                }else{
+                    $usersIds.=','.$user['id'];
+                }
+            }
+            $usersIds = '('.$usersIds.')';
+            $user_forms_model = new UserForms();
+            $users_titles=$user_forms_model->getById($title_form_id, $usersIds);
+            
+            
+            $response['users'] = $users;
+            $response['users_titles'] = $users_titles;
+            
+            print_r(json_encode($response));
             die;
         } else {
             $limit = 5;
             $users = Users::getNotConnectedUsers($limit);
+            $title_form_id = Forms::findOne(['is_title' => 1])->id;
+            $usersIds = '';
+            foreach ($users as $user){
+                if(empty($usersIds)){
+                    $usersIds.=$user['id'];
+                }else{
+                    $usersIds.=','.$user['id'];
+                }
+            }
+            $usersIds = '('.$usersIds.')';
+            $user_forms_model = new UserForms();
+            $users_titles=$user_forms_model->getById($title_form_id, $usersIds);
+            \Yii::$app->view->params['usersTitles'] = $users_titles;
+            
             return $users;
         }
     }

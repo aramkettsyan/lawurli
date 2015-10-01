@@ -32,7 +32,7 @@ class NewsController extends \yii\web\Controller {
                         ],
                         [
                             'actions' => [
-                                'cron'
+                                
                             ],
                             'allow' => true,
                             'roles' => ['?']
@@ -82,13 +82,21 @@ class NewsController extends \yii\web\Controller {
         $newsArray = [];
         $k = 0;
         foreach ($news as $n) {
+            if ($n->news_pub_date) {
+                $date = new DateTime($n->news_pub_date);
+                $formatedDate = $date->format('F d, Y g:i A');
+            }else{
+                $formatedDate = '';
+            }
             $newsArray[$k]['title'] = $n->news_title;
             $newsArray[$k]['link'] = $n->news_url;
-            $newsArray[$k]['pubDate'] = $n->news_pub_date;
+            $newsArray[$k]['pubDate'] = $formatedDate;
+            $newsArray[$k]['site_url'] = $n->site_url;
+            $newsArray[$k]['sortTime'] = $n->news_pub_date;
             $k++;
         }
         usort($newsArray, function($a, $b) {
-            return strcmp($b['pubDate'], $a['pubDate']);
+            return strcmp($b['sortTime'], $a['sortTime']);
         });
 
 
@@ -116,5 +124,5 @@ class NewsController extends \yii\web\Controller {
         $newsModel->resource_url = $url;
         $newsModel->save();
     }
-
+    
 }

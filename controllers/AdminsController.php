@@ -98,6 +98,7 @@ class AdminsController extends \yii\web\Controller {
                     $forms_form->sub_section_id = $form->sub_section_id;
                     $forms_form->options = $form->options;
                     $forms_form->show_in_search = $form->show_in_search;
+                    $forms_form->is_title = $form->is_title;
                     $form_ids[] = $form->id;
                     $options = explode('-,-', $form->options);
                     foreach ($options as $option) {
@@ -191,6 +192,9 @@ class AdminsController extends \yii\web\Controller {
                                 $id = Yii::$app->request->post()['FormsForm'][$g]['id'];
                                 $form->id = $id;
                                 $form->sub_section_id = $sub_section_id;
+                                if($form->is_title){
+                                    Forms::updateAll(['is_title'=>0]);
+                                }
                                 if (!in_array($form->type, ['select', 'input', 'checkbox', 'radio', 'textarea'])) {
                                     $flag = false;
                                     $form->addError('type', 'Type is required');
@@ -209,6 +213,9 @@ class AdminsController extends \yii\web\Controller {
                             $sub_section_id = Yii::$app->db->getLastInsertID();
                             foreach ($multiple_form_model as $form) {
                                 $form->sub_section_id = $sub_section_id;
+                                if($form->is_title){
+                                    Forms::updateAll(['is_title'=>0]);
+                                }
                                 if (!in_array($form->type, ['select', 'input', 'checkbox', 'radio', 'textarea'])) {
                                     $flag = false;
                                     $form->addError('type', 'Type is required');

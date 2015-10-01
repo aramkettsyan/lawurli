@@ -17,6 +17,7 @@ class FormsForm extends Model {
     public $numeric;
     public $options;
     public $show_in_search;
+    public $is_title;
     public $created;
     public $modified;
     public $sub_section_id;
@@ -28,7 +29,7 @@ class FormsForm extends Model {
      */
     public function rules() {
         return [
-            [['sub_section_id', 'numeric','show_in_search', 'id'], 'integer'],
+            [['sub_section_id', 'numeric','show_in_search','is_title', 'id'], 'integer'],
             [['type', 'options'], 'string'],
             [['created', 'modified'], 'safe'],
             [['label', 'placeholder'], 'string', 'max' => 255],
@@ -63,6 +64,7 @@ class FormsForm extends Model {
         $form->type = $this->type;
         $form->numeric = $this->numeric;
         $form->show_in_search = $this->show_in_search;
+        $form->is_title = $this->is_title;
         $form->sub_section_id = $this->sub_section_id;
         $form->options = $this->options;
         return $form->save(false);

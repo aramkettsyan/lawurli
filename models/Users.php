@@ -74,7 +74,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
             'last_name' => 'Last Name',
             'email' => 'Email',
             'phone' => 'Phone',
-            'location' => 'Location',
+            'location' => 'City',
             'password' => 'Password',
             'confirm_password' => 'Retype password',
             'password_reset_token' => 'Password Reset Token',

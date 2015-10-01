@@ -11,6 +11,7 @@ use Yii;
  * @property string $news_title
  * @property string $news_pub_date
  * @property string $news_url
+ * @property string $site_url
  * @property string $created
  * @property string $modified
  */
@@ -32,7 +33,7 @@ class News extends \yii\db\ActiveRecord
         return [
             [['news_title', 'news_url'], 'required'],
             [['created', 'modified'], 'safe'],
-            [['news_title', 'news_pub_date', 'news_url'], 'string', 'max' => 255]
+            [['news_title', 'news_pub_date', 'news_url','site_url'], 'string', 'max' => 255]
         ];
     }
 
@@ -46,6 +47,7 @@ class News extends \yii\db\ActiveRecord
             'news_title' => 'News Title',
             'news_pub_date' => 'News Pub Date',
             'news_url' => 'News Url',
+            'site_url' => 'News Url',
             'created' => 'Created',
             'modified' => 'Modified',
         ];

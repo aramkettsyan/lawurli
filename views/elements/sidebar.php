@@ -1,5 +1,6 @@
-<?php 
-    use yii\helpers\Html;
+<?php
+
+use yii\helpers\Html;
 ?>
 
 <div class="sideBarR">
@@ -25,12 +26,20 @@
                         <?php } ?>
                     </div>
                     <div class="peopleListR">
-                        <a href="/users/profile/<?= $us['id'] ?>" class="plName"><?= Html::encode($us['first_name']) . ' ' . Html::encode($us['last_name']) ?></a>
+                        <a href="/users/profile/<?= $us['id'] ?>?profileTab=open" class="plName"><?= Html::encode($us['first_name']) . ' ' . Html::encode($us['last_name']) ?></a>
                         <div class="plDets">
                             <p class="plAddress">
-                            <?php if ($us['location']) { ?>
-                            <i class="icon-location"></i><span><?= Html::encode($us['location']) ?></span>
-                            <?php } ?>
+                                <?php if ($us['location']) { ?>
+                                    <i class="icon-location"></i>
+                                    <span><?= Html::encode($us['location']) ?></span>
+                                <?php } ?>
+                            </p>
+                            <p class="usTitle">
+                                <?php foreach ($this->params['usersTitles'] as $us_titles) { ?>
+                                    <?php if ($us_titles['user_id'] === $us['id']) { ?>
+                                        <span><?= $us_titles['value'] ?></span>
+                                    <?php } ?>
+                                <?php } ?>
                             </p>
                         </div>
                         <div class="plActions">

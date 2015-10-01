@@ -72,4 +72,21 @@ class UserForms extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Forms::className(), ['id' => 'form_id']);
     }
+    
+    
+    
+    public function getById($form_id = false,$user_ids=false){
+        if($user_ids){
+            $users_titles = (new \yii\db\Query())
+                    ->select('user_id,value')
+                    ->from('user_forms')
+                    ->where('user_id IN '.$user_ids.' AND form_id ='.$form_id)
+                    ->limit(1)
+                    ->all();
+            
+            return $users_titles;
+        }
+    }
+    
+    
 }

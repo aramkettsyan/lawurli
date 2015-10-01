@@ -14,7 +14,6 @@ use app\components\AdminAccessControl;
 use app\models\NewsResources;
 use DateTime;
 
-
 /**
  * This command echoes the first argument that you have entered.
  *
@@ -64,6 +63,8 @@ class CronController extends Controller {
         $newsArray = [];
         $rows = [];
         $k = 0;
+//        print_r($resources);
+//        die;
         foreach ($resources as $resource) {
             $j = 0;
             if (is_object($resource) && is_object($resource->channel) && is_object($resource->channel->item)) {
@@ -74,6 +75,7 @@ class CronController extends Controller {
                     }
                     $newsArray[$k]['title'] = (string) $item->title;
                     $newsArray[$k]['link'] = (string) $item->link;
+                    $newsArray[$k]['site_link'] = (string) $resource->channel->link;
                     $newsArray[$k]['pubDate'] = (isset($item->pubDate) && !empty($item->pubDate)) ? (string) $item->pubDate : (string) '';
                     if (!empty($newsArray[$k]['pubDate'])) {
                         $date = new DateTime($newsArray[$k]['pubDate']);
@@ -86,6 +88,7 @@ class CronController extends Controller {
                         'news_title' => (string) $item->title,
                         'news_pub_date' => $newsArray[$k]['pubDate'],
                         'news_url' => (string) $item->link,
+                        'site_url' => (string) $resource->channel->link,
                         'created' => $cDate,
                         'modified' => $cDate
                     ];
@@ -112,6 +115,7 @@ class CronController extends Controller {
                         'news_title' => (string) $item->title,
                         'news_pub_date' => $newsArray[$k]['pubDate'],
                         'news_url' => (string) $item->link,
+                        'site_url' => (string) $resource->entry->link->href,
                         'created' => $cDate,
                         'modified' => $cDate
                     ];
@@ -125,10 +129,9 @@ class CronController extends Controller {
         $model = new \app\models\News();
         $model->deleteAll();
         \Yii::$app->db->createCommand('ALTER TABLE news AUTO_INCREMENT = 1')->execute();
-        \Yii::$app->db->createCommand()->batchInsert('news', ['news_title', 'news_pub_date', 'news_url', 'created', 'modified'], $rows)->execute();
+        \Yii::$app->db->createCommand()->batchInsert('news', ['news_title', 'news_pub_date', 'news_url', 'site_url', 'created', 'modified'], $rows)->execute();
     }
-    
-    
+
     protected function get_data($data) {
         // array of curl handles
         $curly = array();

@@ -180,6 +180,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                             'type',
                             'options',
                             'show_in_search',
+                            'is_title',
                             'placeholder'
                         ],
                     ]);
@@ -200,7 +201,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                         'tag' => 'div',
                                         'class' => 'form-group numeric'
                                     ]
-                                ])->checkbox()->label('Only integer values')
+                                ])->checkbox(['class' => 'numeric_checkbox'])->label('Only integer values')
                                 ?>
                                 <?php //$form->field($modelAddress, "[{$i}]numeric")->checkbox()->label('Only integer values') ?>
                                 <?php // $form->field($modelAddress, "[{$i}]type")->dropDownList(['select' => 'Drop down list', 'input' => 'Input', 'checkbox' => 'Checkbox', 'radio' => 'Radio', 'textarea' => 'Textarea'], ['prompt' => 'Choose']) ?>
@@ -247,7 +248,10 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                 <div class="text-left optionBtn">
                                     <a id="add_option_link" class="add-load btn btn-primary btn-xs"><span class="glyphicon glyphicon-plus"></span> Add option</a>
                                 </div>    
+
                                 <?php DynamicFormWidget::end(); ?>
+
+
                                 <?= $form->field($modelAddress, "[{$i}]placeholder")->textInput(['class' => 'placeholder form-control']) ?>
 
                                 <?=
@@ -256,7 +260,15 @@ use wbraganca\dynamicform\DynamicFormWidget;
                                         'tag' => 'div',
                                         'class' => 'form-group show_in_search'
                                     ]
-                                ])->checkbox()->label('Show in search')
+                                ])->checkbox(['class' => 'show_in_search_checkbox'])->label('Show in search')
+                                ?> 
+                                <?=
+                                $form->field($modelAddress, "[{$i}]is_title", ['options' =>
+                                    [
+                                        'tag' => 'div',
+                                        'class' => 'form-group is_title'
+                                    ]
+                                ])->checkbox(['class' => 'is_title_checkbox'])->label('As title')
                                 ?> 
                             </div>
                         <?php endforeach; ?>
@@ -379,9 +391,36 @@ use wbraganca\dynamicform\DynamicFormWidget;
                 $('.drop_down_list').each(function () {
                     inputRules($(this));
                 });
+                
+                $('.is_title_checkbox').last().prop('checked',false);
+                $('.show_in_search_checkbox').last().prop('checked',false);
+                $('.numeric_checkbox').last().prop('checked',false);
+                
+                $('.is_title_checkbox').off();
+                $('.is_title_checkbox').on('change', function () {
+                    var checked = $(this).is(':checked');
+                    $('.is_title_checkbox:checked').prop('checked', false);
+                    if (checked) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
             }
             j++;
         });
+
+
+        $('.is_title_checkbox').on('change', function () {
+            var checked = $(this).is(':checked');
+            $('is_title_checkbox:checked').prop('checked', false);
+            if (checked) {
+                $(this).prop('checked', true);
+            } else {
+                $(this).prop('checked', false);
+            }
+        });
+
     });
 
 

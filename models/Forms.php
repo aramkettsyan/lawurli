@@ -15,6 +15,7 @@ use yii\db\Expression;
  * @property string $placeholder
  * @property integer $numeric
  * @property integer $show_in_search
+ * @property integer $is_title
  * @property string $options
  * @property string $created
  * @property string $modified
@@ -37,7 +38,7 @@ class Forms extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['sub_section_id', 'numeric','show_in_search'], 'integer'],
+            [['sub_section_id', 'numeric','show_in_search','is_title'], 'integer'],
             [['type', 'options'], 'string'],
             [['created', 'modified'], 'safe'],
             [['label', 'placeholder'], 'string', 'max' => 255],
@@ -63,6 +64,7 @@ class Forms extends \yii\db\ActiveRecord {
             'numeric' => 'Numeric',
             'options' => 'Options',
             'show_in_search' => 'Show in search',
+            'is_title' => 'As title',
             'created' => 'Created',
             'modified' => 'Modified',
         ];
@@ -89,14 +91,17 @@ class Forms extends \yii\db\ActiveRecord {
             $connection = \Yii::$app->db;
             $forms_array = [];
             foreach ($this->forms as $form) {
-                print_r($form);
-                die;
+//                print_r($form);
+//                die;
                 if (!$form['show_in_search']) {
                     $form['show_in_search'] = 0;
                 }
-                $forms_array[] = [$this->sub_section_id, $form['label'], $form['numeric'], $form['type'], $form['options'], $form['placeholder'], $form['show_in_search']];
+                if (!$form['is_title']) {
+                    $form['is_title'] = 0;
+                }
+                $forms_array[] = [$this->sub_section_id, $form['label'], $form['numeric'], $form['type'], $form['options'], $form['placeholder'], $form['show_in_search'], $form['is_title']];
             }
-            $connection->createCommand()->batchInsert('forms', ['sub_section_id', 'label', 'numeric', 'type', 'options', 'placeholder', 'show_in_search'], $forms_array)->execute();
+            $connection->createCommand()->batchInsert('forms', ['sub_section_id', 'label', 'numeric', 'type', 'options', 'placeholder', 'show_in_search', 'is_title'], $forms_array)->execute();
         }
         if ($this->isNewRecord) {
             $this->created = new Expression('NOW()');

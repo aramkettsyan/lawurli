@@ -86,7 +86,7 @@ $fm = ActiveForm::begin([
     function initialize() {
         autocomplete = new google.maps.places.Autocomplete(
                 (document.getElementById('autocomplete')),
-                {types: ['geocode']});
+                {types: ['(cities)']});
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var place = autocomplete.getPlace();
             console.log(place);
@@ -95,4 +95,20 @@ $fm = ActiveForm::begin([
         });
     }
     initialize();
+
+    $(document).ready(function () {
+        $('#autocomplete').prop('placeholder','')
+        $('#autocomplete').on('blur', function () {
+            autocomplete = new google.maps.places.Autocomplete(
+                    (document.getElementById('autocomplete')),
+                    {types: ['(cities)']});
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var place = autocomplete.getPlace();
+                console.log(place);
+                document.getElementById('autocomplete').value = place.formatted_address;
+                document.getElementById('latlng').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+            });
+        })
+    });
+
 </script>

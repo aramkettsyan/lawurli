@@ -50,7 +50,7 @@ UserAsset::register($this);
                 <?= $this->render('//elements/signUp') ?>
                 <?= $this->render('//elements/forgotPassword_1') ?>
                 <?= $this->render('//elements/forgotPassword_2') ?>
-                
+
             <?php } ?>
         </div>
         <footer>
@@ -102,13 +102,19 @@ UserAsset::register($this);
                     });
                     $('.skip,.connect').off();
                     $('.connect').on('click', function () {
+                        var imagesPath = '<?php echo \Yii::getAlias('@web') . '/images/users_images/'; ?>';
+                        console.log(imagesPath);
+                        
                         $.ajax({
                             method: "POST",
                             url: "/users/get-not-connected-users",
                             data: {add: true, allIds: ids, id: $(this).attr('id')},
                             dataType: "json"
                         }).done(function (msg) {
-                            console.log(msg)
+                            console.log(msg);
+                            var userTitle = msg.users_titles;
+                            console.log(userTitle[0]);
+                            var msg = msg.users;
                             for (var i = 0; i < Object.keys(msg).length; i++) {
                                 if (msg[0] !== undefined) {
                                     var user = $('.notConnectedUser:first').clone();
@@ -117,8 +123,14 @@ UserAsset::register($this);
                                     } else {
                                         user.find('.plAddress').html('');
                                     }
+                                    if (userTitle[0] !== undefined) {
+                                        user.find('.usTitle').html(userTitle[0].value);
+                                    } else {
+                                        user.find('.usTitle').html('');
+                                    }
                                     user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
-                                    user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
+                                    user.find('.plName').attr('href','/users/profile/'+msg[0].id+'?profileTab=open');
+                                    user.find('.peopleListL span').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
                                     user.find('.skip').attr('id', msg[0].id);
                                     user.find('.connect').attr('id', msg[0].id);
                                     user.appendTo('#notConnectedUsers');
@@ -132,12 +144,21 @@ UserAsset::register($this);
                         $(this).parent().parent().parent().remove();
                     });
                     $('.skip').on('click', function () {
+
+                        var imagesPath = '<?php echo \Yii::getAlias('@web') . '/images/users_images/'; ?>';
+                        console.log(imagesPath);
+
                         $.ajax({
                             method: "POST",
                             url: "/users/get-not-connected-users",
                             data: {allIds: ids, id: $(this).attr('id')},
                             dataType: "json"
-                        }).done(function (msg) {
+                        }).done(function (msg, textStatus, xhr) {
+                            console.log(xhr);
+                            console.log(textStatus);
+                            console.log(msg);
+                            var userTitle = msg.users_titles;
+                            var msg = msg.users;
                             for (var i = 0; i < Object.keys(msg).length; i++) {
                                 if (msg[0] !== undefined) {
                                     var user = $('.notConnectedUser:first').clone();
@@ -146,8 +167,14 @@ UserAsset::register($this);
                                     } else {
                                         user.find('.plAddress').html('');
                                     }
+                                    if (userTitle[0] !== undefined) {
+                                        user.find('.usTitle').html(userTitle[0].value);
+                                    } else {
+                                        user.find('.usTitle').html('');
+                                    }
                                     user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
-                                    user.find('img').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
+                                    user.find('.plName').attr('href','/users/profile/'+msg[0].id+'?profileTab=open');
+                                    user.find('.peopleListL span').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
                                     user.find('.skip').attr('id', msg[0].id);
                                     user.find('.connect').attr('id', msg[0].id);
                                     user.appendTo('#notConnectedUsers');
