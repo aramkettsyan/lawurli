@@ -1379,43 +1379,56 @@ class UsersController extends \yii\web\Controller {
             }
             $limit = 1;
             $users = Users::getNotConnectedUsers($limit, $allIds);
-            
-            $title_form_id = Forms::findOne(['is_title' => 1])->id;
-            $usersIds = '';
-            foreach ($users as $user){
-                if(empty($usersIds)){
-                    $usersIds.=$user['id'];
-                }else{
-                    $usersIds.=','.$user['id'];
+
+            $title_form_model = Forms::findOne(['is_title' => 1]);
+            if ($title_form_model) {
+                $title_form_id = $title_form_model->id;
+                $usersIds = '';
+                foreach ($users as $user) {
+                    if (empty($usersIds)) {
+                        $usersIds.=$user['id'];
+                    } else {
+                        $usersIds.=',' . $user['id'];
+                    }
                 }
+                $usersIds = '(' . $usersIds . ')';
+                $user_forms_model = new UserForms();
+                $users_titles = $user_forms_model->getById($title_form_id, $usersIds);
+                $response['users'] = $users;
+                if ($users_titles) {
+                    $response['users_titles'] = $users_titles;
+                } else {
+                    $response['users_titles'] = [];
+                }
+            } else {
+                $response['users'] = $users;
+                $response['users_titles'] = [];
             }
-            $usersIds = '('.$usersIds.')';
-            $user_forms_model = new UserForms();
-            $users_titles=$user_forms_model->getById($title_form_id, $usersIds);
-            
-            
-            $response['users'] = $users;
-            $response['users_titles'] = $users_titles;
-            
+
             print_r(json_encode($response));
             die;
         } else {
             $limit = 5;
             $users = Users::getNotConnectedUsers($limit);
-            $title_form_id = Forms::findOne(['is_title' => 1])->id;
-            $usersIds = '';
-            foreach ($users as $user){
-                if(empty($usersIds)){
-                    $usersIds.=$user['id'];
-                }else{
-                    $usersIds.=','.$user['id'];
+
+            $title_form_model = Forms::findOne(['is_title' => 1]);
+            if ($title_form_model) {
+                $title_form_id = $title_form_model->id;
+                $usersIds = '';
+                foreach ($users as $user) {
+                    if (empty($usersIds)) {
+                        $usersIds.=$user['id'];
+                    } else {
+                        $usersIds.=',' . $user['id'];
+                    }
                 }
+                $usersIds = '(' . $usersIds . ')';
+                $user_forms_model = new UserForms();
+                $users_titles = $user_forms_model->getById($title_form_id, $usersIds);
+                \Yii::$app->view->params['usersTitles'] = $users_titles;
+            }else{
+                \Yii::$app->view->params['usersTitles'] = [];
             }
-            $usersIds = '('.$usersIds.')';
-            $user_forms_model = new UserForms();
-            $users_titles=$user_forms_model->getById($title_form_id, $usersIds);
-            \Yii::$app->view->params['usersTitles'] = $users_titles;
-            
             return $users;
         }
     }
