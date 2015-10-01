@@ -24,17 +24,14 @@ class NewsController extends \yii\web\Controller {
                     'rules' => [
                         [
                             'actions' => [
-                                'load-news',
-                                'cron'
+                                'load-news'
                             ],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
                         [
-                            'actions' => [
-                                
-                            ],
-                            'allow' => true,
+                            'actions' => [],
+                            'allow' => false,
                             'roles' => ['?']
                         ],
                     ],
