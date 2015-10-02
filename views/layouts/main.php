@@ -58,7 +58,7 @@ UserAsset::register($this);
                 <div class="clearAfter">
                     <div class="footerAbout">
                         <h4>About us</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam vero corporis, perspiciatis delectus dicta ullam et eaque consequuntur aliquid possimus facilis nesciunt voluptatem molestiae consectetur quibusdam temporibus voluptatum aliquam doloremque. Perspiciatis delectus dicta ullam et.</p>
+                        <p><?php echo $this->params['about_us'] ?></p>
                     </div>
                     <div class="footerContact">
                         <h4>Contact Us</h4>

@@ -50,8 +50,8 @@ $config = [
         'reCaptcha' => [
             'name' => 'reCaptcha',
             'class' => 'himiklab\yii2\recaptcha\ReCaptcha',
-            'siteKey' => '6Lf3WQwTAAAAAGhg2foSOsAGOH2SkLYRelMiGpt6',
-            'secret' => '6Lf3WQwTAAAAAFiaEQSiUbSQBaxntYOJKxN5pUDU',
+            'siteKey' => '6Lc2-g0TAAAAAOtCIS9NttY8eVDx9FW7oju3BnYH',
+            'secret' => '6Lc2-g0TAAAAAGAslMtVp6OJSHU1ElaXYF49VlId',
         ],
         'session' => [
             'class' => 'yii\web\CacheSession',

@@ -107,6 +107,12 @@ class UsersController extends \yii\web\Controller {
 
         \Yii::$app->view->params['contact_email'] = $aboutUsModel['contact_us_email'];
 
+        $aboutUs = explode('.', $aboutUsModel['about_us']);
+
+        $aboutUs = implode('.', [$aboutUs[0], $aboutUs[1], $aboutUs[2]]).'.';
+
+        \Yii::$app->view->params['about_us'] = $aboutUs;
+
         //Not Connected Users
         if ($action_id === 'profile' && !\Yii::$app->user->isGuest && !\Yii::$app->request->isAjax) {
             $notConnectedUsers = $this->actionGetNotConnectedUsers();
@@ -1426,7 +1432,7 @@ class UsersController extends \yii\web\Controller {
                 $user_forms_model = new UserForms();
                 $users_titles = $user_forms_model->getById($title_form_id, $usersIds);
                 \Yii::$app->view->params['usersTitles'] = $users_titles;
-            }else{
+            } else {
                 \Yii::$app->view->params['usersTitles'] = [];
             }
             return $users;
