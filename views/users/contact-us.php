@@ -47,7 +47,7 @@ $this->title = 'Contact';
             </div><div class="formRow">
                 <?=
                 $form->field($model, 'reCaptcha')->widget(
-                        \himiklab\yii2\recaptcha\ReCaptcha::className(), ['siteKey' => '6Lf3WQwTAAAAAGhg2foSOsAGOH2SkLYRelMiGpt6']
+                        \himiklab\yii2\recaptcha\ReCaptcha::className(), ['siteKey' => '6Lc2-g0TAAAAAOtCIS9NttY8eVDx9FW7oju3BnYH']
                 )
                 ?>
             </div>
