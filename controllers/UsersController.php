@@ -241,7 +241,7 @@ class UsersController extends \yii\web\Controller {
         if ($registrationModel->load(Yii::$app->request->post()) && $registrationModel->save()) {
             $email = \Yii::$app->mailer->compose('confirmEmail', ['user' => $registrationModel])
                     ->setTo($registrationModel->email)
-                    ->setFrom(['admin@email.com' => \Yii::$app->name])
+                    ->setFrom([\Yii::$app->params['welcomeEmail'] => \Yii::$app->name])
                     ->setSubject('E-mail confirmation')
                     ->send();
 
@@ -721,7 +721,7 @@ class UsersController extends \yii\web\Controller {
                 $model->save();
                 $email = \Yii::$app->mailer->compose('resetPassword', ['user' => $model, 'action' => $action])
                         ->setTo($model->email)
-                        ->setFrom(['noreplay@lawurli.com' => \Yii::$app->name])
+                        ->setFrom([\Yii::$app->params['notificationEmail'] => \Yii::$app->name])
                         ->setSubject('Password reset')
                         ->send();
                 if ($email) {

@@ -26,7 +26,7 @@ class ContactForm extends Model
             [['name', 'email', 'subject', 'body'], 'required'],
             // email has to be a valid email address
             ['email', 'email'],
-            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'secret' => '6Lf3WQwTAAAAAFiaEQSiUbSQBaxntYOJKxN5pUDU']
+            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'secret' => '6Lc2-g0TAAAAAGAslMtVp6OJSHU1ElaXYF49VlId']
         ];
     }
 
@@ -50,8 +50,8 @@ class ContactForm extends Model
     {
         if ($this->validate()) {
             Yii::$app->mailer->compose()
-                ->setTo($email)
-                ->setFrom([$this->email => $this->name])
+                ->setTo(\Yii::$app->params['adminEmail'])
+                ->setFrom([\Yii::$app->params['adminEmail'] => $this->name])
                 ->setSubject($this->subject)
                 ->setTextBody($this->body.'<br/><br/> Contact Email: '.$this->email)
                 ->send();
