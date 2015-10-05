@@ -721,7 +721,7 @@ class UsersController extends \yii\web\Controller {
                 $model->save();
                 $email = \Yii::$app->mailer->compose('resetPassword', ['user' => $model, 'action' => $action])
                         ->setTo($model->email)
-                        ->setFrom([\Yii::$app->params['notificationEmail'] => \Yii::$app->name])
+                        ->setFrom([\Yii::$app->params['resetEmail'] => \Yii::$app->name])
                         ->setSubject('Password reset')
                         ->send();
                 if ($email) {
