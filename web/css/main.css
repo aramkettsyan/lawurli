@@ -1255,7 +1255,7 @@ header {
     width: 400px;
 }
 .popupLarge {
-    width: 900px;
+    width: 920px;
 }
 .popupTitle {
     padding: 13px 20px;
@@ -1466,7 +1466,7 @@ header {
     border-top: solid 1px #dbdbdb;
 }
 .srchPopupCont .customScroll {
-    max-height: 430px;
+    max-height: 470px;
 }
 /* end search page */
 
@@ -1824,8 +1824,8 @@ footer h4 {
     /*color: #E2E2E2;*/
 }
 #advanced-search {
-    max-height: 600px;
-    height: 600px;
+    max-height: 640px;
+    height: 640px;
 }
 
 /* contact and about us page */
