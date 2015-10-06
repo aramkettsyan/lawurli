@@ -118,7 +118,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                     <?php } ?>
                                                     <?php $value = ''; ?>
                                                     <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']]) && !is_array($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
-                                                        <?php $value = '<span>'.Html::encode($this->params['user_forms'][$subSectionId][$u][$form['formId']]).'</span>'; ?>
+                                                        <?php $value = "<p>".Html::encode($this->params['user_forms'][$subSectionId][$u][$form['formId']])."</p>"; ?>
                                                     <?php } ?>
                                                     <?php if (!empty($value)) { ?>
                                                         <?php $emptyProfile = true; ?>
