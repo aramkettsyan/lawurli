@@ -1059,6 +1059,18 @@ header {
 .labelValue span {
     /*float: left;*/
 }
+.labelValue span>span {
+    margin-right: 5px;
+    padding-right: 10px;
+}
+.labelValue span>span:after {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background: red;
+}
 .labelValue:after {
     content: '';
     clear: both;
