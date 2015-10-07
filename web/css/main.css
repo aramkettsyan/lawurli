@@ -1060,16 +1060,22 @@ header {
     /*float: left;*/
 }
 .labelValue span>span {
-    margin-right: 5px;
-    padding-right: 10px;
+    /*margin-right: 5px;*/
+    /*padding-right: 10px;*/
 }
 .labelValue span>span:after {
     content: '';
     display: inline-block;
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 100%;
-    background: red;
+    background: white;
+    margin: 0 3px 0 7px;
+    border: solid 1px #555;
+    line-height: 20px;
+}
+.labelValue span>span:last-of-type:after {
+    display: none;
 }
 .labelValue:after {
     content: '';
