@@ -161,11 +161,11 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                             <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
                                                                 <?php if (is_array($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
                                                                     <?php if (in_array($option, $this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
-                                                                        <?php $values .= '<span>'.$option .'</span>'. ' '; ?>
+                                                                        <?php $values .= '<span>'.Html::encode($option) .'</span>'. ' '; ?>
                                                                     <?php } ?>
                                                                 <?php } else { ?>
                                                                     <?php if ($option === $this->params['user_forms'][$subSectionId][$u][$form['formId']]) { ?>
-                                                                        <?php $values = '<span>'.$option.'</span>'; ?>
+                                                                        <?php $values = '<span>'.Html::encode($option).'</span>'; ?>
                                                                     <?php } ?>
                                                                 <?php } ?>
                                                             <?php } ?>
@@ -177,7 +177,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                             <?php $emptySubSectionToken = true; ?>
                                                             <div class="labelValue">
                                                                 <label><?= Html::encode($form['formLabel']) ?></label>
-                                                                <span><?= Html::encode($values) ?></span>
+                                                                <span><?= $values ?></span>
                                                             </div>
                                                         <?php } ?>
                                                     <?php } ?>
