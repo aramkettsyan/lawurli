@@ -1,67 +1,54 @@
 <?php
 
 use yii\helpers\Html;
-use app\assets\UserAsset;
 use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $this->params['educationModel'] app\models\Education */
+/* @var $form ActiveForm */
 ?>
 
-<!-- login popup -->
-<div id="login-popup" class="popupWrap popupSmall mfp-hide">
+
+<div id="education-popup" class="popupWrap popupSmall mfp-hide">
     <div class="popupTitle">
-        <h5>Login</h5>
+        <h5>Add CLEs</h5>
         <button class="mfp-close"></button>
     </div>
     <div class="popupCont">
-        <?php
-        echo \Yii::$app->getSession()->getFlash('success');
-        echo \Yii::$app->getSession()->getFlash('warning');
-        ?>
-        <?php
-        $form = ActiveForm::begin([
-                    'id' => 'login-form'
-        ]);
-        ?>
+        <div class="users-education">
 
-
-
-        <?=
-        $form->field($this->params['model'], 'email', [
-            'template' => "{input} <i class='icon-email-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-            'options' => [
-                'class' => 'formRow frIconLeft'
-    ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
-        ?>
-
-        <?=
-        $form->field($this->params['model'], 'password', [
-            'template' => "{input} <i class='icon-lock-streamline'></i>
-                        <span class='inputError'>
-                            <i class='icon-warning-alt'></i>
-                            <span>{error}</span>
-                        </span>",
-            'options' => [
-                'class' => 'formRow frIconLeft'
-    ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Password']);
-        ?>
-
-        <div class="remMeForgPass clearAfter">
-            <?=
-            $form->field($this->params['model'], 'rememberMe', ['options' => [
-                    'class' => 'checkbox'
-        ]])->checkbox(['label' => 'Remember me!'])
+            <?php
+            $form = ActiveForm::begin(['options' => [
+                            'enctype' => 'multipart/form-data'
+                        ],
+                        'method' => 'post',
+                        'action' => ['users/profile']
+            ]);
             ?>
-            <div class="forgPass">
-                <a class="textBtn popupBtn" href="#forgpass-popup" >Forgot password?</a>
+
+            <?= $form->field($this->params['educationModel'], 'organization') ?>
+            <?= $form->field($this->params['educationModel'], 'number_of_units') ?>
+            <?= $form->field($this->params['educationModel'], 'date') ?>
+            <?= $form->field($this->params['educationModel'], 'ethics')->radioList(['1' => 'y', '0' => 'n']) ?>
+            <?= $form->field($this->params['educationModel'], 'certificate')->fileInput() ?>
+
+            <div class="form-group">
+                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
             </div>
-        </div>
-        <?= Html::submitButton('Login', ['class' => 'btn defBtn']) ?>
-        <?php ActiveForm::end(); ?>
+            <?php ActiveForm::end(); ?>
+
+        </div><!-- users-education -->
     </div>
 </div>
 
-<!-- sign up popup -->
+
+
+
+<script>
+    $(function () {
+        $("#educationform-date").datepicker({dateFormat: 'yy-mm-dd'});
+    });
+</script>
+
+
 

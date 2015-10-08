@@ -51,6 +51,8 @@ UserAsset::register($this);
                 <?= $this->render('//elements/forgotPassword_1') ?>
                 <?= $this->render('//elements/forgotPassword_2') ?>
 
+            <?php } else { ?>
+                <?= $this->render('//elements/educationForm') ?>
             <?php } ?>
         </div>
         <footer>
@@ -104,7 +106,7 @@ UserAsset::register($this);
                     $('.connect').on('click', function () {
                         var imagesPath = '<?php echo \Yii::getAlias('@web') . '/images/users_images/'; ?>';
                         console.log(imagesPath);
-                        
+
                         $.ajax({
                             method: "POST",
                             url: "/users/get-not-connected-users",
@@ -129,7 +131,7 @@ UserAsset::register($this);
                                         user.find('.usTitle').html('');
                                     }
                                     user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
-                                    user.find('.plName').attr('href','/users/profile/'+msg[0].id+'?profileTab=open');
+                                    user.find('.plName').attr('href', '/users/profile/' + msg[0].id + '?profileTab=open');
                                     user.find('.peopleListL span').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
                                     user.find('.skip').attr('id', msg[0].id);
                                     user.find('.connect').attr('id', msg[0].id);
@@ -173,7 +175,7 @@ UserAsset::register($this);
                                         user.find('.usTitle').html('');
                                     }
                                     user.find('.plName').html(msg[0].first_name + ' ' + msg[0].last_name);
-                                    user.find('.plName').attr('href','/users/profile/'+msg[0].id+'?profileTab=open');
+                                    user.find('.plName').attr('href', '/users/profile/' + msg[0].id + '?profileTab=open');
                                     user.find('.peopleListL span').css('background-image', 'url(' + imagesPath + msg[0].image + ')');
                                     user.find('.skip').attr('id', msg[0].id);
                                     user.find('.connect').attr('id', msg[0].id);

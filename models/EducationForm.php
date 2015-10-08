@@ -13,7 +13,7 @@ class EducationForm extends Model {
     public $organization;
     public $number_of_units;
     public $date;
-    public $ethics;
+    public $ethics = 1;
     public $certificate;
 
     /**
@@ -21,9 +21,10 @@ class EducationForm extends Model {
      */
     public function rules() {
         return [
-            [['organization', 'number_of_units', 'date', 'ethics','certificate'], 'required'],
-            [['organization', 'certificate'], 'string', 'max' => 255],
-            [['user_id', 'ethics'], 'integer'],
+            [['organization', 'number_of_units', 'date', 'ethics'], 'required'],
+            [['organization'], 'string', 'max' => 255],
+            [['certificate'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 1],
+            [['ethics'], 'integer'],
             [['number_of_units'], 'number']
         ];
     }
@@ -36,14 +37,26 @@ class EducationForm extends Model {
             'organization' => 'Organization',
             'number_of_units' => 'Number Of Units',
             'date' => 'Date',
-            'ethics' => 'Ethics',
-            'certificate' => 'Certificate'
+            'ethics' => 'Ethics'
         ];
     }
     
     
     public function saveData(){
         $education = new Education();
+        $education->organization = $this->organization;
+        $education->number_of_units = $this->number_of_units;
+        $education->date = $this->date;
+        $education->ethics = $this->ethics;
+        $education->certificate = $this->certificate;
+        $education->created = new \yii\db\Expression('NOW()');
+        $education->modified = new \yii\db\Expression('NOW()');
+        $education->user_id = Yii::$app->user->id;
+        
+        if($education->save()){
+            return $education;
+        }
+        return false;
         
     }
 

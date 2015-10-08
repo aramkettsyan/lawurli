@@ -14,6 +14,7 @@ use app\models\ContactForm;
 use Yii;
 use app\models\UserForms;
 use app\models\EducationForm;
+use app\models\Education;
 
 class UsersController extends \yii\web\Controller {
 
@@ -42,6 +43,7 @@ class UsersController extends \yii\web\Controller {
                                 'load-colleagues',
                                 'load-notifications',
                                 'load-education',
+                                'add-education',
                                 'get-not-connected-users',
                                 'error',
                                 'contact-us',
@@ -111,7 +113,7 @@ class UsersController extends \yii\web\Controller {
 
         $aboutUs = explode('.', $aboutUsModel['about_us']);
 
-        $aboutUs = implode('.', [$aboutUs[0], $aboutUs[1], $aboutUs[2]]).'.';
+        $aboutUs = implode('.', [$aboutUs[0], $aboutUs[1], $aboutUs[2]]) . '.';
 
         \Yii::$app->view->params['about_us'] = $aboutUs;
 
@@ -782,6 +784,18 @@ class UsersController extends \yii\web\Controller {
             return $this->redirect('/users/index');
         }
 
+        if (isset(Yii::$app->request->post()['EducationForm'])) {
+            $response = $this->addEducation();
+            if($response === true){
+                return $this->redirect('/users/profile?educationTab=open');
+            }else{
+                Yii::$app->view->params['educationModel'] = $response;
+            }
+        } else {
+            $educationModel = new EducationForm();
+            Yii::$app->view->params['educationModel'] = $educationModel;
+        }
+        
         $models = $this->models;
 
         if ($id) {
@@ -1355,16 +1369,61 @@ class UsersController extends \yii\web\Controller {
                     'pages' => $pages
         ]);
     }
-    
+
     public function actionLoadEducation() {
         $this->layout = false;
         if (!Yii::$app->request->isAjax) {
             throw new \yii\web\NotFoundHttpException();
         }
-        
+        $cles = Education::find(['user_id' => Yii::$app->user->id])->asArray()->all();
+
         return $this->render('load-education', [
-            
+                    'cles' => $cles
         ]);
+    }
+
+    protected function addEducation() {
+        $this->layout = false;
+        $model = new EducationForm();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if (isset($_FILES['EducationForm']['name']['certificate']) && $_FILES['EducationForm']['name']['certificate']) {
+                $result = $this->actionUploadFile();
+                if ($result) {
+                    $model->certificate = $result;
+                    if ($model->saveData()) {
+                        return true;
+                    } else {
+                        $name = Yii::getAlias('@webroot') . '/images/users_uploads/' . $result;
+                        if (is_file($name)) {
+                            unset($name);
+                        }
+                        Yii::$app->session->writeSession('addEducation', 'true');
+                        return $model;
+                    }
+                }
+            }
+        } else {
+            Yii::$app->session->writeSession('addEducation', 'true');
+            return $model;
+        }
+    }
+
+    public function actionUploadFile() {
+        if (isset($_FILES['EducationForm']['name']['certificate'])) {
+            $file_name = $_FILES['EducationForm']['name']['certificate'];
+            $file = $_FILES['EducationForm']['tmp_name']['certificate'];
+            $ext = strtolower(end(explode('.', $file_name)));
+            $sec = new \yii\base\Security();
+            $random_string = $sec->generateRandomString(24);
+            $file_name = $random_string . '.' . $ext;
+            $res = move_uploaded_file($file, Yii::getAlias('@webroot') . '/images/users_uploads/' . $file_name);
+            if ($res) {
+                return $file_name;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1464,21 +1523,5 @@ class UsersController extends \yii\web\Controller {
             ]);
         }
     }
-    
-    
-    public function actionEducation(){
-        $model = new EducationForm();
-        
-        if(Yii::$app->request->isPost){
-            if($model->load(Yii::$app->request->post()) && $model->validate()){
-                
-            }
-        }
-        
-        return $this->render('education',[
-            'model'=>$model
-        ]);
-    }
-    
 
 }

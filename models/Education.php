@@ -58,4 +58,9 @@ class Education extends \yii\db\ActiveRecord
             'modified' => 'Modified',
         ];
     }
+    
+    public function beforeSave($insert) {
+        
+        return parent::beforeSave($insert);
+    }
 }
