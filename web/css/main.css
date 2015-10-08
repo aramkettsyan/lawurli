@@ -1056,8 +1056,9 @@ header {
     /*width: 100px;*/
     font-weight: 600;
 }
-.labelValue span {
+.labelValue>span {
     /*float: left;*/
+    line-height: 1.7em;
 }
 .labelValue span>span {
     /*margin-right: 5px;*/
@@ -1981,3 +1982,119 @@ footer h4 {
 .textBtn.connect{
     cursor:pointer;
 }
+
+/* cle page */
+.cleCounts>div {
+    width: 40%;
+    float: left;
+    border: solid 1px #E4E4E4;
+    padding: 20px 20px 0;
+    margin: 0 5%;
+}
+.cleCounts>div h4 {
+    display: block;
+    width: 60px;
+    height: 60px;
+    font-size: 55px;
+    line-height: 60px;
+    text-align: center;
+    color: #DA8213;
+    margin: 0 auto;
+    font-weight: 300;
+}
+.cleCounts>div p {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 600;
+    margin-bottom: -10px;
+    background-color: #fff;
+    padding: 0 4px;
+}
+.tableStyle {
+    table-layout: fixed;
+    width: 100%;
+    border: none;
+    font-size: 14px;
+}
+.tableStyle th,
+.tableStyle td {
+    padding: 7px 10px;
+}
+.tableStyle th {
+    text-align: left;
+    font-weight: 600;
+}
+.tableStyle thead {
+    border-bottom: solid 2px #dbdbdb;
+}
+.tableStyle tbody tr:nth-of-type(even) {
+    background-color: #F7F7F7;
+}
+.tableIcon i {
+    margin: 0;
+}
+.tableIcon {
+    display: inline-block;
+}
+.tableIcon:hover {
+    opacity: .7;
+}
+.tbEditBtn {
+    color: #0C7AC5;
+}
+.tbDelBtn {
+    color: #DC2B25;
+}
+.certifBtn {
+    color: #DA8213;
+    padding: 1px;
+}
+.ui-datepicker {
+    background-color: #fff;
+    border: solid 1px #CCCCCC;
+}
+.ui-datepicker-header {
+    background-color: #DA8213;
+    color: #fff;
+}
+.ui-datepicker-prev {
+    top: 7px!important;
+    left: 5px!important;
+}
+.ui-datepicker-next {
+    top: 7px!important;
+    right: 5px!important;
+}
+.ui-datepicker-prev:before {
+    content: 'q';
+    font-family: 'project-39';
+}
+.ui-datepicker-next:before {
+    content: 'v';
+    font-family: 'project-39';
+}
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
+    width: 15px;
+    height: 20px;
+}
+.ui-datepicker .ui-datepicker-prev:hover, .ui-datepicker .ui-datepicker-next:hover {
+    opacity: .7;
+    cursor: pointer;
+}
+.ui-datepicker-today a {
+    /*background-color: #DA8213;*/
+    box-shadow: inset 0 0 0 2px #d2d2d2;
+    /*border: solid 1px #DA8213;*/
+    /*color: #fff;*/
+}
+.ui-datepicker-calendar th {
+    width: 14.2857%;
+    table-layout: fixed;
+}
+.ui-datepicker-calendar td a:hover {
+    box-shadow: inset 0 0 0 2px #DA8213;
+}
+.ui-datepicker td span, .ui-datepicker td a{
+    text-align: center;
+}
+
