@@ -83,7 +83,6 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                     <li><a href="#" id="profiletabNot"><i class="icon-bell-two"></i>Notifications</a></li>
                     <li><a href="#" id="profiletabEdu"><i class="icon-bell-two"></i>Education</a></li>
                 <?php endif; ?>
-                <li><a href="#" id="profiletabEdu"><i class="icon-bell-two"></i>Education</a></li>
             </ul>
         </div>
         <div class="tabsContent">
