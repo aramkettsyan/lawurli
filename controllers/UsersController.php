@@ -13,6 +13,7 @@ use app\models\Request;
 use app\models\ContactForm;
 use Yii;
 use app\models\UserForms;
+use app\models\EducationForm;
 
 class UsersController extends \yii\web\Controller {
 
@@ -40,6 +41,7 @@ class UsersController extends \yii\web\Controller {
                                 'load-general',
                                 'load-colleagues',
                                 'load-notifications',
+                                'load-education',
                                 'get-not-connected-users',
                                 'error',
                                 'contact-us',
@@ -1353,6 +1355,17 @@ class UsersController extends \yii\web\Controller {
                     'pages' => $pages
         ]);
     }
+    
+    public function actionLoadEducation() {
+        $this->layout = false;
+        if (!Yii::$app->request->isAjax) {
+            throw new \yii\web\NotFoundHttpException();
+        }
+        
+        return $this->render('load-education', [
+            
+        ]);
+    }
 
     /**
      * 
@@ -1451,5 +1464,21 @@ class UsersController extends \yii\web\Controller {
             ]);
         }
     }
+    
+    
+    public function actionEducation(){
+        $model = new EducationForm();
+        
+        if(Yii::$app->request->isPost){
+            if($model->load(Yii::$app->request->post()) && $model->validate()){
+                
+            }
+        }
+        
+        return $this->render('education',[
+            'model'=>$model
+        ]);
+    }
+    
 
 }

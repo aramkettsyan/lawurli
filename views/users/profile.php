@@ -81,6 +81,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                 <li><a href="#" id="colleag"><i class="icon-contacts"></i>Colleagues</a></li>
                 <?php if ((Yii::$app->controller->actionParams['id'] == Yii::$app->user->id || !Yii::$app->controller->actionParams['id'])) : ?>
                     <li><a href="#" id="profiletabNot"><i class="icon-bell-two"></i>Notifications</a></li>
+                    <li><a href="#" id="profiletabEdu"><i class="icon-bell-two"></i>Education</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -235,11 +236,12 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
     }
     var colleaguesTab = getParameterByName('colleaguesTab');
     var notificationsTab = getParameterByName('notificationsTab');
+    var educationTab = getParameterByName('educationTab');
     var profileTab = getParameterByName('profileTab');
 
 
     $(document).ready(function () {
-        if (colleaguesTab != 'open' && notificationsTab != 'open' && profileTab != 'open') {
+        if (colleaguesTab != 'open' && notificationsTab != 'open' && profileTab != 'open' && educationTab != 'open') {
             $('#newsContent').css('opacity', '0.2');
             $('#loader').show();
 
@@ -327,6 +329,12 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $("#profiletabNot").parent().siblings().removeClass("active");
             $("#tabContent").load("/users/load-notifications");
         }
+        if (educationTab == 'open') {
+            $("#profileInfo").hide();
+            $("#profiletabEdu").parent().addClass("active");
+            $("#profiletabEdu").parent().siblings().removeClass("active");
+            $("#tabContent").load("/users/load-education");
+        }
         if (profileTab == 'open') {
             $("#tabContent").hide();
             $("#profiletab").parent().addClass("active");
@@ -372,6 +380,15 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $(this).parent().addClass("active");
             $(this).parent().siblings().removeClass("active");
             $("#tabContent").load("/users/load-notifications");
+        });
+        
+        $(document).on("click", "#profiletabEdu", function (event) {
+            event.preventDefault();
+            $("#profileInfo").hide();
+            $("#tabContent").show();
+            $(this).parent().addClass("active");
+            $(this).parent().siblings().removeClass("active");
+            $("#tabContent").load("/users/load-education");
         });
 
 
