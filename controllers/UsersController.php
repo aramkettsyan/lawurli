@@ -785,14 +785,18 @@ class UsersController extends \yii\web\Controller {
         }
 
         if (isset(Yii::$app->request->post()['EducationForm'])) {
+            echo('1');
             if (isset(Yii::$app->request->post()['EducationForm']['id']) && Yii::$app->request->post()['EducationForm']['id']) {
                 $response = $this->editEducation();
             } else {
                 $response = $this->addEducation();
+                echo('2');
             }
             if ($response === true) {
+                echo('3');
                 return $this->redirect('/users/profile?educationTab=open');
             } else {
+                echo('4');
                 Yii::$app->view->params['educationModel'] = $response;
             }
         } else if (isset(Yii::$app->request->get()['cleid']) && (int) Yii::$app->request->get()['cleid']) {
@@ -1409,8 +1413,8 @@ class UsersController extends \yii\web\Controller {
 
         return $this->render('load-education', [
                     'cles' => $cles,
-                    'sum_of_ethics'=>$sum_of_ethics,
-                    'sum_of_units'=>$sum_of_units
+                    'sum_of_ethics' => $sum_of_ethics,
+                    'sum_of_units' => $sum_of_units
         ]);
     }
 
