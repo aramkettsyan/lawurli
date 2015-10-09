@@ -10,16 +10,16 @@ use yii\helpers\Html;
 <div class="clePage">
     <div class="cleCounts clearAfter">
         <div>
-            <h4>47</h4>
+            <h4><?= $sum_of_units ?></h4>
             <p>Total CLE units</p>
         </div>
         <div>
-            <h4>12</h4>
+            <h4><?= $sum_of_ethics ?></h4>
             <p>Total Ethics CLE units</p>
         </div>
     </div>
     <div class="mt40 alignCenter">
-        <a href="#add-cle" class="btn defBtn popupBtn">Add CLE's</a>
+        <a href="#add-cle" class="btn defBtn popupBtn add_cle" >Add CLE's</a>
     </div>
     <table class="tableStyle mt40">
         <thead>
@@ -33,98 +33,61 @@ use yii\helpers\Html;
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Blah organization</td>
-                <td>47</td>
-                <td>22 June 2014</td>
-                <td>Yes</td>
-                <td class="alignCenter">
-                    <a href="#" class="certifBtn tableIcon"><i class="icon-certificate-file"></i></a>
-                </td>
-                <td>
-                    <a href="#" class="tableIcon tbEditBtn"><i class="icon-page-edit"></i></a>
-                    <a href="#" class="tableIcon tbDelBtn"><i class="icon-cross-mark"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <td>Blah organization</td>
-                <td>47</td>
-                <td>22 June 2014</td>
-                <td>Yes</td>
-                <td class="alignCenter">
-                    <a href="#" class="certifBtn tableIcon"><i class="icon-certificate-file"></i></a>
-                </td>
-                <td>
-                    <a href="#" class="tableIcon tbEditBtn"><i class="icon-page-edit"></i></a>
-                    <a href="#" class="tableIcon tbDelBtn"><i class="icon-cross-mark"></i></a>
-                </td>
-            </tr>
-            <tr>
-                <td>Blah organization</td>
-                <td>47</td>
-                <td>22 June 2014</td>
-                <td>Yes</td>
-                <td class="alignCenter">
-                    <a href="#" class="certifBtn tableIcon"><i class="icon-certificate-file"></i></a>
-                </td>
-                <td>
-                    <a href="#" class="tableIcon tbEditBtn"><i class="icon-page-edit"></i></a>
-                    <a href="#" class="tableIcon tbDelBtn"><i class="icon-cross-mark"></i></a>
-                </td>
-            </tr>
+            <?php foreach ($cles as $cle) { ?>
+
+                <tr>
+                    <td><?= $cle['organization'] ?></td>
+                    <td><?= $cle['number_of_units'] ?></td>
+                    <?php
+                    $date = date('Y-m-d', strtotime($cle['date']));
+                    $cle['date'] = $date;
+                    ?>
+                    <td><?= $cle['date'] ?></td>
+                    <td><?= $cle['ethics'] ? 'Yes' : 'No' ?></td>
+                    <td class="alignCenter">
+                        <a href="<?= \Yii::getAlias('@web') . '/images/users_uploads/' . $cle['certificate'] ?>" download class="certifBtn tableIcon"><i class="icon-certificate-file"></i></a>
+                    </td>
+                    <td>
+                        <a href="<?= \yii\helpers\Url::to(['users/profile?educationTab=open&cleid=' . $cle['id']]) ?>" class="tableIcon tbEditBtn"><i class="icon-page-edit"></i></a>
+                        <a href="<?= \yii\helpers\Url::to(['users/delete-education?cleid=' . $cle['id']]) ?>" class="tableIcon tbDelBtn"><i class="icon-cross-mark"></i></a>
+                    </td>
+                </tr>
+
+            <?php } ?>
+
         </tbody>
     </table>
 </div>
 
 
-<div id="add-cle" class="popupWrap mfp-hide">
-    <div class="popupTitle">
-        <h5>Add</h5>
-        <button class="mfp-close"></button>
-    </div>
-    <div class="popupCont srchPopupCont">
-        <div class="formRow">
-            <label>Organization name</label>
-            <input type="text" class="formControl"/>
-        </div>
-        <div class="formRow">
-            <label># of Units</label>
-            <input type="text" class="formControl"/>
-        </div>
-        <div class="formRow">
-            <label>Date</label>
-            <input type="text" class="formControl datepicker">
-        </div>
-        <div class="formRow">
-            <label>Ethics (Y/N)</label>
-            <select class="formControl">
-                <option>Yes</option>
-                <option>No</option>
-            </select>
-        </div>
-        <div class="formRow">
-            <label>Upload certificate</label>
-            <input type="file" class="formControl"/>
-        </div>
-        <div class="submitSect">
-            <input class="btn defBtn" type="submit" value="Save">
-        </div>
-    </div>
-</div>
-
-
 <script>
-    $(function() {
-        $( ".datepicker" ).datepicker();
-    });
-    //////////////////////
-    /// magnific popup ///
-    //////////////////////
-    $('.popupBtn').magnificPopup({
-        type: 'inline',
-        preloader: false,
-        focus: '#name',
-        mainClass: 'popupAnim',
-        removalDelay: 300
-    });
+    $(document).ready(function () {
+        
+        $('.add_cle').on('click',function(){
+            $('#add-cle input').val('');
+            $('#add-cle .ethics').val('1');
+        });
+        
+        
+        
+        //////////////////////
+        /// magnific popup ///
+        //////////////////////
+        $('.popupBtn').magnificPopup({
+            type: 'inline',
+            preloader: false,
+            focus: '#name',
+            mainClass: 'popupAnim',
+            removalDelay: 300
+        });
+        var showAddEducation = <?php echo Yii::$app->getSession()->readSession('addEducation') ? 'true' : 'false' ?>;
+<?php Yii::$app->getSession()->destroySession('addEducation'); ?>
+        if (showAddEducation) {
+            $.magnificPopup.open({
+                items: {src: '#add-cle'}, type: 'inline'
+            }, 0);
+        }
+
+    })
+
 </script>

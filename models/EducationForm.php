@@ -10,6 +10,7 @@ use yii\base\Model;
  */
 class EducationForm extends Model {
 
+    public $id;
     public $organization;
     public $number_of_units;
     public $date;
@@ -22,6 +23,8 @@ class EducationForm extends Model {
     public function rules() {
         return [
             [['organization', 'number_of_units', 'date', 'ethics'], 'required'],
+            [['id'], 'required','on'=>'update'],
+            [['id'], 'integer','on'=>'update'],
             [['organization'], 'string', 'max' => 255],
             [['certificate'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 1],
             [['ethics'], 'integer'],
@@ -34,16 +37,22 @@ class EducationForm extends Model {
      */
     public function attributeLabels() {
         return [
-            'organization' => 'Organization',
-            'number_of_units' => 'Number Of Units',
+            'organization' => 'Organization name',
+            'number_of_units' => '# of Units',
             'date' => 'Date',
-            'ethics' => 'Ethics'
+            'ethics' => 'Ethics (Y/N)',
+            'certificate' => 'Upload certificate'
         ];
     }
     
     
     public function saveData(){
-        $education = new Education();
+        
+        if((int)$this->id){
+            $education = Education::findOne(['id'=>(int)$this->id,'user_id'=>  Yii::$app->user->id]);
+        }else{
+            $education = new Education();
+        }
         $education->organization = $this->organization;
         $education->number_of_units = $this->number_of_units;
         $education->date = $this->date;

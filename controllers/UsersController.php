@@ -43,7 +43,7 @@ class UsersController extends \yii\web\Controller {
                                 'load-colleagues',
                                 'load-notifications',
                                 'load-education',
-                                'add-education',
+                                'delete-education',
                                 'get-not-connected-users',
                                 'error',
                                 'contact-us',
@@ -785,17 +785,39 @@ class UsersController extends \yii\web\Controller {
         }
 
         if (isset(Yii::$app->request->post()['EducationForm'])) {
-            $response = $this->addEducation();
-            if($response === true){
+            if (isset(Yii::$app->request->post()['EducationForm']['id']) && Yii::$app->request->post()['EducationForm']['id']) {
+                $response = $this->editEducation();
+            } else {
+                $response = $this->addEducation();
+            }
+            if ($response === true) {
                 return $this->redirect('/users/profile?educationTab=open');
-            }else{
+            } else {
                 Yii::$app->view->params['educationModel'] = $response;
+            }
+        } else if (isset(Yii::$app->request->get()['cleid']) && (int) Yii::$app->request->get()['cleid']) {
+            $cle_id = (int) Yii::$app->request->get()['cleid'];
+            $model = Education::findOne(['id' => $cle_id, 'user_id' => Yii::$app->user->id]);
+            if ($model) {
+                $form_model = new EducationForm();
+                $form_model->id = $model->id;
+                $form_model->organization = $model->organization;
+                $form_model->number_of_units = $model->number_of_units;
+                $form_model->date = $model->date;
+                $form_model->ethics = $model->ethics;
+                $form_model->certificate = $model->certificate;
+                Yii::$app->view->params['educationModel'] = $form_model;
+
+                Yii::$app->session->writeSession('addEducation', 'true');
+            } else {
+                $educationModel = new EducationForm();
+                Yii::$app->view->params['educationModel'] = $educationModel;
             }
         } else {
             $educationModel = new EducationForm();
             Yii::$app->view->params['educationModel'] = $educationModel;
         }
-        
+
         $models = $this->models;
 
         if ($id) {
@@ -1376,9 +1398,19 @@ class UsersController extends \yii\web\Controller {
             throw new \yii\web\NotFoundHttpException();
         }
         $cles = Education::find(['user_id' => Yii::$app->user->id])->asArray()->all();
+        $sum_of_units = 0;
+        $sum_of_ethics = 0;
+        foreach ($cles as $cle) {
+            $sum_of_units+=$cle['number_of_units'];
+            if ($cle['ethics']) {
+                $sum_of_ethics++;
+            }
+        }
 
         return $this->render('load-education', [
-                    'cles' => $cles
+                    'cles' => $cles,
+                    'sum_of_ethics'=>$sum_of_ethics,
+                    'sum_of_units'=>$sum_of_units
         ]);
     }
 
@@ -1405,6 +1437,80 @@ class UsersController extends \yii\web\Controller {
         } else {
             Yii::$app->session->writeSession('addEducation', 'true');
             return $model;
+        }
+    }
+
+    protected function editEducation() {
+        $this->layout = false;
+        if (isset(Yii::$app->request->post()['EducationForm']['id']) && (int) Yii::$app->request->post()['EducationForm']['id']) {
+
+            $id = (int) Yii::$app->request->post()['EducationForm']['id'];
+            $ed_model = Education::findOne(['id' => $id, 'user_id' => Yii::$app->user->id]);
+            $form_model = new EducationForm();
+            $form_model->id = $ed_model->id;
+            if (!Yii::$app->request->post()['EducationForm']['organization']) {
+                $form_model->organization = $ed_model->organization;
+            } else {
+                $form_model->organization = Yii::$app->request->post()['EducationForm']['organization'];
+            }
+            if (!Yii::$app->request->post()['EducationForm']['number_of_units']) {
+                $form_model->number_of_units = $ed_model->number_of_units;
+            } else {
+                $form_model->number_of_units = Yii::$app->request->post()['EducationForm']['number_of_units'];
+            }
+            if (!Yii::$app->request->post()['EducationForm']['date']) {
+                $form_model->date = $ed_model->date;
+            } else {
+                $form_model->date = Yii::$app->request->post()['EducationForm']['date'];
+            }
+
+            $form_model->ethics = Yii::$app->request->post()['EducationForm']['ethics'];
+
+            $model = $form_model;
+            if ($model->validate()) {
+                if (isset($_FILES['EducationForm']['name']['certificate']) && $_FILES['EducationForm']['name']['certificate']) {
+                    $result = $this->actionUploadFile();
+                    if ($result) {
+                        $model->certificate = $result;
+                        if ($model->saveData()) {
+                            return true;
+                        } else {
+                            $name = Yii::getAlias('@webroot') . '/images/users_uploads/' . $result;
+                            if (is_file($name)) {
+                                unset($name);
+                            }
+                            Yii::$app->session->writeSession('addEducation', 'true');
+                            return $model;
+                        }
+                    }
+                } else {
+                    $model->certificate = $ed_model->certificate;
+                    if ($model->saveData()) {
+                        return true;
+                    } else {
+                        Yii::$app->session->writeSession('addEducation', 'true');
+                        return $model;
+                    }
+                }
+            } else {
+                Yii::$app->session->writeSession('addEducation', 'true');
+                return $model;
+            }
+        }
+    }
+
+    public function actionDeleteEducation() {
+        if (isset(Yii::$app->request->get()['cleid']) && (int) Yii::$app->request->get()['cleid']) {
+            $id = Yii::$app->request->get()['cleid'];
+            $model = Education::findOne(['id' => $id, 'user_id' => Yii::$app->user->id]);
+            if ($model) {
+                $model->delete();
+                return $this->redirect('/users/profile?educationTab=open');
+            } else {
+                return $this->redirect('/users/index');
+            }
+        } else {
+            return $this->redirect('/users/index');
         }
     }
 

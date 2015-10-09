@@ -8,45 +8,95 @@ use yii\widgets\ActiveForm;
 /* @var $form ActiveForm */
 ?>
 
-
-<div id="education-popup" class="popupWrap popupSmall mfp-hide">
+<div id="add-cle" class="popupWrap mfp-hide">
     <div class="popupTitle">
-        <h5>Add CLEs</h5>
+        <h5>Add</h5>
         <button class="mfp-close"></button>
     </div>
-    <div class="popupCont">
-        <div class="users-education">
+    <div class="popupCont srchPopupCont">
+        <?php
+        $form = ActiveForm::begin(['options' => [
+                        'enctype' => 'multipart/form-data'
+                    ],
+                    'method' => 'post',
+                    'action' => ['users/profile']
+        ]);
+        ?>
+        <?php
+        $date = date('Y-m-d', strtotime($this->params['educationModel']->date));
+        $this->params['educationModel']->date = $date;
+        ?>
+        <?= $form->field($this->params['educationModel'], 'id')->hiddenInput(['value' => $this->params['educationModel']->id])->label(false); ?>
 
-            <?php
-            $form = ActiveForm::begin(['options' => [
-                            'enctype' => 'multipart/form-data'
-                        ],
-                        'method' => 'post',
-                        'action' => ['users/profile']
-            ]);
-            ?>
+        <?=
+        $form->field($this->params['educationModel'], 'organization', [
+            'template' => "{label}{input}
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+            'options' => [
+                'class' => 'formRow'
+    ]])->textInput(['class' => 'formControl']);
+        ?>
+        <?=
+        $form->field($this->params['educationModel'], 'number_of_units', [
+            'template' => "{label}{input}
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+            'options' => [
+                'class' => 'formRow'
+    ]])->textInput(['class' => 'formControl']);
+        ?>
+        <?=
+        $form->field($this->params['educationModel'], 'date', [
+            'template' => "{label}{input}
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+            'options' => [
+                'class' => 'formRow'
+    ]])->textInput(['class' => 'formControl datepicker']);
+        ?>
+        <?=
+        $form->field($this->params['educationModel'], 'ethics', [
+            'template' => "{label}{input}
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+            'options' => [
+                'class' => 'formRow'
+    ]])->dropDownList(['1' => 'yes', '0' => 'no'], ['class' => 'formControl ethics']);
+        ?>
+        <?=
+        $form->field($this->params['educationModel'], 'certificate', [
+            'template' => "{label}{input}
+                        <span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
+            'options' => [
+                'class' => 'formRow'
+    ]])->fileInput(['class' => 'formControl']);
+        ?>
+        <div class="submitSect">
+            <?= Html::submitButton('Save', ['class' => 'btn defBtn']) ?>
+        </div>
 
-            <?= $form->field($this->params['educationModel'], 'organization') ?>
-            <?= $form->field($this->params['educationModel'], 'number_of_units') ?>
-            <?= $form->field($this->params['educationModel'], 'date') ?>
-            <?= $form->field($this->params['educationModel'], 'ethics')->radioList(['1' => 'y', '0' => 'n']) ?>
-            <?= $form->field($this->params['educationModel'], 'certificate')->fileInput() ?>
+        <?php ActiveForm::end(); ?>
 
-            <div class="form-group">
-                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
-            </div>
-            <?php ActiveForm::end(); ?>
 
-        </div><!-- users-education -->
     </div>
 </div>
 
 
-
-
 <script>
     $(function () {
-        $("#educationform-date").datepicker({dateFormat: 'yy-mm-dd'});
+        $(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
     });
 </script>
 

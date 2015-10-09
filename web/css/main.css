@@ -146,6 +146,7 @@ em {
 /* form styles*/
 .formRow {
     margin-bottom: 10px;
+    position: relative;
 }
 .formRow:last-child {
     margin-bottom: 0;
@@ -2097,4 +2098,6 @@ footer h4 {
 .ui-datepicker td span, .ui-datepicker td a{
     text-align: center;
 }
-
+#add-cle .inputError {
+    top: 28px;
+}
