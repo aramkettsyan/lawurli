@@ -13,7 +13,7 @@
                         <?php // $formatted_url = substr($formatted_url, 4, strlen($formatted_url)); ?>
                     <?php // } ?>
                     <?php // $formatted_url = 'www.' . $formatted_url; ?>
-                        <?php $formatted_url = $xmlObject['site_url'] ?>
+                        <?php $formatted_url = $xmlObject['site_title'] ?>
                     <time><a target="_blank" href="<?php echo $xmlObject['site_url']; ?>"><?php echo $formatted_url; ?></a></time>
                 </li>
             <?php } ?>

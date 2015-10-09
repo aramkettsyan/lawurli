@@ -89,6 +89,7 @@ class CronController extends Controller {
                         'news_pub_date' => $newsArray[$k]['pubDate'],
                         'news_url' => (string) $item->link,
                         'site_url' => (string) $resource->channel->link,
+                        'site_title' => (string) $resource->channel->title,
                         'created' => $cDate,
                         'modified' => $cDate
                     ];
@@ -117,6 +118,7 @@ class CronController extends Controller {
                         'news_pub_date' => $newsArray[$k]['pubDate'],
                         'news_url' => (string) $item->link['href'],
                         'site_url' => (string) $resource->link['href'],
+                        'site_title' => (string) $resource->title,
                         'created' => $cDate,
                         'modified' => $cDate
                     ];
@@ -130,7 +132,7 @@ class CronController extends Controller {
         $model = new \app\models\News();
         $model->deleteAll();
         \Yii::$app->db->createCommand('ALTER TABLE news AUTO_INCREMENT = 1')->execute();
-        \Yii::$app->db->createCommand()->batchInsert('news', ['news_title', 'news_pub_date', 'news_url','site_url', 'created', 'modified'], $rows)->execute();
+        \Yii::$app->db->createCommand()->batchInsert('news', ['news_title', 'news_pub_date', 'news_url','site_url','site_title', 'created', 'modified'], $rows)->execute();
     }
 
     protected function get_data($data) {

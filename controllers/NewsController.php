@@ -89,6 +89,7 @@ class NewsController extends \yii\web\Controller {
             $newsArray[$k]['link'] = $n->news_url;
             $newsArray[$k]['pubDate'] = $formatedDate;
             $newsArray[$k]['site_url'] = $n->site_url;
+            $newsArray[$k]['site_title'] = $n->site_title;
             $newsArray[$k]['sortTime'] = $n->news_pub_date;
             $k++;
         }
