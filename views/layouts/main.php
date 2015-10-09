@@ -51,7 +51,7 @@ UserAsset::register($this);
                 <?= $this->render('//elements/forgotPassword_1') ?>
                 <?= $this->render('//elements/forgotPassword_2') ?>
 
-            <?php } else { ?>
+            <?php } else if(Yii::$app->controller->action->id == 'profile') { ?>
                 <?= $this->render('//elements/educationForm') ?>
             <?php } ?>
         </div>
