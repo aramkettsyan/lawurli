@@ -796,8 +796,8 @@ class UsersController extends \yii\web\Controller {
                 echo('3');
                 return $this->redirect('/users/profile?educationTab=open');
             } else {
-                echo('4');
                 Yii::$app->view->params['educationModel'] = $response;
+                print_r(Yii::$app->view->params['educationModel']);
             }
             die;
         } else if (isset(Yii::$app->request->get()['cleid']) && (int) Yii::$app->request->get()['cleid']) {
