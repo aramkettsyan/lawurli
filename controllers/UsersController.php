@@ -1532,6 +1532,8 @@ class UsersController extends \yii\web\Controller {
             $random_string = $sec->generateRandomString(24);
             $file_name = $random_string . '.' . $ext;
             $res = move_uploaded_file($file, Yii::getAlias('@web') . 'images/users_uploads/' . $file_name);
+            print_r($res);
+            die;
             if ($res) {
                 return $file_name;
             } else {
