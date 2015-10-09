@@ -785,21 +785,16 @@ class UsersController extends \yii\web\Controller {
         }
 
         if (isset(Yii::$app->request->post()['EducationForm'])) {
-            echo('1');
             if (isset(Yii::$app->request->post()['EducationForm']['id']) && Yii::$app->request->post()['EducationForm']['id']) {
                 $response = $this->editEducation();
             } else {
                 $response = $this->addEducation();
-                echo('2');
             }
-            var_dump($response);
             if ($response === true) {
-                echo('3');
                 return $this->redirect('/users/profile?educationTab=open');
             } else {
                 Yii::$app->view->params['educationModel'] = $response;
             }
-            die;
         } else if (isset(Yii::$app->request->get()['cleid']) && (int) Yii::$app->request->get()['cleid']) {
             $cle_id = (int) Yii::$app->request->get()['cleid'];
             $model = Education::findOne(['id' => $cle_id, 'user_id' => Yii::$app->user->id]);
@@ -1422,14 +1417,10 @@ class UsersController extends \yii\web\Controller {
     protected function addEducation() {
         $this->layout = false;
         $model = new EducationForm();
-        echo 'p';
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            echo 'z';
             if (isset($_FILES['EducationForm']['name']['certificate']) && $_FILES['EducationForm']['name']['certificate']) {
-                echo 'y';
                 $result = $this->actionUploadFile();
                 if ($result) {
-                    echo 'c';
                     $model->certificate = $result;
                     if ($model->saveData()) {
                         return true;
@@ -1444,7 +1435,6 @@ class UsersController extends \yii\web\Controller {
                 }
             }
         }
-        die;
         Yii::$app->session->writeSession('addEducation', 'true');
         return $model;
     }
@@ -1524,7 +1514,7 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionUploadFile() {
-        
+
         if (isset($_FILES['EducationForm']['name']['certificate'])) {
             $file_name = $_FILES['EducationForm']['name']['certificate'];
             $file = $_FILES['EducationForm']['tmp_name']['certificate'];
@@ -1533,14 +1523,7 @@ class UsersController extends \yii\web\Controller {
             $random_string = $sec->generateRandomString(24);
             $file_name = $random_string . '.' . $ext;
             $res = move_uploaded_file($file, Yii::getAlias('@web') . 'images/users_uploads/' . $file_name);
-            
-            if ($res) {
-                echo 55;
-                return $file_name;
-            } else {
-                echo 66;
-                return false;
-            }
+            return $file_name;
         }
         return false;
     }
