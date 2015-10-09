@@ -799,6 +799,7 @@ class UsersController extends \yii\web\Controller {
                 echo('4');
                 Yii::$app->view->params['educationModel'] = $response;
             }
+            die;
         } else if (isset(Yii::$app->request->get()['cleid']) && (int) Yii::$app->request->get()['cleid']) {
             $cle_id = (int) Yii::$app->request->get()['cleid'];
             $model = Education::findOne(['id' => $cle_id, 'user_id' => Yii::$app->user->id]);
