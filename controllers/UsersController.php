@@ -1425,7 +1425,7 @@ class UsersController extends \yii\web\Controller {
                     if ($model->saveData()) {
                         return true;
                     } else {
-                        $name = Yii::getAlias('@web') . 'images/users_uploads/' . $result;
+                        $name = Yii::getAlias('@web') . '/images/users_uploads/' . $result;
                         if (is_file($name)) {
                             unset($name);
                         }
@@ -1474,7 +1474,7 @@ class UsersController extends \yii\web\Controller {
                         if ($model->saveData()) {
                             return true;
                         } else {
-                            $name = Yii::getAlias('@web') . 'images/users_uploads/' . $result;
+                            $name = Yii::getAlias('@web') . '/images/users_uploads/' . $result;
                             if (is_file($name)) {
                                 unset($name);
                             }
@@ -1522,7 +1522,7 @@ class UsersController extends \yii\web\Controller {
             $sec = new \yii\base\Security();
             $random_string = $sec->generateRandomString(24);
             $file_name = $random_string . '.' . $ext;
-            $res = move_uploaded_file($file, Yii::getAlias('@web') . 'images/users_uploads/' . $file_name);
+            $res = move_uploaded_file($file, Yii::getAlias('@web') . '/images/users_uploads/' . $file_name);
             return $file_name;
         }
         return false;
