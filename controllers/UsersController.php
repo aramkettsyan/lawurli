@@ -1524,6 +1524,8 @@ class UsersController extends \yii\web\Controller {
     }
 
     public function actionUploadFile() {
+        print_r($_FILES);
+            die;
         if (isset($_FILES['EducationForm']['name']['certificate'])) {
             $file_name = $_FILES['EducationForm']['name']['certificate'];
             $file = $_FILES['EducationForm']['tmp_name']['certificate'];
@@ -1532,8 +1534,7 @@ class UsersController extends \yii\web\Controller {
             $random_string = $sec->generateRandomString(24);
             $file_name = $random_string . '.' . $ext;
             $res = move_uploaded_file($file, Yii::getAlias('@web') . 'images/users_uploads/' . $file_name);
-            print_r($res);
-            die;
+            
             if ($res) {
                 return $file_name;
             } else {
