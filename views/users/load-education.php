@@ -45,7 +45,7 @@ use yii\helpers\Html;
                     <td><?= $cle['date'] ?></td>
                     <td><?= $cle['ethics'] ? 'Yes' : 'No' ?></td>
                     <td class="alignCenter">
-                        <a href="<?= \Yii::getAlias('@web') . '/images/users_uploads/' . $cle['certificate'] ?>" download class="certifBtn tableIcon"><i class="icon-certificate-file"></i></a>
+                        <a href="<?= \Yii::getAlias('@web') . 'images/users_uploads/' . $cle['certificate'] ?>" download class="certifBtn tableIcon"><i class="icon-certificate-file"></i></a>
                     </td>
                     <td>
                         <a href="<?= \yii\helpers\Url::to(['users/profile?educationTab=open&cleid=' . $cle['id']]) ?>" class="tableIcon tbEditBtn"><i class="icon-page-edit"></i></a>
