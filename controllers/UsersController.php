@@ -1503,6 +1503,9 @@ class UsersController extends \yii\web\Controller {
             $id = Yii::$app->request->get()['cleid'];
             $model = Education::findOne(['id' => $id, 'user_id' => Yii::$app->user->id]);
             if ($model) {
+                if (is_file(Yii::getAlias('@web') . 'images/users_uploads/' . $model->certificate)) {
+                    unlink(Yii::getAlias('@web') . 'images/users_uploads/' . $model->certificate);
+                }
                 $model->delete();
                 return $this->redirect('/users/profile?educationTab=open');
             } else {
@@ -1523,7 +1526,11 @@ class UsersController extends \yii\web\Controller {
             $random_string = $sec->generateRandomString(24);
             $file_name = $random_string . '.' . $ext;
             $res = move_uploaded_file($file, Yii::getAlias('@web') . 'images/users_uploads/' . $file_name);
-            return $file_name;
+            if ($res) {
+                return $file_name;
+            } else {
+                return false;
+            }
         }
         return false;
     }
