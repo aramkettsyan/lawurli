@@ -1422,10 +1422,14 @@ class UsersController extends \yii\web\Controller {
     protected function addEducation() {
         $this->layout = false;
         $model = new EducationForm();
+        echo 'p';
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            echo 'z';
             if (isset($_FILES['EducationForm']['name']['certificate']) && $_FILES['EducationForm']['name']['certificate']) {
+                echo 'y';
                 $result = $this->actionUploadFile();
                 if ($result) {
+                    echo 'c';
                     $model->certificate = $result;
                     if ($model->saveData()) {
                         return true;
@@ -1440,6 +1444,7 @@ class UsersController extends \yii\web\Controller {
                 }
             }
         }
+        die;
         Yii::$app->session->writeSession('addEducation', 'true');
         return $model;
     }
