@@ -792,12 +792,12 @@ class UsersController extends \yii\web\Controller {
                 $response = $this->addEducation();
                 echo('2');
             }
+            var_dump($response);
             if ($response === true) {
                 echo('3');
                 return $this->redirect('/users/profile?educationTab=open');
             } else {
                 Yii::$app->view->params['educationModel'] = $response;
-                print_r(Yii::$app->view->params['educationModel']);
             }
             die;
         } else if (isset(Yii::$app->request->get()['cleid']) && (int) Yii::$app->request->get()['cleid']) {
@@ -1439,10 +1439,9 @@ class UsersController extends \yii\web\Controller {
                     }
                 }
             }
-        } else {
-            Yii::$app->session->writeSession('addEducation', 'true');
-            return $model;
         }
+        Yii::$app->session->writeSession('addEducation', 'true');
+        return $model;
     }
 
     protected function editEducation() {
