@@ -81,7 +81,7 @@ class NewsController extends \yii\web\Controller {
         foreach ($news as $n) {
             if ($n->news_pub_date) {
                 $date = new DateTime($n->news_pub_date);
-                $formatedDate = $date->format('F d, Y');
+                $formatedDate = $date->format('F d, Y g:i A');
             }else{
                 $formatedDate = '';
             }
