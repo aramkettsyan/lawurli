@@ -34,8 +34,8 @@ class Education extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'organization', 'number_of_units', 'date', 'ethics', 'certificate', 'created', 'modified'], 'required'],
-            [['user_id', 'ethics'], 'integer'],
-            [['number_of_units'], 'number'],
+            [['user_id'], 'integer'],
+            [['number_of_units', 'ethics'], 'number'],
             [['date', 'created', 'modified'], 'safe'],
             [['organization', 'certificate'], 'string', 'max' => 255]
         ];
@@ -52,7 +52,7 @@ class Education extends \yii\db\ActiveRecord
             'organization' => 'Organization',
             'number_of_units' => 'Number Of Units',
             'date' => 'Date',
-            'ethics' => 'Ethics',
+            'ethics' => 'Legal Ethics',
             'certificate' => 'Certificate',
             'created' => 'Created',
             'modified' => 'Modified',

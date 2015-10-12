@@ -26,8 +26,8 @@ class EducationForm extends Model {
             [['id'], 'required','on'=>'update'],
             [['id'], 'integer','on'=>'update'],
             [['organization'], 'string', 'max' => 255],
-            [['certificate'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 1],
-            [['ethics'], 'integer'],
+            [['certificate'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png,jpg,doc,pdf', 'maxFiles' => 1],
+            [['ethics'], 'number'],
             [['number_of_units'], 'number']
         ];
     }
@@ -40,7 +40,7 @@ class EducationForm extends Model {
             'organization' => 'Organization name',
             'number_of_units' => '# of Units',
             'date' => 'Date',
-            'ethics' => 'Ethics (Y/N)',
+            'ethics' => 'Legal Ethics',
             'certificate' => 'Upload certificate'
         ];
     }

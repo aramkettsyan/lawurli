@@ -70,7 +70,7 @@ use yii\widgets\ActiveForm;
                         </span>",
             'options' => [
                 'class' => 'formRow'
-    ]])->dropDownList(['1' => 'yes', '0' => 'no'], ['class' => 'formControl ethics']);
+    ]])->textInput(['class' => 'formControl ethics']);
         ?>
         <?=
         $form->field($this->params['educationModel'], 'certificate', [

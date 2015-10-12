@@ -790,10 +790,12 @@ class UsersController extends \yii\web\Controller {
             } else {
                 $response = $this->addEducation();
             }
+
             if ($response === true) {
                 return $this->redirect('/users/profile?educationTab=open');
             } else {
                 Yii::$app->view->params['educationModel'] = $response;
+                return $this->redirect('/users/profile?educationTab=open');
             }
         } else if (isset(Yii::$app->request->get()['cleid']) && (int) Yii::$app->request->get()['cleid']) {
             $cle_id = (int) Yii::$app->request->get()['cleid'];
@@ -1402,9 +1404,7 @@ class UsersController extends \yii\web\Controller {
         $sum_of_ethics = 0;
         foreach ($cles as $cle) {
             $sum_of_units+=$cle['number_of_units'];
-            if ($cle['ethics']) {
-                $sum_of_ethics++;
-            }
+            $sum_of_ethics+=$cle['ethics'];
         }
 
         return $this->render('load-education', [
@@ -1417,24 +1417,34 @@ class UsersController extends \yii\web\Controller {
     protected function addEducation() {
         $this->layout = false;
         $model = new EducationForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if (isset($_FILES['EducationForm']['name']['certificate']) && $_FILES['EducationForm']['name']['certificate']) {
-                $result = $this->actionUploadFile();
-                if ($result) {
-                    $model->certificate = $result;
-                    if ($model->saveData()) {
-                        return true;
-                    } else {
-                        $name = Yii::getAlias('@web') . 'images/users_uploads/' . $result;
-                        if (is_file($name)) {
-                            unset($name);
+        if (isset($_FILES['EducationForm']['name']['certificate']) && $_FILES['EducationForm']['name']['certificate']) {
+            if ($model->load(Yii::$app->request->post())) {
+                $file = \yii\web\UploadedFile::getInstance($model, 'certificate');
+                if ($file && $file->tempName) {
+                    $model->certificate = $file;
+                    if ($model->validate()) {
+
+                        $result = $this->actionUploadFile();
+                        if ($result) {
+                            $model->certificate = $result;
+                            if ($model->saveData()) {
+                                return true;
+                            } else {
+                                $name = Yii::getAlias('@web') . 'images/users_uploads/' . $result;
+                                if (is_file($name)) {
+                                    unset($name);
+                                }
+                                Yii::$app->session->writeSession('addEducation', 'true');
+                                return $model;
+                            }
                         }
-                        Yii::$app->session->writeSession('addEducation', 'true');
-                        return $model;
                     }
                 }
             }
         }
+        print_r($model->getErrors());
+        die;
+
         Yii::$app->session->writeSession('addEducation', 'true');
         return $model;
     }
@@ -1446,6 +1456,7 @@ class UsersController extends \yii\web\Controller {
             $id = (int) Yii::$app->request->post()['EducationForm']['id'];
             $ed_model = Education::findOne(['id' => $id, 'user_id' => Yii::$app->user->id]);
             $form_model = new EducationForm();
+            $form_model->scenario = 'update';
             $form_model->id = $ed_model->id;
             if (!Yii::$app->request->post()['EducationForm']['organization']) {
                 $form_model->organization = $ed_model->organization;

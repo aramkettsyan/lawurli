@@ -21,15 +21,15 @@ use yii\helpers\Html;
     <div class="mt40 alignCenter">
         <a href="#add-cle" class="btn defBtn popupBtn add_cle" >Add CLE's</a>
     </div>
-    <table class="tableStyle mt40">
+    <table class="tableStyle mt40" id="cles_table">
         <thead>
             <tr>
-                <th style="width: 25%;">Organization</th>
+                <th style="width: 23%;">Organization</th>
                 <th style="width: 16%;"># of units</th>
-                <th style="width: 20%;">Date</th>
-                <th style="width: 12%;">Ethics</th>
+                <th style="width: 17%;">Date</th>
+                <th style="width: 18%;">Legal Ethics</th>
                 <th style="width: 15%;">Certificate</th>
-                <th style="width: 12%;">Actions</th>
+                <th style="width: 11%;">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -43,7 +43,7 @@ use yii\helpers\Html;
                     $cle['date'] = $date;
                     ?>
                     <td><?= $cle['date'] ?></td>
-                    <td><?= $cle['ethics'] ? 'Yes' : 'No' ?></td>
+                    <td><?= $cle['ethics'] ?></td>
                     <td class="alignCenter">
                         <a href="<?= \Yii::getAlias('@web') . '/images/users_uploads/' . $cle['certificate'] ?>" download class="certifBtn tableIcon"><i class="icon-certificate-file"></i></a>
                     </td>
@@ -63,9 +63,10 @@ use yii\helpers\Html;
 <script>
     $(document).ready(function () {
         
+        $("#cles_table").tablesorter(); 
+        
         $('.add_cle').on('click',function(){
             $('#add-cle input').val('');
-            $('#add-cle .ethics').val('1');
         });
         
         

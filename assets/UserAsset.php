@@ -42,8 +42,9 @@ class UserAsset extends AssetBundle {
         'include/magnific-popup/jquery.magnific-popup.js',
         'include/custom-scrollbar/jquery.mCustomScrollbar.js',
         'include/flexslider/jquery.flexslider-min.js',
+        "js/jquery.tablesorter.js",
         'include/main.js',
-        'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places',
+        'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places'
     ];
     public $depends = [
         'yii\web\YiiAsset'
