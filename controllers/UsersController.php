@@ -1399,7 +1399,10 @@ class UsersController extends \yii\web\Controller {
         if (!Yii::$app->request->isAjax) {
             throw new \yii\web\NotFoundHttpException();
         }
-        $cles = Education::find(['user_id' => Yii::$app->user->id])->asArray()->all();
+        $cles = Education::find()
+                ->where(['user_id' => Yii::$app->user->id])
+                ->asArray()
+                ->all();
         $sum_of_units = 0;
         $sum_of_ethics = 0;
         foreach ($cles as $cle) {
