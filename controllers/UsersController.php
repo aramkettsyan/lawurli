@@ -802,6 +802,7 @@ class UsersController extends \yii\web\Controller {
             $model = Education::findOne(['id' => $cle_id, 'user_id' => Yii::$app->user->id]);
             if ($model) {
                 $form_model = new EducationForm();
+                $form_model->scenario = 'update';
                 $form_model->id = $model->id;
                 $form_model->organization = $model->organization;
                 $form_model->number_of_units = $model->number_of_units;
@@ -813,10 +814,12 @@ class UsersController extends \yii\web\Controller {
                 Yii::$app->session->writeSession('addEducation', 'true');
             } else {
                 $educationModel = new EducationForm();
+                $educationModel->scenario = 'create';
                 Yii::$app->view->params['educationModel'] = $educationModel;
             }
         } else {
             $educationModel = new EducationForm();
+            $educationModel->scenario = 'create';
             Yii::$app->view->params['educationModel'] = $educationModel;
         }
 
@@ -1420,6 +1423,7 @@ class UsersController extends \yii\web\Controller {
     protected function addEducation() {
         $this->layout = false;
         $model = new EducationForm();
+        $model->scenario = 'create';
         if (isset($_FILES['EducationForm']['name']['certificate']) && $_FILES['EducationForm']['name']['certificate']) {
             if ($model->load(Yii::$app->request->post())) {
                 $file = \yii\web\UploadedFile::getInstance($model, 'certificate');
