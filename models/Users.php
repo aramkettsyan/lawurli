@@ -200,9 +200,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
      */
     public function validatePhoneNumber($attribute, $params) {
         $phone = $this->phone;
-        $phone = str_replace(' ', '', $phone);
 
-        if (!preg_match('/^\+{0,1}[0-9()-]+$/', $phone)) {
+        if (!preg_match('/^\+{0,1}[0-9\s()-]+$/', $phone)) {
             $this->addError($attribute, 'The phone number you entered is not valid');
             return false;
         }

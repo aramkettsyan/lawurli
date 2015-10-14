@@ -34,7 +34,7 @@ $fm = ActiveForm::begin([
         $fm->field($this->params['user'], 'phone', [
             'options' => [
                 'class' => 'formRow'
-    ]])->textInput(['class' => 'formControl'])->label();
+    ]])->textInput(['class' => 'formControl','placeholder'=>'(xxx) xxx-xxxx'])->label();
         ?>
         <?=
         $fm->field($this->params['user'], 'location', [
