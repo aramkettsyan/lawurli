@@ -2101,3 +2101,25 @@ footer h4 {
 #add-cle .inputError {
     top: 28px;
 }
+
+#cles_table th {
+    letter-spacing: -1px;
+}
+#cles_table th i {
+    position: absolute;
+    margin: 0;
+    margin-top: 2px;
+    font-size: 12px
+}
+#cles_table th i:after {
+    content: 'W';
+    font-family: "project-39" !important;
+}
+#cles_table th.headerSortUp i:after {
+    content: 'X';
+    font-family: "project-39" !important;
+}
+#cles_table th.headerSortDown i:after {
+    content: 'Y';
+    font-family: "project-39" !important;
+}

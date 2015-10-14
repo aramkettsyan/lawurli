@@ -15,7 +15,7 @@ use yii\helpers\Html;
         </div>
         <div>
             <h4><?= $sum_of_ethics ?></h4>
-            <p>Total Ethics CLE units</p>
+            <p>Total Legal Ethics CLE Units</p>
         </div>
     </div>
     <div class="mt40 alignCenter">
@@ -25,12 +25,12 @@ use yii\helpers\Html;
         <table class="tableStyle mt40" id="cles_table">
             <thead>
                 <tr>
-                    <th style="width: 23%;">Organization</th>
-                    <th style="width: 16%;"># of units</th>
-                    <th style="width: 17%;">Date</th>
-                    <th style="width: 18%;">Legal Ethics</th>
-                    <th style="width: 15%;">Certificate</th>
-                    <th style="width: 11%;">Actions</th>
+                    <th style="width: 20%;">Organization <i></i></th>
+                    <th style="width: 16%;"># of units <i></i></th>
+                    <th style="width: 17%;">Date <i></i></th>
+                    <th style="width: 19%;">Legal Ethics <i></i></th>
+                    <th style="width: 16%;" class="noSort">Certificate <i></i></th>
+                    <th style="width: 12%;" class="noSort">Actions <i></i></th>
                 </tr>
             </thead>
             <tbody>
@@ -64,15 +64,31 @@ use yii\helpers\Html;
     <?php } ?>
 </div>
 
-
 <script>
     $(document).ready(function () {
 
-        $("#cles_table").tablesorter();
+        $("#cles_table").tablesorter({
+            sortList: [[2, 1]],
+            headers: {
+                // disable sorting of the first & second column - before we would have to had made two entries
+                // note that "first-name" is a class on the span INSIDE the first column th cell
+                4: {
+                    // disable it by setting the property sorter to false
+                    sorter: false
+                },
+                5: {
+                    // disable it by setting the property sorter to false
+                    sorter: false
+                }
+            }
+        });
+        
+        $('.noSort i').remove();
 
         $('.add_cle').on('click', function () {
             $('#add-cle input').val('');
         });
+
 
 
 

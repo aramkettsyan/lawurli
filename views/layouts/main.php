@@ -66,7 +66,7 @@ UserAsset::register($this);
                         <h4>Contact Us</h4>
                         <p><i class="icon-letter-mail-1"></i><?php echo $this->params['contact_email'] ?></p>
                         <p><i class="icon-call-phone-square"></i>341 987 44 63</p>
-                        <div class="footerSocials">
+<!--                        <div class="footerSocials">
                             <ul>
                                 <li>
                                     <a href="#"><i class="icon-twitter39"></i></a>
@@ -77,7 +77,7 @@ UserAsset::register($this);
                                     <a href="#"><i class="icon-facebook45"></i></a>
                                 </li>
                             </ul>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
                 <div class="footerNav">
