@@ -1994,7 +1994,7 @@ footer h4 {
 }
 .cleCounts>div h4 {
     display: block;
-    width: 60px;
+    /*width: 60px;*/
     height: 60px;
     font-size: 55px;
     line-height: 60px;
@@ -2122,4 +2122,16 @@ footer h4 {
 #cles_table th.headerSortDown i:after {
     content: 'Y';
     font-family: "project-39" !important;
+}
+#sec_table {
+    width: 100%;
+}
+.tableWrapTd {
+    padding: 0!important;
+}
+.tableWrapTd .mCSB_container {
+    margin: 0;
+}
+.tableWrapTd  .mCSB_scrollTools {
+    right: 2px;
 }
