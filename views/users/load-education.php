@@ -168,7 +168,7 @@ use yii\helpers\Html;
                 $(this).removeClass('headerSortUp');
                 $(this).addClass('headerSortDown');
             }
-            var sorting = [[0, i2]];
+            var sorting = [[1, i2]];
             $("#sec_table").trigger("sorton", [sorting]);
             return false;
         });
@@ -184,7 +184,7 @@ use yii\helpers\Html;
                 $(this).removeClass('headerSortUp');
                 $(this).addClass('headerSortDown');
             }
-            var sorting = [[0, i3]];
+            var sorting = [[2, i3]];
             $("#sec_table").trigger("sorton", [sorting]);
             return false;
         });
@@ -200,7 +200,7 @@ use yii\helpers\Html;
                 $(this).removeClass('headerSortUp');
                 $(this).addClass('headerSortDown');
             }
-            var sorting = [[0, i4]];
+            var sorting = [[3, i4]];
             $("#sec_table").trigger("sorton", [sorting]);
             return false;
         });
