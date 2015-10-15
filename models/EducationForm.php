@@ -28,8 +28,8 @@ class EducationForm extends Model {
             [['organization'], 'string', 'max' => 255],
             [['certificate'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png,jpg,doc,pdf,docx', 'maxFiles' => 1,'on'=>'create'],
             [['certificate'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png,jpg,doc,pdf,docx', 'maxFiles' => 1,'on'=>'update'],
-            [['ethics'], 'number'],
-            [['number_of_units'], 'number']
+            [['ethics'], 'number','min'=>0],
+            [['number_of_units'], 'number','min'=>0]
         ];
     }
 
@@ -55,9 +55,9 @@ class EducationForm extends Model {
             $education = new Education();
         }
         $education->organization = $this->organization;
-        $education->number_of_units = $this->number_of_units;
+        $education->number_of_units = str_replace('-', '', $this->number_of_units);
         $education->date = $this->date;
-        $education->ethics = $this->ethics;
+        $education->ethics = str_replace('-', '', $this->ethics);
         $education->certificate = $this->certificate;
         $education->created = new \yii\db\Expression('NOW()');
         $education->modified = new \yii\db\Expression('NOW()');
