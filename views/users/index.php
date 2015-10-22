@@ -29,7 +29,9 @@ $this->title = 'Home'
         <div class="homeTopText">
             <h4 class="cd-headline zoom">
                 <span class="cd-words-wrapper">
-                    <b class="is-visible">Lawurli.</b>              
+                    <b class="is-visible">
+                        <img src="/images/logo.png" alt=""/>
+                    </b>              
                 </span><br>
                 <span>Simple Solutions </span><br>
                 <span>To Complex Issues.</span><br>

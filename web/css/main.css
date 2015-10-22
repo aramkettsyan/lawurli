@@ -387,8 +387,8 @@ em {
     padding: 0!important;
 }
 .cd-words-wrapper b {
-    background: #DA8213;
-    padding: 0 10px;
+    /*background: #DA8213;*/
+    padding: 0;
     color: #fff;
 }
 .homeSignInUp {
@@ -584,9 +584,12 @@ header {
 } 
 .headerLogo img {
     /*max-width: 100%;*/
-    height: 40px;
-    width: auto;
+    /*height: 40px;*/
+    /*width: auto;*/
     display: block;
+    width: 100%;
+    height: auto;
+    padding: 8px 0;
 }
 .headerLogo {
     float: left;
@@ -594,13 +597,13 @@ header {
     overflow: hidden;
 }
 .headerLogo a {
-    background: #DA8213;
+    /*background: #DA8213;*/
     padding: 0 10px;
     color: #fff;
     text-transform: uppercase;
     font-size: 29px;
     font-weight: 600;
-    display: inline-block;
+    display: block;
 }
 .headerRight {
     float: right;
