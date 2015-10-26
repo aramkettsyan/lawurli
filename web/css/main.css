@@ -725,7 +725,7 @@ header {
     float: left;
     line-height: 40px;
     margin-left: 10px;
-    max-width: 125px;
+    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
