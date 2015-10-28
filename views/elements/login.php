@@ -13,8 +13,8 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="popupCont">
         <?php
-        echo \Yii::$app->getSession()->getFlash('success');
-        echo \Yii::$app->getSession()->getFlash('warning');
+//        echo \Yii::$app->getSession()->getFlash('success');
+//        echo \Yii::$app->getSession()->getFlash('warning');
         ?>
         <?php
         $form = ActiveForm::begin([

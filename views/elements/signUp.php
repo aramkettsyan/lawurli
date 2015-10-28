@@ -12,8 +12,8 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="popupCont">
         <?php
-        echo \Yii::$app->getSession()->getFlash('registrationSuccess');
-        echo \Yii::$app->getSession()->getFlash('registrationWarning');
+//        echo \Yii::$app->getSession()->getFlash('registrationSuccess');
+//        echo \Yii::$app->getSession()->getFlash('registrationWarning');
         ?>
         <?php
         $f = ActiveForm::begin([

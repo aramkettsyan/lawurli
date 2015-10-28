@@ -163,7 +163,7 @@ class UsersController extends \yii\web\Controller {
             if ($act === 'reset_password') {
                 if (Yii::$app->request->post('Users')) {
                     $reset_action = 'users/' . $action_id;
-                    \Yii::$app->getSession()->writeSession('resetPassword', true);
+//                    \Yii::$app->getSession()->writeSession('resetPassword', true);
                     $resetModel = $this->actionResetPassword($id, $key, $reset_action);
                 }
             }
@@ -220,6 +220,19 @@ class UsersController extends \yii\web\Controller {
         }
         return parent::beforeAction($action);
     }
+    
+    
+    public function actionIndex($action = false, $id = false, $key = false) {
+
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect('/users/profile');
+        }
+
+        $models = $this->models;
+
+        return $this->render('index', $models);
+    }
+    
 
     public function actionError() {
         if (Yii::$app->errorHandler->exception->statusCode == 403) {
@@ -250,15 +263,14 @@ class UsersController extends \yii\web\Controller {
                     ->send();
 
             if ($email) {
-                Yii::$app->getSession()->setFlash('registrationSuccess', 'Please check your mail inbox (spam) folder for account activation.');
+                Yii::$app->getSession()->setFlash('notificationMessage', 'Please check your mail inbox (spam) folder for account activation.');
                 $registrationModel = new Users();
             } else {
-                Yii::$app->getSession()->setFlash('registrationWarning', 'Error,please try again!');
+                Yii::$app->getSession()->setFlash('notificationErrorMessage', 'Error,please try again!');
                 $registrationModel->password = '';
                 $registrationModel->confirm_password = '';
             }
         }
-        Yii::$app->getSession()->writeSession('showRegistration', true);
 
         return $registrationModel;
     }
@@ -664,16 +676,6 @@ class UsersController extends \yii\web\Controller {
         return $response;
     }
 
-    public function actionIndex($action = false, $id = false, $key = false) {
-
-        if (!Yii::$app->user->isGuest) {
-            return $this->redirect('/users/profile');
-        }
-
-        $models = $this->models;
-
-        return $this->render('index', $models);
-    }
 
     public function actionLogout() {
         if (Yii::$app->user->isGuest) {
@@ -693,11 +695,10 @@ class UsersController extends \yii\web\Controller {
             $user->active = 1;
             $user->activation_token = null;
             $user->save();
-            Yii::$app->getSession()->setFlash('success', 'Your account is now activated. Please login.');
+            Yii::$app->getSession()->setFlash('notificationMessage', 'Your account is now activated. Please login.');
         } else {
-            Yii::$app->getSession()->setFlash('warning', 'Invalid token.');
+            Yii::$app->getSession()->setFlash('notificationErrorMessage', 'Invalid token.');
         }
-        Yii::$app->getSession()->writeSession('showLogin', true);
         $this->redirect('/users/index');
     }
 
@@ -708,7 +709,7 @@ class UsersController extends \yii\web\Controller {
             $model = $model->findByEmail($email);
             if ($model) {
                 if ($model->active === 0) {
-                    Yii::$app->getSession()->setFlash('resetWarning', 'Your account is not activated.');
+                    Yii::$app->getSession()->setFlash('notificationErrorMessage', 'Your account is not activated.');
                     return $model;
                 }
 
@@ -717,7 +718,7 @@ class UsersController extends \yii\web\Controller {
                     $currentTime = time();
                     $difference = $currentTime - $emailTimeout;
                     if ($difference < 60) {
-                        Yii::$app->getSession()->setFlash('resetWarning', 'Please wait ' . (60 - $difference) . ' seconds and try again.');
+                        Yii::$app->getSession()->setFlash('notificationErrorMessage', 'Please wait ' . (60 - $difference) . ' seconds and try again.');
                         return $model;
                     }
                 }
@@ -730,15 +731,15 @@ class UsersController extends \yii\web\Controller {
                         ->send();
                 if ($email) {
                     Yii::$app->getSession()->writeSession('emailTimeout', time());
-                    Yii::$app->getSession()->setFlash('resetSuccess', 'Please check your mail inbox (spam) folder.');
+                    Yii::$app->getSession()->setFlash('notificationMessage', 'Please check your mail inbox (spam) folder.');
                     return $model;
                 } else {
-                    Yii::$app->getSession()->setFlash('resetWarning', 'Failed,please contact to Admin.');
+                    Yii::$app->getSession()->setFlash('notificationErrorMessage', 'Failed,please contact to Admin.');
                     return $model;
                 }
             } else {
                 $model = new Users();
-                Yii::$app->getSession()->setFlash('resetWarning', 'Incorrect email address.');
+                Yii::$app->getSession()->setFlash('notificationErrorMessage', 'Incorrect email address.');
             }
         }
         return $model;
@@ -768,7 +769,7 @@ class UsersController extends \yii\web\Controller {
             $user->confirm_password = '';
             return $user;
         } else {
-            Yii::$app->getSession()->setFlash('warning', 'Invalid token.');
+            Yii::$app->getSession()->setFlash('notificationErrorMessage', 'Invalid token.');
             return true;
         }
     }

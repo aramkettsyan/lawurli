@@ -25,21 +25,24 @@ use yii\widgets\ActiveForm;
     <div class="popupCont">
         <?=
         $resetPassForm->field($this->params['resetModel'], 'email', [
-            'template' => "{input}{error} <i class='icon-email-streamline'></i>",
+            'template' => "{input}<i class='icon-email-streamline'></i><span class='inputError'>
+                            <i class='icon-warning-alt'></i>
+                            <span>{error}</span>
+                        </span>",
             'options' => [
                 'class' => 'formRow frIconLeft'
     ]])->textInput(['class' => 'formControl', 'placeholder' => 'Email']);
         ?>
-        <p style="color:red">
+<!--        <p style="color:red">
             <?php
-            echo \Yii::$app->getSession()->getFlash('resetWarning');
+//            echo \Yii::$app->getSession()->getFlash('resetWarning');
             ?>
         </p>
         <p style="color:green">
             <?php
-            echo \Yii::$app->getSession()->getFlash('resetSuccess');
+//            echo \Yii::$app->getSession()->getFlash('resetSuccess');
             ?>
-        </p>
+        </p>-->
 
         <?= Html::submitButton('Send Email', ['id' => 'password-reset-form_submit', 'class' => 'btn defBtn']) ?>
     </div>

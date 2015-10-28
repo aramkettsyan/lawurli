@@ -51,9 +51,24 @@ UserAsset::register($this);
                 <?= $this->render('//elements/forgotPassword_1') ?>
                 <?= $this->render('//elements/forgotPassword_2') ?>
 
-            <?php } else if(Yii::$app->controller->action->id == 'profile') { ?>
+            <?php } else if (Yii::$app->controller->action->id == 'profile') { ?>
                 <?= $this->render('//elements/educationForm') ?>
             <?php } ?>
+
+            <div class="topNotif successNotif" id="notification" style="display:none">
+                <button id="close_notification"><i class="icon-remove"></i></button>
+                <p>
+                    <i class="icon-success"></i>
+                    <span><?= \Yii::$app->getSession()->getFlash('notificationMessage'); ?></span>
+                </p>
+            </div>
+            <div class="topNotif errorNotif" id="error_notification" style="display:none">
+                <button id="close_error_notification"><i class="icon-remove"></i></button>
+                <p>
+                    <i class="icon-warning"></i>
+                    <span><?= \Yii::$app->getSession()->getFlash('notificationErrorMessage'); ?></span>
+                </p>
+            </div>
         </div>
         <footer>
             <div class="container">
@@ -65,18 +80,18 @@ UserAsset::register($this);
                     <div class="footerContact">
                         <h4>Contact Us</h4>
                         <p><i class="icon-letter-mail-1"></i><?php echo $this->params['contact_email'] ?></p>
-<!--                        <div class="footerSocials">
-                            <ul>
-                                <li>
-                                    <a href="#"><i class="icon-twitter39"></i></a>
-                                    <a href="#"><i class="icon-youtube33"></i></a>
-                                    <a href="#"><i class="icon-pinterest28"></i></a>
-                                    <a href="#"><i class="icon-instagram14"></i></a>
-                                    <a href="#"><i class="icon-linkedin22"></i></a>
-                                    <a href="#"><i class="icon-facebook45"></i></a>
-                                </li>
-                            </ul>
-                        </div>-->
+                        <!--                        <div class="footerSocials">
+                                                    <ul>
+                                                        <li>
+                                                            <a href="#"><i class="icon-twitter39"></i></a>
+                                                            <a href="#"><i class="icon-youtube33"></i></a>
+                                                            <a href="#"><i class="icon-pinterest28"></i></a>
+                                                            <a href="#"><i class="icon-instagram14"></i></a>
+                                                            <a href="#"><i class="icon-linkedin22"></i></a>
+                                                            <a href="#"><i class="icon-facebook45"></i></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>-->
                     </div>
                 </div>
                 <div class="footerNav">
@@ -90,8 +105,26 @@ UserAsset::register($this);
             </div>
         </footer>
 
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var showNotification = '<?= \Yii::$app->getSession()->hasFlash('notificationMessage') ? 'true' : 'false'; ?>';
+                if (showNotification === 'true') {
+                    $('#notification').show();
+                }
+                $('#close_notification').on('click',function(){
+                    $('#notification').hide();
+                });
+                var showNotification = '<?= \Yii::$app->getSession()->hasFlash('notificationErrorMessage') ? 'true' : 'false'; ?>';
+                if (showNotification === 'true') {
+                    $('#error_notification').show();
+                }
+                $('#close_error_notification').on('click',function(){
+                    $('#error_notification').hide();
+                });
+            });
+        </script>
         <?php if (Yii::$app->controller->action->id == 'profile') { ?>
-            <script>
+            <script type="text/javascript">
                 function notConnectedUsers() {
                     var ids = '';
                     $('.connect').each(function () {
@@ -198,13 +231,6 @@ UserAsset::register($this);
         <?php } ?>
         <?php $this->endBody() ?>
 
-        <div class="topNotif successNotif">
-            <button><i class="icon-remove"></i></button>
-            <p>
-                <i class="icon-success"></i>
-                <span>Blah blah Success text</span>
-            </p>
-        </div>
     </body>
 </html>
 <?php $this->endPage() ?>
