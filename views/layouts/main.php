@@ -65,7 +65,6 @@ UserAsset::register($this);
                     <div class="footerContact">
                         <h4>Contact Us</h4>
                         <p><i class="icon-letter-mail-1"></i><?php echo $this->params['contact_email'] ?></p>
-                        <p><i class="icon-call-phone-square"></i>341 987 44 63</p>
 <!--                        <div class="footerSocials">
                             <ul>
                                 <li>
@@ -198,6 +197,14 @@ UserAsset::register($this);
             </script>
         <?php } ?>
         <?php $this->endBody() ?>
+
+        <div class="topNotif successNotif">
+            <button><i class="icon-remove"></i></button>
+            <p>
+                <i class="icon-success"></i>
+                <span>Blah blah Success text</span>
+            </p>
+        </div>
     </body>
 </html>
 <?php $this->endPage() ?>

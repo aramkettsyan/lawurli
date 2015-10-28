@@ -13,15 +13,17 @@ $this->title = 'Home'
 <div class="homeTop <?= !Yii::$app->user->isGuest ? 'homeTopUser' : '' ?> clearAfter">
     <div class="flexslider">
             <ul class="slides">
-                <li>                    
-                    <div class="slide slide_1"></div>
-                </li>
-                <li>                    
+                <li>
                     <div class="slide slide_2"></div>
+                </li>
+                <!--
+                <li>
+                    <div class="slide slide_1"></div>
                 </li>
                 <li>                    
                     <div class="slide slide_3"></div>
                 </li>
+                -->
             </ul>
         </div>
     <div class="container">
@@ -191,16 +193,19 @@ $this->title = 'Home'
             <!-- <p class="alignCenter mb30">Autem qui consequatur facere impedit excepturi tempora hic, sint commodi sed nostrum corporis sapiente.</p> -->
             <ul class="clearAfter">
                 <li>
+                    <i class="icon-group"></i>
+                    <h4>Connect</h4>
+                    <p>Connect with colleagues, classmates and others in your specialty.</p>
+                </li>
+                <li>
                     <i class="icon-portfolio"></i>
-                    <p>Similique recusandae corporis, in numquam doloribus itaque eveniet inventore dicta aut.</p>
+                    <h4>Opportunities</h4>
+                    <p>Network with colleagues, law firms and legal departments.</p>
                 </li>
                 <li>
-                    <i class="icon-anchor"></i>
-                    <p>Iusto quaerat, hic doloribus vel. Voluptatibus harum dolore sunt autem vero nesciunt.</p>
-                </li>
-                <li>
-                    <i class="icon-light-bulb"></i>
-                    <p>Dicta officiis, vero fugit dolore repellendus, placeat at. Eos perferendis voluptatem voluptatibus.</p>
+                    <i class="icon-certificate-file"></i>
+                    <h4>CLE</h4>
+                    <p>Track and maintain your <br> CLE’s.</p>
                 </li>
             </ul>
         </div>

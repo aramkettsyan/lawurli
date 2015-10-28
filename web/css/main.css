@@ -369,11 +369,11 @@ em {
     padding: 65px 0;
 }
 .cd-headline>span {
-    color: #504348;
-    background-color: #fff;
+    color: #fff;
+    /*background-color: #fff;*/
     margin-bottom: 10px;
     display: inline-block;
-    padding: 0 10px;
+    /*padding: 0 10px;*/
 }
 .homeTopText h3, .cd-headline {
     text-transform: uppercase;
@@ -521,6 +521,11 @@ li.ui-tabs-active a {
 }
 .homeFeatures ul li p {
     font-size: 18px;
+}
+.homeFeatures ul li h4 {
+    /*color: #DA8213;*/
+    font-weight: 600;
+    margin-bottom: 5px;
 }
 .homeFeatures:hover li {
     opacity: .4;
@@ -1867,8 +1872,8 @@ footer h4 {
     text-align: center;
 }
 .titleWithBg h3 {
-    color: #504348;
-    background-color: #fff;
+    color: #fff;
+    /*background-color: #fff;*/
     display: inline-block;
     padding: 0 10px;
     text-transform: uppercase;
@@ -1889,9 +1894,9 @@ footer h4 {
     margin-bottom: 30px;
 }
 .contactWrapp .pageTitle h3{
-    background: #DA8213;
+    /*background: #DA8213;*/
     padding: 0 10px;
-    color: #fff;
+    color: #DA8213;
     display: inline-block;
     margin: 0 auto;
     text-transform: uppercase;
