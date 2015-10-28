@@ -23,4 +23,4 @@ $confirmLink = Yii::$app->urlManager->createAbsoluteUrl([$action,'action'=>'rese
     <br>
     <br>
 </div>
-<p style="color:#222; margin: 0; padding: 0;">The Lawurli Team</p>
+<p style="color:#222; margin: 0; padding: 0; font-style: italic;">- The Lawurli Team</p>
