@@ -273,6 +273,13 @@ em {
     background: #DA8213;
     box-shadow: inset 0 0 0 1px #CA7A15;
     color: #fff;
+    border-radius: 10px;
+    transition: .4s opacity;
+    -moz-transition: .4s opacity;
+    -webkit-transition: .4s opacity;
+}
+.defBtn:hover {
+    opacity: .7;
 }
 .greyBtn {
     background: #CECECE;
