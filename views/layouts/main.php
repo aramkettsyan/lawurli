@@ -16,6 +16,7 @@ UserAsset::register($this);
         <meta charset="<?= Yii::$app->charset ?>">
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
+        <link rel="icon shortcut" href="/images/favicon.png"/>
         <?php $this->head() ?>
         <script>
             WebFont.load({
