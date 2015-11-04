@@ -54,7 +54,7 @@ $this->title = 'Search';
                                 <?php } ?>
                             </div>
                             <div class="peopleListR">
-                                <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id'],'profileTab'=>'open']) ?>" class="plName"><?= Html::encode($user['first_name']) ?> <?= Html::encode($user['last_name']) ?></a>
+                                <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id'], 'profileTab' => 'open']) ?>" class="plName"><?= Html::encode($user['first_name']) ?> <?= Html::encode($user['last_name']) ?></a>
                                 <div class="plDets">
                                     <!--<p>Plumber at "Clean House" Ltd</p>-->
                                     <?php if ($user['location']) { ?>
@@ -62,7 +62,7 @@ $this->title = 'Search';
                                     <?php } ?>
                                 </div>
                                 <div class="plActions">
-                                    <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id'],'profileTab'=>'open']) ?>" class="btn lineDefBtn sBtn">View Profile</a>
+                                    <a href="<?= \yii\helpers\Url::to(['users/profile', 'id' => $user['id'], 'profileTab' => 'open']) ?>" class="btn lineDefBtn sBtn">View Profile</a>
                                     <?php if (!Yii::$app->user->isGuest) : ?>
                                         <?php if (isset($contacts[$user['id']])) : ?>
                                             <?php if ($contacts[$user['id']]['user_to_id'] == $user['id'] && $contacts[$user['id']]['request_accepted'] == 'N') : ?>
@@ -167,9 +167,9 @@ $this->title = 'Search';
                                         <div class="checkbox">
                                             <?php $options = explode('-,-', $input->options); ?>
                                             <?php
-                                            echo Html::checkboxList('checkbox', null, $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input, $query_response) {
+                                            echo Html::checkboxList('checkbox', '', $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input, $query_response) {
                                                     $check = isset($query_response[$input->id][$index]) ? 'checked' : '';
-                                                    return '<label for="' . Html::encode($value) . '_' . $index . '"><input ' . $check . ' id="' . Html::encode($value) . '_' . $index . '" name="advanced[' . Html::encode($input->id) . '][' . $index . ']" value="' . $label . '" type="checkbox"><span>' . Html::encode($label) . '</span></label> ';
+                                                    return '<label for="' . Html::encode($input->id) . '_' . $index . '"><input ' . $check . ' id="' . Html::encode($input->id) . '_' . $index . '" name="advanced[' . Html::encode($input->id) . '][' . $index . ']" value="' . $label . '" type="checkbox"><span>' . Html::encode($label) . '</span></label> ';
                                                 }]);
                                             ?>
                                         </div>
@@ -179,8 +179,9 @@ $this->title = 'Search';
                                         <?php $items = explode('-,-', $input->options); ?>
                                         <div class="radio">
                                             <?php
-                                            echo Html::radioList('radio', isset($query_response[$input->id]) ? $query_response[$input->id] : '', $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input) {
-                                                    return '<label for="' . Html::encode($value) . '_' . $name . '"><input id="' . $value . '_' . $name . '" name="advanced[' . Html::encode($input->id) . ']" type="radio"><span>' . Html::encode($label) . '</span></label> ';
+                                            echo Html::radioList('radio', '', $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input, $query_response) {
+                                                    $check = isset($query_response[$input->id])&&$label==$query_response[$input->id] ? 'checked' : '';
+                                                    return '<label for="' . Html::encode($input->id) . '_' . Html::encode($value) . '_' . $name . '"><input '.$check.' id="' . Html::encode($input->id) . '_' . Html::encode($value) . '_' . $name . '" name="advanced[' . Html::encode($input->id) . ']" type="radio" value="' . Html::encode($label) . '"><span>' . Html::encode($label) . '</span></label> ';
                                                 }]);
                                             ?>
                                         </div>
@@ -230,8 +231,9 @@ $this->title = 'Search';
                                         <div class="checkbox">
                                             <?php $options = explode('-,-', $input->options); ?>
                                             <?php
-                                            echo Html::checkboxList('checkbox', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input) {
-                                                    return '<label for="' . Html::encode($value) . '_' . $index . '"><input id="' . Html::encode($value) . '_' . $index . '" name="advanced[' . Html::encode($input->id) . '][]" type="checkbox"><span>' . Html::encode($label) . '</span></label> ';
+                                            echo Html::checkboxList('checkbox', '', $options, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input, $query_response) {
+                                                    $check = isset($query_response[$input->id][$index]) ? 'checked' : '';
+                                                    return '<label for="' . Html::encode($input->id) . '_' . $index . '"><input ' . $check . ' id="' . Html::encode($input->id) . '_' . $index . '" name="advanced[' . Html::encode($input->id) . '][' . $index . ']" value="' . $label . '" type="checkbox"><span>' . Html::encode($label) . '</span></label> ';
                                                 }]);
                                             ?>
                                         </div>
@@ -241,8 +243,9 @@ $this->title = 'Search';
                                         <?php $items = explode('-,-', $input->options); ?>
                                         <div class="radio">
                                             <?php
-                                            echo Html::radioList('radio', isset($query_response[$input->id]) ? Html::encode($query_response[$input->id]) : '', $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input) {
-                                                    return '<label for="' . Html::encode($value) . '_' . $name . '"><input id="' . Html::encode($value) . '_' . $name . '" name="advanced[' . Html::encode($input->id) . ']" type="radio"><span>' . Html::encode($label) . '</span></label> ';
+                                            echo Html::radioList('radio', '', $items, ['class' => 'checkRadioSec', 'item' => function($index, $label, $name, $checked, $value)use($input, $query_response) {
+                                                    $check = isset($query_response[$input->id])&&$label==$query_response[$input->id] ? 'checked' : '';
+                                                    return '<label for="' . Html::encode($input->id) . '_' . Html::encode($value) . '_' . $name . '"><input '.$check.' id="' . Html::encode($input->id) . '_' . Html::encode($value) . '_' . $name . '" name="advanced[' . Html::encode($input->id) . ']" type="radio" value="' . Html::encode($label) . '"><span>' . Html::encode($label) . '</span></label> ';
                                                 }]);
                                             ?>
                                         </div>
@@ -289,7 +292,7 @@ $this->title = 'Search';
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(location.search);
+                results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 </script>
@@ -329,16 +332,16 @@ $this->title = 'Search';
             $('.openAdvSrch').click();
         }
 
-//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                  ?>;
-//<?php //Yii::$app->getSession()->destroySession('showRegistration');                  ?>
+//        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                        ?>;
+//<?php //Yii::$app->getSession()->destroySession('showRegistration');                        ?>
 //        if (showRegistration) {
 //            $.magnificPopup.open({
 //                items: {src: '#signup-popup'}, type: 'inline'
 //            }, 0);
 //        }
 //
-//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                  ?>;
-//<?php //Yii::$app->getSession()->destroySession('showLogin');                  ?>
+//        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                        ?>;
+//<?php //Yii::$app->getSession()->destroySession('showLogin');                        ?>
 //        if (showLogin) {
 //            $.magnificPopup.open({
 //                items: {src: '#login-popup'}, type: 'inline'
@@ -346,15 +349,15 @@ $this->title = 'Search';
 //        }
 //
 //
-//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                  ?>;
-//<?php // Yii::$app->getSession()->destroySession('newPassword');                  ?>
+//        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                        ?>;
+//<?php // Yii::$app->getSession()->destroySession('newPassword');                        ?>
 //        if (newPassword) {
 //            $.magnificPopup.open({
 //                items: {src: '#forgpass-popup-2'}, type: 'inline'
 //            }, 0);
 //        }
-//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                  ?>;
-//<?php // Yii::$app->getSession()->destroySession('resetPassword');                  ?>
+//        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                        ?>;
+//<?php // Yii::$app->getSession()->destroySession('resetPassword');                        ?>
 //        if (resetPassword) {
 //            $.magnificPopup.open({
 //                items: {src: '#forgpass-popup'}, type: 'inline'
