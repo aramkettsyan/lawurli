@@ -49,6 +49,11 @@ use yii\helpers\Html;
                     <button class="skip" id="<?= $us['id'] ?>"><i class="icon-remove"></i></button>
                 </li>
             <?php } ?>
+            <?php if (empty($this->params['notConnectedUsers'])) { ?>
+                <li>
+                    No users
+                </li>
+            <?php } ?>
         </ul>
     </div>
 </div>
