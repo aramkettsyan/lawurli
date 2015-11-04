@@ -119,7 +119,24 @@ class UsersController extends \yii\web\Controller {
 
         //Not Connected Users
         if ($action_id === 'profile' && !\Yii::$app->user->isGuest && !\Yii::$app->request->isAjax) {
-            $notConnectedUsers = $this->actionGetNotConnectedUsers();
+            $request_sent = Users::GetContactIds();
+            $ids = '';
+            foreach ($request_sent as $req) {
+                if ($req['user_to_id'] == Yii::$app->user->id) {
+                    if (empty($ids)) {
+                        $ids.=$req['user_from_id'];
+                    } else {
+                        $ids.=','.$req['user_from_id'];
+                    }
+                }else{
+                    if (empty($ids)) {
+                        $ids.=$req['user_to_id'];
+                    } else {
+                        $ids.=','.$req['user_to_id'];
+                    }
+                }
+            }
+            $notConnectedUsers = $this->actionGetNotConnectedUsers(5,$ids);
             \Yii::$app->view->params['notConnectedUsers'] = $notConnectedUsers;
         }
         //end Not Connected Users
@@ -220,8 +237,7 @@ class UsersController extends \yii\web\Controller {
         }
         return parent::beforeAction($action);
     }
-    
-    
+
     public function actionIndex($action = false, $id = false, $key = false) {
 
         if (!Yii::$app->user->isGuest) {
@@ -232,7 +248,6 @@ class UsersController extends \yii\web\Controller {
 
         return $this->render('index', $models);
     }
-    
 
     public function actionError() {
         if (Yii::$app->errorHandler->exception->statusCode == 403) {
@@ -675,7 +690,6 @@ class UsersController extends \yii\web\Controller {
 
         return $response;
     }
-
 
     public function actionLogout() {
         if (Yii::$app->user->isGuest) {
@@ -1583,8 +1597,26 @@ class UsersController extends \yii\web\Controller {
             } else {
                 Users::addNotColleaguesUser($user_id);
             }
+            
+            $request_sent = Users::GetContactIds();
+            $ids = $allIds;
+            foreach ($request_sent as $req) {
+                if ($req['user_to_id'] == Yii::$app->user->id) {
+                    if (empty($ids)) {
+                        $ids.=$req['user_from_id'];
+                    } else {
+                        $ids.=','.$req['user_from_id'];
+                    }
+                }else{
+                    if (empty($ids)) {
+                        $ids.=$req['user_to_id'];
+                    } else {
+                        $ids.=','.$req['user_to_id'];
+                    }
+                }
+            }
             $limit = 1;
-            $users = Users::getNotConnectedUsers($limit, $allIds);
+            $users = Users::getNotConnectedUsers($limit, $ids);
 
             $title_form_model = Forms::findOne(['is_title' => 1]);
             if ($title_form_model) {
@@ -1615,10 +1647,28 @@ class UsersController extends \yii\web\Controller {
             die;
         } else {
             $limit = 5;
-            $users = Users::getNotConnectedUsers($limit);
+            $request_sent = Users::GetContactIds();
+            $ids = '';
+            foreach ($request_sent as $req) {
+                if ($req['user_to_id'] == Yii::$app->user->id) {
+                    if (empty($ids)) {
+                        $ids.=$req['user_from_id'];
+                    } else {
+                        $ids.=','.$req['user_from_id'];
+                    }
+                }else{
+                    if (empty($ids)) {
+                        $ids.=$req['user_to_id'];
+                    } else {
+                        $ids.=','.$req['user_to_id'];
+                    }
+                }
+            }
+            
+            $users = Users::getNotConnectedUsers($limit,$ids);
 
             $title_form_model = Forms::findOne(['is_title' => 1]);
-            if ($title_form_model) {
+            if ($title_form_model && $users) {
                 $title_form_id = $title_form_model->id;
                 $usersIds = '';
                 foreach ($users as $user) {

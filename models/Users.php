@@ -432,6 +432,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
         $colleagues = self::getColleagues('Y');
         $colleagues = $colleagues->all();
         if ($colleagues) {
+
             $ids = '';
             foreach ($colleagues as $colleague) {
                 if (empty($ids)) {
@@ -442,9 +443,9 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                 $ids.=$comma . $colleague['id'];
             }
             if (!$existsIds) {
-                $existsIds = '';
+                $existsIdsQuery = '';
             } else {
-                $existsIds = ' AND users.id NOT IN(' . $existsIds . ') ';
+                $existsIdsQuery = ' AND users.id NOT IN(' . $existsIds . ') ';
             }
 
             $users = (new Query())
@@ -460,7 +461,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                     ->leftJoin('contact_requests', 'contact_requests.user_from_id IN(' . $ids . ') OR contact_requests.user_to_id IN(' . $ids . ') AND contact_requests.request_accepted = "Y"')
                     ->leftJoin('not_colleagues_users', 'not_colleagues_users.user_id = ' . \Yii::$app->user->id . ' AND not_colleagues_users.not_colleague_id = users.id')
                     ->leftJoin('contact_requests as request_sent', '(request_sent.user_from_id = ' . \Yii::$app->user->id . ' AND request_sent.user_to_id = users.id) OR (request_sent.user_to_id = ' . \Yii::$app->user->id . ' AND request_sent.user_from_id = users.id)')
-                    ->where('(users.id = contact_requests.user_from_id OR users.id = contact_requests.user_to_id) AND users.id NOT IN(' . $ids . ') AND users.id <> ' . \Yii::$app->user->id . $existsIds)
+                    ->where('(users.id = contact_requests.user_from_id OR users.id = contact_requests.user_to_id) AND users.id NOT IN(' . $ids . ') AND users.id <> ' . \Yii::$app->user->id . $existsIdsQuery)
                     ->limit($limit)
                     ->orderBy('RAND()')
                     ->groupBy('users.id')
@@ -476,23 +477,38 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
                         $usersIds .= ',' . $user['id'];
                     }
                 }
+                if ($existsIds) {
+                    if ($usersIds) {
+                        $usersIds = $usersIds . ',' . $existsIds;
+                    } else {
+                        $usersIds = $existsIds;
+                    }
+                }
+                if ($usersIds) {
+                    $where = 'AND id NOT IN(' . $usersIds . ')';
+                } else {
+                    $where = '';
+                }
                 $otherUsers = (new Query())
                         ->select('*')
-                        ->from('users');
-
-                if ($usersIds) {
-                    $otherUsers->where('id NOT IN(' . $usersIds . ')');
-                }
-                
-                $otherUsers = $otherUsers->limit($newLimit)
+                        ->from('users')
+                        ->where('id<>' . Yii::$app->user->id . ' ' . $where)
+                        ->limit($newLimit)
                         ->orderBy('RAND()')
                         ->all();
-                $users = array_merge($users,$otherUsers);
+                $users = array_merge($users, $otherUsers);
             }
         } else {
+            if (!$existsIds) {
+                $existsIds = '';
+            } else {
+                $existsIds = 'AND id NOT IN(' . $existsIds . ') ';
+            }
+
             $users = (new Query())
                     ->select('*')
                     ->from('users')
+                    ->where('id<>' . Yii::$app->user->id . ' ' . $existsIds)
                     ->limit($limit)
                     ->orderBy('RAND()')
                     ->all();
