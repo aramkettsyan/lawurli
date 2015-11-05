@@ -123,7 +123,7 @@ $this->title = 'Home'
                                 'class' => 'formRow frIconLeft'
                     ]])->passwordInput(['class' => 'formControl', 'placeholder' => 'Retype password'])->label(false);
                         ?>
-                        <p>By clicking Register, you agree to our Terms and Conditions.</p>
+                        <p>By clicking Register, you agree to our <a href="<?= \yii\helpers\Url::to(['users/terms-and-conditions']) ?>" class="textBtn">Terms and Conditions.</a></p>
 
                         <?= Html::submitButton('Register', ['class' => 'btn defBtn']) ?>
 

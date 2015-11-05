@@ -100,6 +100,7 @@ UserAsset::register($this);
                         <li><a href="<?= \yii\helpers\Url::to(['users/index']) ?>" data-hover="Home">Home</a></li>
                         <li><a href="<?= \yii\helpers\Url::to(['users/contact-us#about_us']) ?>" data-hover="About us">About us</a></li>
                         <li><a href="<?= \yii\helpers\Url::to(['users/contact-us#contact_us']) ?>" data-hover="Contact us">Contact us</a></li>
+                        <li><a href="<?= \yii\helpers\Url::to(['users/terms-and-conditions']) ?>" data-hover="Terms and Conditions">Terms and Conditions</a></li>
                     </ul>
                 </div>
                 <p class="poweredBy">© 2015 <?= (date('Y', time()) == '2015' ? '' : '- ' . date('Y', time())) ?> Lawurli | Created by <a href="http://st-dev.com" target="_blank">STDev</a></p>
