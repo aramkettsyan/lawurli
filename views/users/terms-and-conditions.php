@@ -1,3 +1,8 @@
+<?php 
+    $this->title = 'Terms and Conditions';
+
+?>
+
 <div id="about_us" class="titleWithBg termsCond">
     <h3>Terms and Conditions ("Terms")</h3>
 </div>
@@ -67,3 +72,59 @@
     <h3>Contact Us</h3>
     <p>If you have any questions about these Terms, please contact us by emailing <a href="mailto:support@lawurli.com" class="textBtn">support@lawurli.com</a>.</p>
 </div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () { 
+        $('.inputError').each(function () {
+            if ($(this).find('.help-block').html().length > 0) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+        $('.inputError').bind("DOMSubtreeModified", function () {
+            if ($(this).find('.help-block').html().length > 0) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+        $('.checkbox').on('change', function () {
+            $(this).find('.inputError').hide();
+        });
+        
+        var showRegistration = <?php echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false' ?>;
+<?php Yii::$app->getSession()->destroySession('showRegistration'); ?>
+        if (showRegistration) {
+            $.magnificPopup.open({
+                items: {src: '#signup-popup'}, type: 'inline'
+            }, 0);
+        }
+
+        var showLogin = <?php echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false' ?>;
+<?php Yii::$app->getSession()->destroySession('showLogin'); ?>
+        if (showLogin) {
+            $.magnificPopup.open({
+                items: {src: '#login-popup'}, type: 'inline'
+            }, 0);
+        }
+
+
+        var newPassword = <?php echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                            ?>;
+<?php Yii::$app->getSession()->destroySession('newPassword'); ?>
+        if (newPassword) {
+            $.magnificPopup.open({
+                items: {src: '#forgpass-popup-2'}, type: 'inline'
+            }, 0);
+        }
+        var resetPassword = <?php echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                            ?>;
+<?php Yii::$app->getSession()->destroySession('resetPassword'); ?>
+        if (resetPassword) {
+            $.magnificPopup.open({
+                items: {src: '#forgpass-popup'}, type: 'inline'
+            }, 0);
+        }
+    });
+</script>
