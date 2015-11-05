@@ -2150,3 +2150,20 @@ footer h4 {
 .tableWrapTd  .mCSB_scrollTools {
     right: 2px;
 }
+.termsCond {
+    background: url('../images/about-us-main.jpg') center no-repeat;
+    background-size: cover;
+}
+.textPages {
+    margin: 30px auto;
+}
+.textPages h3 {
+    margin-top: 30px;
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+.textPages u {
+    display: block;
+    color: #F78411;
+    margin-bottom: 10px;
+}
