@@ -47,6 +47,7 @@ class UsersController extends \yii\web\Controller {
                                 'get-not-connected-users',
                                 'error',
                                 'contact-us',
+                                'terms-and-conditions',
                                 'delete-image'
                             ],
                             'allow' => true,
@@ -61,7 +62,8 @@ class UsersController extends \yii\web\Controller {
                                 'reset-password-notifications',
                                 'reset',
                                 'error',
-                                'contact-us'
+                                'contact-us',
+                                'terms-and-conditions'
                             ],
                             'allow' => true,
                             'roles' => ['?']
@@ -78,7 +80,15 @@ class UsersController extends \yii\web\Controller {
                     'user' => 'admin',
                     'rules' => [
                         [
-                            'actions' => ['index', 'edit', 'profile', 'search', 'error', 'contact-us'],
+                            'actions' => [
+                                'index',
+                                'edit',
+                                'profile',
+                                'search',
+                                'error',
+                                'contact-us',
+                                'terms-and-conditions'
+                            ],
                             'allow' => true,
                             'roles' => ['@'],
                         ]
@@ -126,17 +136,17 @@ class UsersController extends \yii\web\Controller {
                     if (empty($ids)) {
                         $ids.=$req['user_from_id'];
                     } else {
-                        $ids.=','.$req['user_from_id'];
+                        $ids.=',' . $req['user_from_id'];
                     }
-                }else{
+                } else {
                     if (empty($ids)) {
                         $ids.=$req['user_to_id'];
                     } else {
-                        $ids.=','.$req['user_to_id'];
+                        $ids.=',' . $req['user_to_id'];
                     }
                 }
             }
-            $notConnectedUsers = $this->actionGetNotConnectedUsers(5,$ids);
+            $notConnectedUsers = $this->actionGetNotConnectedUsers(5, $ids);
             \Yii::$app->view->params['notConnectedUsers'] = $notConnectedUsers;
         }
         //end Not Connected Users
@@ -154,7 +164,8 @@ class UsersController extends \yii\web\Controller {
             'index',
             'profile',
             'search',
-            'contact-us'
+            'contact-us',
+            'terms-and-conditions'
         ];
 
         if (in_array($action_id, $actions) && \Yii::$app->user->isGuest) {
@@ -301,6 +312,12 @@ class UsersController extends \yii\web\Controller {
             return $this->redirect('/users/index');
         }
     }
+    
+    
+    public function actionTermsAndConditions(){
+        return $this->render('terms-and-conditions');
+    }
+    
 
     public function actionEdit($action = 'general', $id = false) {
         if ($id === false && !\Yii::$app->user->isGuest) {
@@ -1597,7 +1614,7 @@ class UsersController extends \yii\web\Controller {
             } else {
                 Users::addNotColleaguesUser($user_id);
             }
-            
+
             $request_sent = Users::GetContactIds();
             $ids = $allIds;
             foreach ($request_sent as $req) {
@@ -1605,13 +1622,13 @@ class UsersController extends \yii\web\Controller {
                     if (empty($ids)) {
                         $ids.=$req['user_from_id'];
                     } else {
-                        $ids.=','.$req['user_from_id'];
+                        $ids.=',' . $req['user_from_id'];
                     }
-                }else{
+                } else {
                     if (empty($ids)) {
                         $ids.=$req['user_to_id'];
                     } else {
-                        $ids.=','.$req['user_to_id'];
+                        $ids.=',' . $req['user_to_id'];
                     }
                 }
             }
@@ -1654,18 +1671,18 @@ class UsersController extends \yii\web\Controller {
                     if (empty($ids)) {
                         $ids.=$req['user_from_id'];
                     } else {
-                        $ids.=','.$req['user_from_id'];
+                        $ids.=',' . $req['user_from_id'];
                     }
-                }else{
+                } else {
                     if (empty($ids)) {
                         $ids.=$req['user_to_id'];
                     } else {
-                        $ids.=','.$req['user_to_id'];
+                        $ids.=',' . $req['user_to_id'];
                     }
                 }
             }
-            
-            $users = Users::getNotConnectedUsers($limit,$ids);
+
+            $users = Users::getNotConnectedUsers($limit, $ids);
 
             $title_form_model = Forms::findOne(['is_title' => 1]);
             if ($title_form_model && $users) {
