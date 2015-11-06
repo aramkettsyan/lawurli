@@ -2153,6 +2153,7 @@ footer h4 {
 .termsCond {
     background: url('../images/about-us-main.jpg') center no-repeat;
     background-size: cover;
+    height: 235px;
 }
 .textPages {
     margin: 30px auto;
@@ -2165,5 +2166,5 @@ footer h4 {
 .textPages u {
     display: block;
     color: #F78411;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
 }
