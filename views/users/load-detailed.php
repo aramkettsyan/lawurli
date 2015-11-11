@@ -47,7 +47,7 @@ $fm = ActiveForm::begin([
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'input') { ?>
                                             <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
-                                            <input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />
+                                            <input class='textInput formControl <?= $form['formLabel']==='URL'||$form['formLabel']==='License URL'?'url':'' ?>'  form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />
                                         <?php } ?>
                                         <?php if ($form['formType'] === 'textarea') { ?>
                                             <textarea class='inputTextarea formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>"><?= $value ?></textarea>
@@ -176,6 +176,19 @@ $fm = ActiveForm::begin([
                     event.stopImmediatePropagation();
                 }
             });
+            
+            $('.url').each(function(){
+                $(this).css('borderColor', '#cccccc');
+                $(this).parent().find('.message').html('');
+                var value = $(this).val();
+                if ($(this).val().length > 0 && value.substring(0,7) !== 'http://' && value.substring(0,8) !== 'https://') {
+                    $(this).css('borderColor', '#a94442');
+                    $(this).parent().find('.message').html('Wrong url').css('color', '#a94442');
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                }
+            });
+            
         });
         $('.item input[type="text"],.item input[type="number"]').on('blur', function () {
             $(this).css('borderColor', '#cccccc');

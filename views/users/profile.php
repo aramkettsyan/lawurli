@@ -26,9 +26,6 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
 
         <div class="userDetails">
             <h3 class="userName"><?= Html::encode($user->first_name) ?> <?= Html::encode($user->last_name) ?></h3>
-            <!--            <div class="proffInfo">
-                            <span class="userProff">Bandit</span> 
-                        </div>-->
             <ul class="listWithIcons">
                 <?php if ($user->location) { ?>
                     <li>
@@ -104,14 +101,60 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                 <?php } ?>
                                 <div class="cvSubCont">
                                     <ul>
+
+
                                         <?php $subSectionId = $subSection['0']['subId']; ?>
                                         <?php if (isset($this->params['user_forms'][$subSectionId])) { ?>
                                             <?php $sub_sections_count = count($this->params['user_forms'][$subSectionId]); ?>
                                         <?php } else { ?>
                                             <?php $sub_sections_count = 1 ?>
                                         <?php } ?>
+
                                         <?php $i = 0; ?>
                                         <?php for ($u = 0; $u < $sub_sections_count; $u++) { ?>
+                                        
+                                        
+                                            <?php if ($subSectionName === 'Links') { ?>
+                                                <?php $i++ ?>
+                                                <?php $link_name = ''; ?>
+                                                <?php foreach ($subSection as $key => $form) { ?>
+
+                                                    <?php if ($key === 0) { ?>
+                                                        <?php continue; ?>
+                                                    <?php } ?>
+
+
+                                                    <?php $value = ''; ?>
+                                                    <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']]) && !is_array($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
+                                                        <?php $value = Html::encode($this->params['user_forms'][$subSectionId][$u][$form['formId']]) ?>
+                                                    <?php } ?>
+                                                    <?php if (!empty($value)) { ?>
+                                                        <?php $emptyProfile = true; ?>
+                                                        <?php $emptySectionToken = true; ?>
+                                                        <?php $emptySubSectionToken = true; ?>
+                                                    <?php } ?>
+                                                    <?php if ($form['formLabel'] === 'Name') { ?>
+                                                        <?php $link_name = $value; ?>
+                                                        <?php continue; ?>
+                                                    <?php } ?>
+                                                    <li>
+                                                        <?php if ($form['formType'] === 'input') { ?>
+                                                            <?php $type = $form['formNumeric'] == 0 ? 'text' : 'number' ?>
+                                                            <?php if (!empty($value)) { ?>
+                                                                <div class="labelValue">
+                                                                    <label><?= Html::encode($form['formLabel']) ?></label>
+                                                                    <?php if ((substr($value, 0, 7) === "http://" || substr($value, 0, 8) === "https://") && $form['formLabel'] === 'URL') { ?>
+                                                                        <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><a href="<?= $value ?>" target="_blank"><?= $link_name?$link_name:$value ?></a></span>
+                                                                    <?php } ?>
+                                                                </div>
+                                                            <?php } ?>
+                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+
+                                                        <?php } ?>
+                                                    </li>
+                                                <?php } ?>
+                                                <?php continue; ?>
+                                            <?php } ?>
                                             <li>
                                                 <?php foreach ($subSection as $key => $form) { ?>
                                                     <?php if ($key === 0) { ?>
@@ -132,10 +175,14 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                         <?php if (!empty($value)) { ?>
                                                             <div class="labelValue">
                                                                 <label><?= Html::encode($form['formLabel']) ?></label>
-                                                                <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></span>
+                                                                <?php if ((substr($value, 0, 7) === "http://" || substr($value, 0, 8) === "https://") && $form['formLabel'] === 'License URL') { ?>
+                                                                    <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><a href="<?= $value ?>" target="_blank">Click to View License</a></span>
+                                                                <?php } else { ?>
+                                                                    <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></span>
+                                                                <?php } ?>
                                                             </div>
                                                         <?php } ?>
-                                                                                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                        <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
 
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'textarea') { ?>
@@ -162,11 +209,11 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                             <?php if (isset($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
                                                                 <?php if (is_array($this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
                                                                     <?php if (in_array($option, $this->params['user_forms'][$subSectionId][$u][$form['formId']])) { ?>
-                                                                        <?php $values .= '<span>'.Html::encode($option) .'</span>'. ' '; ?>
+                                                                        <?php $values .= '<span>' . Html::encode($option) . '</span>' . ' '; ?>
                                                                     <?php } ?>
                                                                 <?php } else { ?>
                                                                     <?php if ($option === $this->params['user_forms'][$subSectionId][$u][$form['formId']]) { ?>
-                                                                        <?php $values = '<span>'.Html::encode($option).'</span>'; ?>
+                                                                        <?php $values = '<span>' . Html::encode($option) . '</span>'; ?>
                                                                     <?php } ?>
                                                                 <?php } ?>
                                                             <?php } ?>
@@ -282,16 +329,16 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $(this).find('.inputError').hide();
         });
 
-        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                                        ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                                        ?>
+        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                                                         ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                                                         ?>
         //        if (showRegistration) {
         //            $.magnificPopup.open({
         //                items: {src: '#signup-popup'}, type: 'inline'
         //            }, 0);
         //        }
         //
-        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                                        ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showLogin');                                        ?>
+        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                                                         ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showLogin');                                                         ?>
         //        if (showLogin) {
         //            $.magnificPopup.open({
         //                items: {src: '#login-popup'}, type: 'inline'
@@ -299,15 +346,15 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
         //        }
 
 
-        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                                        ?>;
-        //<?php //Yii::$app->getSession()->destroySession('newPassword');                                        ?>
+        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                                                         ?>;
+        //<?php //Yii::$app->getSession()->destroySession('newPassword');                                                         ?>
         //        if (newPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup-2'}, type: 'inline'
         //            }, 0);
         //        }
-        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                                        ?>;
-        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                                        ?>
+        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                                                         ?>;
+        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                                                         ?>
         //        if (resetPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup'}, type: 'inline'
@@ -381,7 +428,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $(this).parent().siblings().removeClass("active");
             $("#tabContent").load("/users/load-notifications");
         });
-        
+
         $(document).on("click", "#profiletabEdu", function (event) {
             event.preventDefault();
             $("#profileInfo").hide();
