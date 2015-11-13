@@ -41,7 +41,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                 <?php } ?>
                 <li>
                     <i class="icon-letter-mail-1"></i>
-                    <p><a href="<?= Html::encode($user->email) ?>" class="textBtn"><?= Html::encode($user->email) ?></a></p>
+                    <p><a mailto="<?= Html::encode($user->email) ?>" class="textBtn"><?= Html::encode($user->email) ?></a></p>
                 </li>
             </ul>
             <?php if ((Yii::$app->controller->actionParams['id'] != Yii::$app->user->id && Yii::$app->controller->actionParams['id'])) { ?>
