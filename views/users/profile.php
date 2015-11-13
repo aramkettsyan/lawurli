@@ -41,7 +41,13 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                 <?php } ?>
                 <li>
                     <i class="icon-letter-mail-1"></i>
-                    <p><a href="mailto:<?= Html::encode($user->email) ?>" target="_top" class="textBtn"><?= Html::encode($user->email) ?></a></p>
+                    <p>
+                        <?php if ((Yii::$app->controller->actionParams['id'] != Yii::$app->user->id && Yii::$app->controller->actionParams['id'])) { ?>
+                            <a href="mailto:<?= Html::encode($user->email) ?>" target="_top" class="textBtn"><?= Html::encode($user->email) ?></a>
+                        <?php }else{ ?>
+                            <?= Html::encode($user->email) ?>
+                        <?php } ?>
+                    </p>
                 </li>
             </ul>
             <?php if ((Yii::$app->controller->actionParams['id'] != Yii::$app->user->id && Yii::$app->controller->actionParams['id'])) { ?>
@@ -112,8 +118,8 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
 
                                         <?php $i = 0; ?>
                                         <?php for ($u = 0; $u < $sub_sections_count; $u++) { ?>
-                                        
-                                        
+
+
                                             <?php if ($subSectionName === 'Links') { ?>
                                                 <?php $i++ ?>
                                                 <?php $link_name = ''; ?>
@@ -144,11 +150,11 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                                 <div class="labelValue">
                                                                     <label><?= Html::encode($form['formLabel']) ?></label>
                                                                     <?php if ((substr($value, 0, 7) === "http://" || substr($value, 0, 8) === "https://") && $form['formLabel'] === 'URL') { ?>
-                                                                        <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><a href="<?= $value ?>" target="_blank"><?= $link_name?$link_name:$value ?></a></span>
+                                                                        <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><a href="<?= $value ?>" target="_blank"><?= $link_name ? $link_name : $value ?></a></span>
                                                                     <?php } ?>
                                                                 </div>
                                                             <?php } ?>
-                                                                                                                            <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                        <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
 
                                                         <?php } ?>
                                                     </li>
@@ -182,7 +188,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                                 <?php } ?>
                                                             </div>
                                                         <?php } ?>
-                                                                                                                        <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
+                                                                                                                    <!--<input class='textInput formControl' form-id="<?= $form['formId'] ?>" index="<?= $i ?>" value="<?= $value ?>" name="Users[custom_fields][<?= $form['formId'] ?>][]" placeholder="<?= $form['formPlaceholder'] ?>" type="<?= $type ?>" />-->
 
                                                     <?php } ?>
                                                     <?php if ($form['formType'] === 'textarea') { ?>
@@ -329,16 +335,16 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
             $(this).find('.inputError').hide();
         });
 
-        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                                                         ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                                                         ?>
+        //        var showRegistration = <?php //echo Yii::$app->getSession()->readSession('showRegistration') ? 'true' : 'false'                                                          ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showRegistration');                                                          ?>
         //        if (showRegistration) {
         //            $.magnificPopup.open({
         //                items: {src: '#signup-popup'}, type: 'inline'
         //            }, 0);
         //        }
         //
-        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                                                         ?>;
-        //<?php // Yii::$app->getSession()->destroySession('showLogin');                                                         ?>
+        //        var showLogin = <?php //echo Yii::$app->getSession()->readSession('showLogin') ? 'true' : 'false'                                                          ?>;
+        //<?php // Yii::$app->getSession()->destroySession('showLogin');                                                          ?>
         //        if (showLogin) {
         //            $.magnificPopup.open({
         //                items: {src: '#login-popup'}, type: 'inline'
@@ -346,15 +352,15 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
         //        }
 
 
-        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                                                         ?>;
-        //<?php //Yii::$app->getSession()->destroySession('newPassword');                                                         ?>
+        //        var newPassword = <?php //echo Yii::$app->getSession()->readSession('newPassword') ? 'true' : 'false'                                                          ?>;
+        //<?php //Yii::$app->getSession()->destroySession('newPassword');                                                          ?>
         //        if (newPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup-2'}, type: 'inline'
         //            }, 0);
         //        }
-        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                                                         ?>;
-        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                                                         ?>
+        //        var resetPassword = <?php //echo Yii::$app->getSession()->readSession('resetPassword') ? 'true' : 'false'                                                          ?>;
+        //<?php //Yii::$app->getSession()->destroySession('resetPassword');                                                          ?>
         //        if (resetPassword) {
         //            $.magnificPopup.open({
         //                items: {src: '#forgpass-popup'}, type: 'inline'
