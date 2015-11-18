@@ -16,8 +16,6 @@ use DateTime;
 
 class NewsController extends \yii\web\Controller {
 
-
-
     public function behaviors() {
         if (!\Yii::$app->admin->identity) {
             $access = ['access' => [
