@@ -150,7 +150,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                                 <div class="labelValue">
                                                                     <label><?= Html::encode($form['formLabel']) ?></label>
                                                                     <?php if ((substr($value, 0, 7) === "http://" || substr($value, 0, 8) === "https://" || substr($value, 0, 4) === "www.") && $form['formLabel'] === 'URL') { ?>
-                                                                        <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><a href="<?= $value ?>" target="_blank"><?= $link_name ? $link_name : $value ?></a></span>
+                                                                        <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><a href="<?= $value ?>" target="_blank" class="textBtn"><?= $link_name ? $link_name : $value ?></a></span>
                                                                     <?php } ?>
                                                                 </div>
                                                             <?php } ?>
@@ -182,7 +182,7 @@ $this->title = Html::encode($user->first_name) . ' ' . Html::encode($user->last_
                                                             <div class="labelValue">
                                                                 <label><?= Html::encode($form['formLabel']) ?></label>
                                                                 <?php if ((substr($value, 0, 7) === "http://" || substr($value, 0, 8) === "https://"  || substr($value, 0, 4) === "www.") && $form['formLabel'] === 'License URL') { ?>
-                                                                    <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><a href="<?= $value ?>" target="_blank">Click to View License</a></span>
+                                                                    <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><a href="<?= $value ?>" class="textBtn" target="_blank">Click to View License</a></span>
                                                                 <?php } else { ?>
                                                                     <span class="<?= $key === 1 ? 'cvSingleTitle' : 'cvSingleDet' ?>" ><?= $value ?></span>
                                                                 <?php } ?>

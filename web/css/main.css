@@ -1028,6 +1028,9 @@ header {
     /*margin-bottom: 2px;*/
     /*font-weight: 600;*/
 }
+.cvSingleDet .textBtn {
+    color: #DA8213;
+}
 .profileTabs {
     margin-bottom: 30px;
     margin-left: -1px;
