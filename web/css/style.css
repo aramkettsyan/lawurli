@@ -12,7 +12,7 @@
     padding-left: 0 !important;
 }
 .adminCont h3 {
-    margin-top: 0;  
+    margin-top: 0;
     margin-bottom: 0;
 }
 .margauto {
@@ -93,15 +93,28 @@
     color: black;
     text-transform: capitalize;
 }
+.checkRadioSec:after {
+    content: '';
+    display: block;
+    clear: both;
+}
 .checkRadioSec {
     margin-bottom: -15px;
 }
 .checkRadioSec label {
     font-weight: normal;
     float: left;
-    margin-right: 15px;
+    margin-right: 2%;
     margin-left: 0 !important;
     margin-bottom: 15px;
+    width: 48%;
+    padding-left: 20px;
+    position: relative;
+}
+.checkRadioSec label input {
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 .customFormItem .checkRadioSec label input {
     margin-left: 0;
@@ -112,7 +125,7 @@
 }
 .grey_form {
     padding: 20px 10px;
-    margin: 0px 0 10px 0;
+    margin: 0 0 10px 0;
     background: rgba(238, 238, 238, 0.6);
 }
 .grey_form form {
@@ -157,7 +170,7 @@ form span.required {
     font-size: 20px;
     display: block;
     font-weight: bold;
-    line-height: 100%;    
+    line-height: 100%;
 }
 .mainSecCont span.mainHeadSt i {
     font-size: 14px;

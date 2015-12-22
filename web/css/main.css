@@ -2174,3 +2174,7 @@ footer h4 {
 .colorMain {
     color: #DA8213;
 }
+.item .checkboxInl {
+    width: 30%;
+    padding-right: 15px;
+}
