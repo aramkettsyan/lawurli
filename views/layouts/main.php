@@ -79,7 +79,7 @@ UserAsset::register($this);
                 <button id="close_notification"><i class="icon-remove"></i></button>
                 <p>
                     <i class="icon-success"></i>
-                    <span><?= \Yii::$app->getSession()->getFlash('notificationMessage'); ?> <?php if (\Yii::$app->getSession()->hasFlash('notificationMessageEmail')) { ?><a href="/users/resend-activation-message?email=<?= \Yii::$app->getSession()->getFlash('notificationMessageEmail'); ?>">Resend email</a><?php } ?></span>
+                    <span><?= \Yii::$app->getSession()->getFlash('notificationMessage'); ?> <?php if (\Yii::$app->getSession()->hasFlash('notificationMessageEmail')) { ?><a href="/users/resend-activation-message?email=<?= \Yii::$app->getSession()->getFlash('notificationMessageEmail'); ?>" class="textBtn">Resend email</a><?php } ?></span>
                 </p>
             </div>
             <div class="topNotif errorNotif" id="error_notification" style="display:none">
