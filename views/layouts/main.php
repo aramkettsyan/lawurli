@@ -79,7 +79,7 @@ UserAsset::register($this);
                 <button id="close_notification"><i class="icon-remove"></i></button>
                 <p>
                     <i class="icon-success"></i>
-                    <span><?= \Yii::$app->getSession()->getFlash('notificationMessage'); ?> <a href="/users/resend-activation-message?email=<?= \Yii::$app->getSession()->getFlash('notificationMessageEmail'); ?>">Resend email</a></span>
+                    <span><?= \Yii::$app->getSession()->getFlash('notificationMessage'); ?> <?php if (\Yii::$app->getSession()->hasFlash('notificationMessageEmail')) { ?><a href="/users/resend-activation-message?email=<?= \Yii::$app->getSession()->getFlash('notificationMessageEmail'); ?>">Resend email</a><?php } ?></span>
                 </p>
             </div>
             <div class="topNotif errorNotif" id="error_notification" style="display:none">
@@ -132,14 +132,14 @@ UserAsset::register($this);
                 if (showNotification === 'true') {
                     $('#notification').show();
                 }
-                $('#close_notification').on('click',function(){
+                $('#close_notification').on('click', function () {
                     $('#notification').hide();
                 });
                 var showNotification = '<?= \Yii::$app->getSession()->hasFlash('notificationErrorMessage') ? 'true' : 'false'; ?>';
                 if (showNotification === 'true') {
                     $('#error_notification').show();
                 }
-                $('#close_error_notification').on('click',function(){
+                $('#close_error_notification').on('click', function () {
                     $('#error_notification').hide();
                 });
             });
