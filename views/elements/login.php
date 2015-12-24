@@ -65,3 +65,18 @@ use yii\widgets\ActiveForm;
 
 <!-- sign up popup -->
 
+<?php
+if (Yii::$app->getSession()->hasFlash('passwordResend')) {
+    $passwordResend = Yii::$app->getSession()->getFlash('passwordResend');
+} else {
+    $passwordResend = '';
+}
+?>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var passwordResendError = '<?= $passwordResend ?>';
+        $('#loginform-password').parent().find('.help-block').html(passwordResendError);
+    }
+    );
+</script>

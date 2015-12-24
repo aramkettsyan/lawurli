@@ -75,7 +75,8 @@ class LoginForm extends Model {
             $this->_user = Users::findByEmail($this->email);
             if(isset($this->_user->active ) && $this->_user->active === 0){
                 $this->addError('email','');
-                $this->addError('password','Your account is not activated!');
+                $this->addError('password','');
+                Yii::$app->getSession()->setFlash('passwordResend','Your account is not activated. <a href="/users/resend-activation-message?email='.$this->_user->email.'">Resend email</a>');
                 return false;
             }
         }

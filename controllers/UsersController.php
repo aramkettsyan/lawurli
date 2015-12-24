@@ -55,7 +55,7 @@ class UsersController extends \yii\web\Controller {
                         ],
                         [
                             'actions' => [
-                                'logout',
+                                'resend-activation-message',
                                 'index',
                                 'confirm',
                                 'reset-password',
@@ -290,6 +290,7 @@ class UsersController extends \yii\web\Controller {
 
             if ($email) {
                 Yii::$app->getSession()->setFlash('notificationMessage', 'Please check your mail inbox (spam) folder for account activation.');
+                Yii::$app->getSession()->setFlash('notificationMessageEmail', $registrationModel->email);
                 $registrationModel = new Users();
             } else {
                 Yii::$app->getSession()->setFlash('notificationErrorMessage', 'Error,please try again!');
@@ -299,6 +300,20 @@ class UsersController extends \yii\web\Controller {
         }
 
         return $registrationModel;
+    }
+
+    public function actionResendActivationMessage($email) {
+        if ($email) {
+            $registrationModel = Users::findByEmail($email);
+            if ($registrationModel && $registrationModel->active==0) {
+                $email = \Yii::$app->mailer->compose('confirmEmail', ['user' => $registrationModel])
+                        ->setTo($registrationModel->email)
+                        ->setFrom([\Yii::$app->params['welcomeEmail'] => \Yii::$app->name])
+                        ->setSubject('E-mail confirmation')
+                        ->send();
+            }
+        }
+        return $this->redirect('/users/index');
     }
 
     public function actionDeleteImage() {
@@ -312,12 +327,10 @@ class UsersController extends \yii\web\Controller {
             return $this->redirect('/users/index');
         }
     }
-    
-    
-    public function actionTermsAndConditions(){
+
+    public function actionTermsAndConditions() {
         return $this->render('terms-and-conditions');
     }
-    
 
     public function actionEdit($action = 'general', $id = false) {
         if ($id === false && !\Yii::$app->user->isGuest) {
