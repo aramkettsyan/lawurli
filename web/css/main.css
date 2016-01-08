@@ -2178,3 +2178,42 @@ footer h4 {
     width: 30%;
     padding-right: 15px;
 }
+.newsImg {
+    width: 40%;
+    float: left;
+}
+.newsImg img {
+    width: 100%;
+    display: block;
+}
+.newsCont {
+    float: left;
+    width: 60%;
+    padding-left: 15px;
+}
+.newsCont h6 {
+    margin-bottom: 5px;
+    color: #DA8213;
+    font-size: 22px;
+    font-weight: 600;
+}
+.news_cont li:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+.newsSource {
+    /*display: block;*/
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #DA8213;
+    font-weight: 600;
+    font-style: italic;
+}
+.newsCont time {
+    border-left: none;
+    padding-left: 0;
+    color: #BDBCBC;
+    font-size: 14px;
+    font-style: italic;
+}

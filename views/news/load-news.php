@@ -1,6 +1,20 @@
 <?php if (!empty($resources)) { ?>    
     <div style="position: relative">   
         <ul id="newsContent" class="news_cont">
+            <li>
+
+                <div class="clearAfter">
+                    <div class="newsImg">
+                        <img src="/images/news.jpg" alt="">
+                    </div>
+                    <div class="newsCont">
+                        <span><span class="newsSource">News Source</span> shared:</span>
+                        <h6>Lorem ipsum dolor.</h6>
+                        <p>Delectus labore natus quia quisquam voluptatem. Eos eum, fuga illo maxime necessitatibus quaerat totam veniam!</p>
+                        <time>October 14, 2015 3:34 AM</time>
+                    </div>
+                </div>
+            </li>
             <?php foreach ($resources as $xmlObject) { ?>
                 <li>
                     <p style="font-weight:bold"><a href="<?php echo $xmlObject['link']; ?>" target="_blank"><?php echo $xmlObject['title']; ?></a></p>
