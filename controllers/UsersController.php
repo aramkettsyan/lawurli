@@ -32,6 +32,7 @@ class UsersController extends \yii\web\Controller {
                                 'logout',
                                 'search',
                                 'edit',
+                                'cron',
                                 'profile',
                                 'upload-image',
                                 'index',

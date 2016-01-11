@@ -1,34 +1,25 @@
 <?php if (!empty($resources)) { ?>    
     <div style="position: relative">   
         <ul id="newsContent" class="news_cont">
-            <li>
-
-                <div class="clearAfter">
-                    <div class="newsImg">
-                        <img src="/images/news.jpg" alt="">
-                    </div>
-                    <div class="newsCont">
-                        <span><span class="newsSource">News Source</span> shared:</span>
-                        <h6>Lorem ipsum dolor.</h6>
-                        <p>Delectus labore natus quia quisquam voluptatem. Eos eum, fuga illo maxime necessitatibus quaerat totam veniam!</p>
-                        <time>October 14, 2015 3:34 AM</time>
-                    </div>
-                </div>
-            </li>
             <?php foreach ($resources as $xmlObject) { ?>
                 <li>
-                    <p style="font-weight:bold"><a href="<?php echo $xmlObject['link']; ?>" target="_blank"><?php echo $xmlObject['title']; ?></a></p>
-                    <?php if (!empty($xmlObject['pubDate'])) { ?>
-                        <time><?php echo $xmlObject['pubDate']; ?></time>
-                    <?php } ?>
-                    <?php // $ex = explode('/', $xmlObject['site_url']) ?>
-                    <?php // $formatted_url = $ex[2] ?>
-                    <?php // if (substr($formatted_url, 0, 4) === 'www.') { ?>
-                        <?php // $formatted_url = substr($formatted_url, 4, strlen($formatted_url)); ?>
-                    <?php // } ?>
-                    <?php // $formatted_url = 'www.' . $formatted_url; ?>
-                        <?php $formatted_url = $xmlObject['site_title'] ?>
-                    <time><a target="_blank" href="<?php echo $xmlObject['site_url']; ?>"><?php echo $formatted_url; ?></a></time>
+                    <div class="clearAfter">
+                        <div class="newsImg">
+                            <?php if ($xmlObject['image']) { ?>
+                                <img src="/images/news/<?= $xmlObject['image'] ?>" alt="">
+                            <?php } else { ?>
+                                <img src="/images/news.jpg" alt="">
+                            <?php } ?>
+                        </div>
+                        <div class="newsCont">
+                            <?php $formatted_url = $xmlObject['site_title'] ?>
+                            <span><span class="newsSource"><a target="_blank" href="<?php echo $xmlObject['site_url']; ?>"><?php echo $formatted_url; ?></a></span> shared:</span>
+                            <h6><a href="<?php echo $xmlObject['link']; ?>" target="_blank"><?php echo $xmlObject['title']; ?></a></h6>
+                            <?php if (!empty($xmlObject['pubDate'])) { ?>
+                                <time><?php echo $xmlObject['pubDate']; ?></time>
+                            <?php } ?>
+                        </div>
+                    </div>
                 </li>
             <?php } ?>
         </ul>

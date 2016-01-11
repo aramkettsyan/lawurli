@@ -77,22 +77,24 @@ class NewsController extends \yii\web\Controller {
         }
 
         $model = new \app\models\News();
-        $news = $model->find()->all();
+        $news = $model->getNews();
+       
         $newsArray = [];
         $k = 0;
         foreach ($news as $n) {
-            if ($n->news_pub_date) {
-                $date = new DateTime($n->news_pub_date);
+            if ($n['news_pub_date']) {
+                $date = new DateTime($n['news_pub_date']);
                 $formatedDate = $date->format('F d, Y g:i A');
             }else{
                 $formatedDate = '';
             }
-            $newsArray[$k]['title'] = $n->news_title;
-            $newsArray[$k]['link'] = $n->news_url;
+            $newsArray[$k]['title'] = $n['news_title'];
+            $newsArray[$k]['link'] = $n['news_url'];
             $newsArray[$k]['pubDate'] = $formatedDate;
-            $newsArray[$k]['site_url'] = $n->site_url;
-            $newsArray[$k]['site_title'] = $n->site_title;
-            $newsArray[$k]['sortTime'] = $n->news_pub_date;
+            $newsArray[$k]['site_url'] = $n['site_url'];
+            $newsArray[$k]['site_title'] = $n['site_title'];
+            $newsArray[$k]['image'] = $n['resource_image'];
+            $newsArray[$k]['sortTime'] = $n['news_pub_date'];
             $k++;
         }
         usort($newsArray, function($a, $b) {
