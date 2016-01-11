@@ -36,6 +36,7 @@ class CronController extends Controller {
         $urls = [];
         foreach ($newsResources as $resourcesKey => $resourcesValue) {
             $urls[] = $resourcesValue['resource_url'];
+            $ids[] = $resourcesValue['resource_id'];
         }
         $content = $this->get_data($urls);
         foreach ($content as $c) {
@@ -65,7 +66,7 @@ class CronController extends Controller {
         $k = 0;
 //        print_r($resources);
 //        die;
-        foreach ($resources as $resource) {
+        foreach ($resources as $id=>$resource) {
             $j = 0;
             if (is_object($resource) && is_object($resource->channel) && is_object($resource->channel->item)) {
                 
@@ -73,6 +74,7 @@ class CronController extends Controller {
                     if ($j === 15) {
                         break;
                     }
+                    $newsArray[$k]['news_resource_id'] = $ids[$id];
                     $newsArray[$k]['title'] = (string) $item->title;
                     $newsArray[$k]['link'] = (string) $item->link;
                     $newsArray[$k]['site_link'] = (string) $resource->channel->link;
@@ -85,6 +87,7 @@ class CronController extends Controller {
 
                     $cDate = new \yii\db\Expression('NOW()');
                     $rows[] = [
+                        'news_resource_id' => $newsArray[$k]['news_resource_id'],
                         'news_title' => (string) $item->title,
                         'news_pub_date' => $newsArray[$k]['pubDate'],
                         'news_url' => (string) $item->link,
@@ -103,6 +106,7 @@ class CronController extends Controller {
                     if ($j === 15) {
                         break;
                     }
+                    $newsArray[$k]['news_resource_id'] = $ids[$id];
                     $newsArray[$k]['title'] = (string) $item->title;
                     $newsArray[$k]['link'] = (string) $item->link;
                     $newsArray[$k]['pubDate'] = (isset($item->published) && !empty($item->published)) ? (string) $item->published : (string) '';
@@ -114,6 +118,7 @@ class CronController extends Controller {
 
                     $cDate = new \yii\db\Expression('NOW()');
                     $rows[] = [
+                        'news_resource_id' => $newsArray[$k]['news_resource_id'],
                         'news_title' => (string) $item->title,
                         'news_pub_date' => $newsArray[$k]['pubDate'],
                         'news_url' => (string) $item->link['href'],
@@ -132,7 +137,7 @@ class CronController extends Controller {
         $model = new \app\models\News();
         $model->deleteAll();
         \Yii::$app->db->createCommand('ALTER TABLE news AUTO_INCREMENT = 1')->execute();
-        \Yii::$app->db->createCommand()->batchInsert('news', ['news_title', 'news_pub_date', 'news_url','site_url','site_title', 'created', 'modified'], $rows)->execute();
+        \Yii::$app->db->createCommand()->batchInsert('news', ['news_resource_id','news_title', 'news_pub_date', 'news_url','site_url','site_title', 'created', 'modified'], $rows)->execute();
     }
 
     protected function get_data($data) {
@@ -175,6 +180,7 @@ class CronController extends Controller {
         $running = null;
         do {
             curl_multi_exec($mh, $running);
+            curl_multi_select($mh);
         } while ($running > 0);
 
 

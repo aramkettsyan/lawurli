@@ -27,8 +27,10 @@ class NewsResources extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['resource_url'], 'required'],
-            [['resource_url'], 'string', 'max' => 500]
+            [['resource_url'], 'required','on'=>'edit'],
+            [['resource_url','resource_image'], 'required','on'=>'insert'],
+            [['resource_url','resource_image'], 'string', 'max' => 500],
+            [['resource_image'], 'file', 'extensions' => 'jpg,jpeg,png', 'maxSize' => 10000000, 'tooBig' => 'Allowed image size is 10mb.'],
         ];
     }
 
@@ -39,6 +41,7 @@ class NewsResources extends \yii\db\ActiveRecord
     {
         return [
             'resource_id' => 'Resource ID',
+            'resource_image' => 'Resource Image',
             'resource_url' => 'Resource Url',
         ];
     }
@@ -49,7 +52,7 @@ class NewsResources extends \yii\db\ActiveRecord
     public function findeResources($limit)
     {
         return  (new Query())
-                    ->select('resource_id,resource_url')
+                    ->select('resource_id,resource_url,resource_image')
                     ->from('news_resources')
                     ->limit($limit)
                     ->orderBy('resource_id DESC')

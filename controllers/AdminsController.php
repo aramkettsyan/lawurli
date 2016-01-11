@@ -192,8 +192,8 @@ class AdminsController extends \yii\web\Controller {
                                 $id = Yii::$app->request->post()['FormsForm'][$g]['id'];
                                 $form->id = $id;
                                 $form->sub_section_id = $sub_section_id;
-                                if($form->is_title){
-                                    Forms::updateAll(['is_title'=>0]);
+                                if ($form->is_title) {
+                                    Forms::updateAll(['is_title' => 0]);
                                 }
                                 if (!in_array($form->type, ['select', 'input', 'checkbox', 'radio', 'textarea'])) {
                                     $flag = false;
@@ -213,8 +213,8 @@ class AdminsController extends \yii\web\Controller {
                             $sub_section_id = Yii::$app->db->getLastInsertID();
                             foreach ($multiple_form_model as $form) {
                                 $form->sub_section_id = $sub_section_id;
-                                if($form->is_title){
-                                    Forms::updateAll(['is_title'=>0]);
+                                if ($form->is_title) {
+                                    Forms::updateAll(['is_title' => 0]);
                                 }
                                 if (!in_array($form->type, ['select', 'input', 'checkbox', 'radio', 'textarea'])) {
                                     $flag = false;
@@ -423,20 +423,57 @@ class AdminsController extends \yii\web\Controller {
 
         if ($id && $edit) {
             $newsModel = \app\models\NewsResources::findOne(['resource_id' => $id]);
+            $image = $newsModel->resource_image;
+            $newsModel->scenario = 'edit';
         } else {
             $newsModel = new \app\models\NewsResources();
+            $newsModel->scenario = 'insert';
         }
-        
-        if($id && $delete){
-            $newsModel->deleteAll(['resource_id'=>$id]);
+
+        if ($id && $delete) {
+            $news = \app\models\NewsResources::findOne(['resource_id' => $id]);
+            if($news){
+                if (is_file(\Yii::getAlias('@web') . 'images/news/' . $news->resource_image)) {
+                    unlink(\Yii::getAlias('@web') . 'images/news/' . $news->resource_image);
+                }
+            }
+            $newsModel->deleteAll(['resource_id' => $id]);
         }
-        
+
         $newsList = \app\models\NewsResources::find()->all();
 
         if (\Yii::$app->request->isPost) {
-            if ($newsModel->load(\Yii::$app->request->post()) && $newsModel->save()) {
-                \Yii::$app->session->setFlash('newsSuccess', 'Url saved.');
-                $this->redirect('/admins/news');
+            if ($newsModel->load(\Yii::$app->request->post()) && (!empty($_FILES['NewsResources']['name']['resource_image']) || $edit)) {
+                if (empty($_FILES['NewsResources']['name']['resource_image']) && $edit) {
+                    if (is_file(\Yii::getAlias('@web') . 'images/news/' . $image)) {
+                        unlink(\Yii::getAlias('@web') . 'images/news/' . $image);
+                    }
+                    if ($newsModel->save()) {
+                        \Yii::$app->session->setFlash('newsSuccess', 'Url saved.');
+                        $this->redirect('/admins/news');
+                    }
+                } else {
+                    $fileName = $_FILES['NewsResources']['name']['resource_image'];
+                    $fileSize = $_FILES['NewsResources']['size']['resource_image'];
+                    $fileType = strtolower(end(explode('.', $fileName)));
+                    $newFileName = \Yii::$app->security->generateRandomString(32) . '.' . $fileType;
+                    $allowedTypes = ['jpg', 'jpeg', 'png'];
+                    if (in_array($fileType, $allowedTypes)) {
+                        if ($fileSize <= 10000000) {
+                            $fileTmp = $_FILES['NewsResources']['tmp_name']['resource_image'];
+                            move_uploaded_file($fileTmp, \Yii::getAlias('@web') . 'images/news/' . $newFileName);
+                            $newsModel->resource_image = $newFileName;
+                            if ($newsModel->save()) {
+                                \Yii::$app->session->setFlash('newsSuccess', 'Url saved.');
+                                $this->redirect('/admins/news');
+                            }
+                        } else {
+                            $newsModel->addError('resource_image', 'Allowed image size is 10mb.');
+                        }
+                    } else {
+                        $newsModel->addError('resource_image', 'Invalid image format.');
+                    }
+                }
             }
         }
 
@@ -444,6 +481,16 @@ class AdminsController extends \yii\web\Controller {
                     'model' => $newsModel,
                     'newsList' => $newsList
         ]);
+    }
+
+    function generateRandomString($length = 20) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
 }
