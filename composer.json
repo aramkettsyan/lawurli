@@ -22,7 +22,8 @@
         "kartik-v/yii2-widget-fileinput": "@dev",
         "wbraganca/yii2-dynamicform": "*",
         "2amigos/yii2-ckeditor-widget" : "~1.0",
-	"himiklab/yii2-recaptcha-widget" : "*"
+	"himiklab/yii2-recaptcha-widget" : "*",
+        "nickcv/yii2-mandrill": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
