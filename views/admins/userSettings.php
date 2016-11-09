@@ -2,7 +2,7 @@
 
 use \yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-use wbraganca\dynamicform\DynamicFormWidget;
+use app\components\dynamicform\DynamicFormWidget;
 ?>
 <div class="container">
     <div class="adminCont">
@@ -163,27 +163,27 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
 
                     <?php
-                    DynamicFormWidget::begin([
-                        'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
-                        'widgetBody' => '.formSecRep', // required: css class selector
-                        'widgetItem' => '.item', // required: css class
-                        'limit' => 100, // the maximum times, an element can be cloned (default 999)
-                        'min' => 1, // 0 or 1 (default 1)
-                        'insertButton' => '.add-item', // css class
-                        'deleteButton' => '.remove-item', // css class
-                        'element_n' => 0, // css class
-                        'model' => $multiple_form_model[0],
-                        'formId' => 'sub-section-form',
-                        'formFields' => [
-                            'label',
-                            'numeric',
-                            'type',
-                            'options',
-                            'show_in_search',
-                            'is_title',
-                            'placeholder'
-                        ],
-                    ]);
+                        DynamicFormWidget::begin([
+                            'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
+                            'widgetBody' => '.formSecRep', // required: css class selector
+                            'widgetItem' => '.item', // required: css class
+                            'limit' => 100, // the maximum times, an element can be cloned (default 999)
+                            'min' => 1, // 0 or 1 (default 1)
+                            'insertButton' => '.add-item', // css class
+                            'deleteButton' => '.remove-item', // css class
+                            'element_n' => 0, // css class
+                            'model' => $multiple_form_model[0],
+                            'formId' => 'sub-section-form',
+                            'formFields' => [
+                                'label',
+                                'numeric',
+                                'type',
+                                'options',
+                                'show_in_search',
+                                'is_title',
+                                'placeholder'
+                            ],
+                        ]);
                     ?>
 
                     <div class="formSecRep"> 

@@ -50,7 +50,7 @@ $config = [
         
         'mailer' => [
             'class' => 'nickcv\mandrill\Mailer',
-            'apikey' => 'SDaAL5ZAJB_6gzt0OU_6wA',
+            'apikey' => 'YJUbAir21Ly6TxvmFN6NBw',
         ],
         
         
@@ -99,6 +99,12 @@ $config = [
         ],
         'FileUploader' => [
             'class' => 'app\components\FileUploader',
+        ],
+        'DynamicFormAsset'=>[
+            'class' => 'app\components\yii2-dynamicform\DynamicFormAsset.php',
+        ],
+        'DynamicFormWidget'=>[
+            'class' => 'app\components\yii2-dynamicform\DynamicFormWidget.php',
         ]
     ],
     'params' => $params,

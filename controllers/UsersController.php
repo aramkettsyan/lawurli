@@ -1473,7 +1473,7 @@ class UsersController extends \yii\web\Controller {
         if (isset($_FILES['EducationForm']['name']['certificate']) && $_FILES['EducationForm']['name']['certificate']) {
             if ($model->load(Yii::$app->request->post())) {
                 $file = \yii\web\UploadedFile::getInstance($model, 'certificate');
-                if ($file && $file->tempName) {
+                if ($file && $file->tempName && $file->size) {
                     $model->certificate = $file;
                     if ($model->validate()) {
 
@@ -1495,8 +1495,6 @@ class UsersController extends \yii\web\Controller {
                 }
             }
         }
-        print_r($model->getErrors());
-        die;
 
         Yii::$app->session->writeSession('addEducation', 'true');
         return $model;
@@ -1516,7 +1514,7 @@ class UsersController extends \yii\web\Controller {
             } else {
                 $form_model->organization = Yii::$app->request->post()['EducationForm']['organization'];
             }
-            if (!Yii::$app->request->post()['EducationForm']['number_of_units']) {
+            if (!Yii::$app->request->post()['EducationForm']['number_of_units'] && Yii::$app->request->post()['EducationForm']['number_of_units'] !== '0') {
                 $form_model->number_of_units = $ed_model->number_of_units;
             } else {
                 $form_model->number_of_units = Yii::$app->request->post()['EducationForm']['number_of_units'];

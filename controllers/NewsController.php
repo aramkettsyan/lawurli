@@ -98,7 +98,11 @@ class NewsController extends \yii\web\Controller {
             $k++;
         }
         usort($newsArray, function($a, $b) {
-            return strcmp($b['sortTime'], $a['sortTime']);
+
+            $t1 = strtotime($a["sortTime"]);
+            $t2 = strtotime($b["sortTime"]);
+
+            return ($t2 - $t1);
         });
 
 

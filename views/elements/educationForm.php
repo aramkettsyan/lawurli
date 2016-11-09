@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div id="add-cle" class="popupWrap mfp-hide">
     <div class="popupTitle">
-        <h5>Add</h5>
+        <h5 id="header_text"><?php echo $this->params['educationModel']->id?'Edit':'Add' ?></h5>
         <button class="mfp-close"></button>
     </div>
     <div class="popupCont srchPopupCont">

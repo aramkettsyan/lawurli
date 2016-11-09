@@ -26,8 +26,8 @@ class EducationForm extends Model {
             [['id'], 'required','on'=>'update'],
             [['id'], 'integer','on'=>'update'],
             [['organization'], 'string', 'max' => 255],
-            [['certificate'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png,jpg,doc,pdf,docx', 'maxFiles' => 1,'on'=>'create'],
-            [['certificate'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png,jpg,doc,pdf,docx', 'maxFiles' => 1,'on'=>'update'],
+            [['certificate'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png,jpg,doc,pdf,docx', 'maxFiles' => 1,'on'=>'create', 'maxSize' => 1024*1024*10],
+            [['certificate'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png,jpg,doc,pdf,docx', 'maxFiles' => 1,'on'=>'update', 'maxSize' => 1024*1024*10],
             [['ethics'], 'number','min'=>0],
             [['number_of_units'], 'number','min'=>0]
         ];

@@ -107,6 +107,7 @@ use yii\helpers\Html;
 
         $('.add_cle').on('click', function () {
             $('#add-cle input').val('');
+            $('#header_text').html('Add');
         });
 
 
