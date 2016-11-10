@@ -12,6 +12,7 @@ use yii\filters\AccessControl;
 use \app\models\FormsForm;
 use app\models\Model;
 use app\models\AboutUs;
+use yii\data\Pagination;
 
 class AdminsController extends \yii\web\Controller {
 
@@ -39,7 +40,7 @@ class AdminsController extends \yii\web\Controller {
                     'class' => AdminAccessControl::className(),
                     'rules' => [
                         [
-                            'actions' => ['logout', 'about-us', 'news', 'index', 'user-settings', 'site-settings', 'upload-image', 'delete-section', 'delete-sub-section', 'redirect-and-set-flash'],
+                            'actions' => ['logout', 'about-us', 'news','users', 'index', 'user-settings', 'site-settings', 'upload-image', 'delete-section', 'delete-sub-section', 'redirect-and-set-flash'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
@@ -480,6 +481,21 @@ class AdminsController extends \yii\web\Controller {
         return $this->render('news', [
                     'model' => $newsModel,
                     'newsList' => $newsList
+        ]);
+    }
+
+
+    public function actionUsers(){
+        $usersList = \app\models\Users::find();
+        $countQuery = clone $usersList;
+        $pages = new Pagination(['totalCount' => $countQuery->count(),'defaultPageSize' => '10']);
+        $usersList = $usersList->offset($pages->offset)
+            ->limit($pages->limit)
+            ->all();
+
+        return $this->render('users', [
+            'usersList' => $usersList,
+            'pages' => $pages
         ]);
     }
 

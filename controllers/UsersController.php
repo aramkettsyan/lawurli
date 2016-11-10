@@ -15,6 +15,7 @@ use Yii;
 use app\models\UserForms;
 use app\models\EducationForm;
 use app\models\Education;
+use DateTime;
 
 class UsersController extends \yii\web\Controller {
 
@@ -1432,7 +1433,12 @@ class UsersController extends \yii\web\Controller {
         $pages = $returnParams[0];
         $notifications = $returnParams[1];
         $seenIds = [];
-        foreach ($notifications as $notification) {
+
+        foreach ($notifications as $k=>$notification) {
+
+            $date = new DateTime($notification['request_created']);
+            $formatedDate = $date->format('F d, Y g:i A');
+            $notifications[$k]['request_created'] = $formatedDate;
             $seenIds[] = $notification['request_id'];
         }
         if ($seenIds) {
